@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dkn7cv5tbdpi8"]
 
-[ext_resource type="Script" uid="uid://pxiq6fuug01j" path="res://outro_video.gd" id="1_qmtlu"]
-[ext_resource type="VideoStream" uid="uid://bvlbexuxhx5ok" path="res://Assets/Video_Outro.ogv" id="2_5lmkb"]
+[ext_resource type="Script" uid="uid://pxiq6fuug01j" path="res://Nivel_Bryan/outro_video.gd" id="1_qmtlu"]
+[ext_resource type="VideoStream" uid="uid://bvlbexuxhx5ok" path="res://Nivel_Bryan/Assets/Video_Outro.ogv" id="2_5lmkb"]
 
 [node name="OutroVideo" type="Control" unique_id=1296438520]
 layout_mode = 3

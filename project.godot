@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="LORE"
-run/main_scene="uid://d3n0yrlhm6j3j"
+run/main_scene="uid://dr2twt8ygqwt"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 

@@ -3,6 +3,11 @@ var respuesta_prueba: String = "primera guerra mundial"
 var pregunta_prueba: String = "¿Qué conflicto bélico global, desarrollado entre 1914 y 1918, comenzó tras el asesinato del archiduque Francisco Fernando de Austria y enfrentó a los Aliados contra las Potencias Centrales?"
 var cursor_encendido: bool = true
 
+# --- VARIABLES DE TELEMETRÍA ---
+var intentos_teclado: int = 0
+var errores_jugador: Array = []
+var aciertos_jugador: Array = []
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$Interfaz/ScrollContainer/TextoPantalla.text = "SISTEMA INICIADO...\nDescargando datos del servidor central..."
@@ -75,7 +80,12 @@ func _on_boton_confirmar_pressed():
 	var texto_jugador = $Interfaz/CapturaTeclado.text.strip_edges().to_lower()
 	var respuesta_limpia = respuesta_prueba.replace(" ", "").to_lower()
 	
+	intentos_teclado += 1
+	
 	if texto_jugador == respuesta_limpia:
+		aciertos_jugador.append(texto_jugador)
+		GestorTelemetria.enviar_reporte_final("jugador_etienne", "victoria", intentos_teclado, aciertos_jugador, errores_jugador)
+		
 		GestorEstadoNivelE.computadora_resuelta = true
 		await get_tree().create_timer(1.0).timeout
 		$Interfaz/ScrollContainer/TextoPantalla.text = "✓"
@@ -84,6 +94,7 @@ func _on_boton_confirmar_pressed():
 		await get_tree().create_timer(1.0).timeout
 		TransicionGlobal.cambiar_escena("res://Nivel_E/Hub_Principal.tscn")
 	else:
+		errores_jugador.append(texto_jugador)
 		# 1. Bloqueamos el teclado y ocultamos la respuesta del jugador
 		$Interfaz/VisorRespuesta.hide()
 		$Interfaz/BotonConfirmar.hide()

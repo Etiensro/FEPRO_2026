@@ -6,47 +6,62 @@ var bloqueado = false
 var posicion_y_original_garra = 0
 var tamano_y_original_cadena = 0
 
+# --- VARIABLES DE TELEMETRÍA ---
+var intentos_garra: int = 0
+var errores_jugador: Array = []
+var aciertos_jugador: Array = []
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$PlacaPregunta.text = pregunta_actual
 	posicion_y_original_garra = $GarraMecanica.position.y
 	tamano_y_original_cadena = $CadenaInfinita.size.y
 	
-	# Asignamos las respuestas a cada esfera
-	$RepisaOpciones/EsferaA/Label.text = "Mercurio"
-	$RepisaOpciones/EsferaB/Label.text = "Oro" # Esta es la correcta
-	$RepisaOpciones/EsferaC/Label.text = "Helio"
-	$RepisaOpciones/EsferaD/Label.text = "Oxigeno"
 	# --- VERIFICACIÓN DE ESTADO ---
 	if GestorEstadoNivelE.computadora_resuelta:
-		# La computadora está resuelta: Escena normal e iluminada
-		$PlacaPregunta.text = pregunta_actual
+		$PlacaPregunta.text = "DESCARGANDO SISTEMA HIDRÁULICO DESDE LA NUBE..."
 		$GarraMecanica.show()
 		$CadenaInfinita.show()
 		$FiltroOscuridad.hide() # Apagamos la oscuridad para que el nivel se vea normal
-		bloqueado = false
 		
-		# --- MOVIMIENTO DEL BOTÓN: INFERIOR DERECHA ---
-		# Obtenemos el tamaño de tu pantalla para mandarlo a la esquina
 		var ancho_pantalla = get_viewport_rect().size.x
 		var alto_pantalla = get_viewport_rect().size.y
-		# Restamos píxeles para que no se salga de la pantalla (ajusta el 200 y el 150 a tu gusto)
 		$CapaUI/BotonSalir.position = Vector2(ancho_pantalla - 400, alto_pantalla - 250)
 		$CapaUI/FiltroBotonSalir.hide()
+		
+		bloqueado = false
+		
+		# Conectarnos a la señal maestra
+		GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
+		GestorTelemetria.descargar_preguntas("escena_garra")
 	else:
 		# La computadora NO está resuelta: Modo inactivo, oscuro y texto negro
 		$PlacaPregunta.text = "SISTEMA HIDRÁULICO APAGADO.\nREQUIERE ENERGÍA."
-		
-		# Teñimos de negro puro el texto de la placa principal[cite: 1]
-		#$PlacaPregunta.add_theme_color_override("font_color", Color.BLACK)
-		
-		# Teñimos de negro el texto de todas las bolas de piedra en la repisa[cite: 1]
 		for esfera in $RepisaOpciones.get_children():
 			esfera.get_node("Label").hide()
 			
 		$GarraMecanica.hide() 
-		$CadenaInfinita.hide() 
-		$FiltroOscuridad.show() # Encendemos el filtro oscuro
+		$CadenaInfinita.hide()
+		$FiltroOscuridad.show()
+		$CapaUI/FiltroBotonSalir.show()
+
+func _on_preguntas_listas(datos: Array) -> void:
+	if datos.size() > 0:
+		datos.shuffle()
+		var puzzle_actual = datos[0] 
+		pregunta_actual = puzzle_actual["pregunta_texto"]
+		respuesta_correcta = puzzle_actual["respuesta_correcta"]
+		
+		var opciones = puzzle_actual["opciones"].duplicate()
+		opciones.shuffle()
+		
+		$RepisaOpciones/EsferaA/Label.text = opciones[0]
+		$RepisaOpciones/EsferaB/Label.text = opciones[1]
+		$RepisaOpciones/EsferaC/Label.text = opciones[2]
+		$RepisaOpciones/EsferaD/Label.text = opciones[3]
+		
+		$PlacaPregunta.text = pregunta_actual
+	else:
+		$PlacaPregunta.text = "ERROR AL DESCARGAR DATOS"
 		bloqueado = true # Evita interacciones con las esferas
 
 
@@ -103,10 +118,17 @@ func agarrar_y_evaluar(nodo_esfera: TextureButton):
 	$GarraMecanica.texture = preload("res://Nivel_E/Assets/Garra Cerrada - copia.png")
 	var texto_seleccionado = nodo_esfera.get_node("Label").text
 	
+	intentos_garra += 1
+	
 	if texto_seleccionado == respuesta_correcta:
+		aciertos_jugador.append(texto_seleccionado)
+		GestorTelemetria.enviar_reporte_final("jugador_etienne", "victoria_garra", intentos_garra, aciertos_jugador, errores_jugador)
+		
 		$PlacaPregunta.text = "RESPUESTA CORRECTA. EXTRACCIÓN INICIADA..."
 		secuencia_victoria(nodo_esfera)
 	else:
+		errores_jugador.append(texto_seleccionado)
+		
 		$PlacaPregunta.text = "SISTEMA HIDRÁULICO INESTABLE. REINTENTE."
 		nodo_esfera.disabled = true
 		animar_temblor_y_romper(nodo_esfera)

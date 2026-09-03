@@ -5,11 +5,26 @@ var cursor_encendido: bool = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$Interfaz/ScrollContainer/TextoPantalla.text = "SISTEMA INICIADO...\nCalibrando interfaz de texto."
+	$Interfaz/ScrollContainer/TextoPantalla.text = "SISTEMA INICIADO...\nDescargando datos del servidor central..."
 	$Interfaz/BarraCarga.value = 0
 	$Interfaz/VisorRespuesta.hide()
 	$Interfaz/CapturaTeclado.hide()
 	$Interfaz/BotonConfirmar.hide()
+	
+	# Conectarnos a la señal maestra
+	GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
+	GestorTelemetria.descargar_preguntas("escena_computadora")
+
+func _on_preguntas_listas(datos: Array) -> void:
+	if datos.size() > 0:
+		datos.shuffle() # Elegimos una al azar de la lista
+		var puzzle_actual = datos[0] 
+		pregunta_prueba = puzzle_actual["pregunta_texto"]
+		respuesta_prueba = puzzle_actual["respuesta_correcta"].to_lower()
+	else:
+		pregunta_prueba = "Error: No se encontró la escena_computadora en la base de datos."
+		respuesta_prueba = "error"
+		
 	var tween = create_tween()
 	# 2. Barra de carga
 	tween.tween_property($Interfaz/BarraCarga, "value", 100, 2.5)

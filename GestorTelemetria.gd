@@ -33,7 +33,11 @@ func descargar_preguntas(etiqueta_nivel: String):
 						nivel_datos[k] = unwrap_firestore(fields[k])
 					
 					if nivel_datos.has(etiqueta_nivel):
-						array_final = nivel_datos[etiqueta_nivel]
+						var dato_crudo = nivel_datos[etiqueta_nivel]
+						if typeof(dato_crudo) == TYPE_ARRAY:
+							array_final = dato_crudo
+						else:
+							array_final = [dato_crudo]
 						break
 			
 			preguntas_listas.emit(array_final)

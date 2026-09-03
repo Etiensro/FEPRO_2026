@@ -39,14 +39,20 @@ func iniciar_nivel_carrito():
 	cargar_json_carrito()
 
 func cargar_json_carrito():
-	var archivo = FileAccess.open("res://Nivel_Sofia/acertijos.json", FileAccess.READ)
-	if archivo:
-		var datos = JSON.parse_string(archivo.get_as_text())
-		if datos and datos.has("carrito_fase"):
-			lista_preguntas = datos["carrito_fase"]
-			lista_preguntas.shuffle() 
-			pregunta_actual = lista_preguntas[0]
-			mostrar_pregunta()
+	if pantalla_acertijo: pantalla_acertijo.text = "Cargando desde la base de datos..."
+	# Conectarnos a la señal maestra
+	GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
+	# Pedir la etiqueta del carrito
+	GestorTelemetria.descargar_preguntas("carrito_fase")
+
+func _on_preguntas_listas(array_preguntas: Array) -> void:
+	if array_preguntas.size() > 0:
+		lista_preguntas = array_preguntas
+		lista_preguntas.shuffle() 
+		pregunta_actual = lista_preguntas[0]
+		mostrar_pregunta()
+	else:
+		if pantalla_acertijo: pantalla_acertijo.text = "Error al descargar preguntas"
 
 func mostrar_pregunta():
 	if pantalla_acertijo and pregunta_actual.has("texto"):

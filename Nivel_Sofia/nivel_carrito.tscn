@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://k3lupbajseh7"]
+
+[ext_resource type="Texture2D" uid="uid://bcx7oa7sb5wwv" path="res://Nivel_Sofia/Vistas/Carrito_apagado.jpg" id="1_4m6bf"]
+[ext_resource type="Script" uid="uid://8f6ghys6ust" path="res://Nivel_Sofia/nivel_carrito.gd" id="1_w2gto"]
+[ext_resource type="Texture2D" uid="uid://cibm38b0gtivr" path="res://Nivel_Sofia/Assets/Boton1_verdad.png" id="2_w2gto"]
+[ext_resource type="Texture2D" uid="uid://bv2drtvgrl536" path="res://Nivel_Sofia/Assets/Boton2_verdad.png" id="3_1teq2"]
+[ext_resource type="Texture2D" uid="uid://dinabr3wf33lh" path="res://Nivel_Sofia/Assets/Boton1_falso.png" id="4_kfvxm"]
+[ext_resource type="Texture2D" uid="uid://0ehcilc6t36w" path="res://Nivel_Sofia/Assets/Boton2_falso.png" id="5_3s6i5"]
+[ext_resource type="FontFile" uid="uid://dpxjq06vx7pbf" path="res://Nivel_Sofia/Assets/Comico-Regular.otf" id="6_5w7ag"]
+[ext_resource type="FontFile" uid="uid://cifoholrxxlvr" path="res://Nivel_Sofia/Assets/Array-Bold.otf" id="7_yf2h4"]
+[ext_resource type="VideoStream" uid="uid://cds5jn5egatik" path="res://Nivel_Sofia/Intro.ogv" id="9_1teq2"]
+[ext_resource type="VideoStream" uid="uid://dpei5hw7r04fx" path="res://Nivel_Sofia/Entre.ogv" id="10_kfvxm"]
+
+[node name="NivelCarrito" type="Node2D" unique_id=1784613092]
+script = ExtResource("1_w2gto")
+
+[node name="Escenario1" type="Sprite2D" parent="." unique_id=1702150019]
+position = Vector2(960.75006, 540)
+scale = Vector2(1.3635396, 1.40625)
+texture = ExtResource("1_4m6bf")
+
+[node name="Acertijo" type="RichTextLabel" parent="Escenario1" unique_id=1732431614]
+offset_left = -46.16626
+offset_top = 100.74075
+offset_right = 57.78424
+offset_bottom = 152.88892
+theme_override_fonts/normal_font = ExtResource("7_yf2h4")
+
+[node name="BotonVerdadero" type="TextureButton" parent="Escenario1" unique_id=1400792257]
+offset_left = -69.40223
+offset_top = 177.77779
+offset_right = -7.031929
+offset_bottom = 239.40742
+texture_normal = ExtResource("2_w2gto")
+texture_pressed = ExtResource("3_1teq2")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="BotonFalso" type="TextureButton" parent="Escenario1" unique_id=1421388577]
+offset_left = 17.427002
+offset_top = 177.77777
+offset_right = 79.79724
+offset_bottom = 239.40741
+texture_normal = ExtResource("4_kfvxm")
+texture_pressed = ExtResource("5_3s6i5")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Letrero" type="Label" parent="Escenario1" unique_id=1420757518]
+offset_left = -80.40874
+offset_top = 24.888893
+offset_right = 90.80379
+offset_bottom = 54.51853
+theme_override_fonts/font = ExtResource("6_5w7ag")
+text = "Enciende el carrito"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VideoIntro" type="VideoStreamPlayer" parent="." unique_id=1021080009]
+visible = false
+offset_right = 1152.0
+offset_bottom = 648.0
+stream = ExtResource("9_1teq2")
+expand = true
+
+[node name="VideoTransicion" type="VideoStreamPlayer" parent="." unique_id=286085271]
+offset_right = 1152.0
+offset_bottom = 648.0
+stream = ExtResource("10_kfvxm")
+expand = true
+
+[connection signal="pressed" from="Escenario1/BotonVerdadero" to="." method="_on_boton_verdadero_pressed"]
+[connection signal="pressed" from="Escenario1/BotonFalso" to="." method="_on_boton_falso_pressed"]

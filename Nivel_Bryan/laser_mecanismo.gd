@@ -1,15 +1,15 @@
 extends Node2D
 
 # --- TEXTURAS PEDESTAL ---
-const TEX_CON_HOJA = preload("res://Assets/PedestalHoja.png")
-const TEX_QUEMADA  = preload("res://Assets/PedestalIncendiada.png")
-const TEX_VACIO    = preload("res://Assets/PedestalVacio.png")
+const TEX_CON_HOJA = preload("res://Nivel_Bryan/Assets/PedestalHoja.png")
+const TEX_QUEMADA  = preload("res://Nivel_Bryan/Assets/PedestalIncendiada.png")
+const TEX_VACIO    = preload("res://Nivel_Bryan/Assets/PedestalVacio.png")
 
 # --- TEXTURAS INCISOS ---
 const TEX_INCISOS = [
-	preload("res://Assets/Inciso_A.png"),
-	preload("res://Assets/Inciso_B.png"),
-	preload("res://Assets/Inciso_C.png")
+	preload("res://Nivel_Bryan/Assets/Inciso_A.png"),
+	preload("res://Nivel_Bryan/Assets/Inciso_B.png"),
+	preload("res://Nivel_Bryan/Assets/Inciso_C.png")
 ]
 
 # --- REFERENCIAS A NODOS ---
@@ -48,13 +48,13 @@ func _ready() -> void:
 	
 	slots_fijos = [hoja1.global_position, hoja2.global_position, hoja3.global_position]
 	
-	if GameManager.laser_resuelto:
+	if GestorEstadoNivelBryan.laser_resuelto:
 		_restaurar_estado_resuelto()
 	else:
-		if GameManager.laser_datos_activos.is_empty():
+		if GestorEstadoNivelBryan.laser_datos_activos.is_empty():
 			_cargar_trivia_laser_json()
 		else:
-			_aplicar_datos_trivia(GameManager.laser_datos_activos, false)
+			_aplicar_datos_trivia(GestorEstadoNivelBryan.laser_datos_activos, false)
 			
 		boton_disparar.input_event.connect(_on_boton_disparar_input)
 		boton_disparar.mouse_entered.connect(func(): if not bloqueado: Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND))
@@ -74,8 +74,8 @@ func _restaurar_estado_resuelto() -> void:
 		if lente.has_node("CollisionShape2D"):
 			lente.get_node("CollisionShape2D").disabled = true
 	
-	if GameManager.laser_lente_ganador != "":
-		var lente_ganador = $Contenedor_piezas.get_node_or_null(GameManager.laser_lente_ganador)
+	if GestorEstadoNivelBryan.laser_lente_ganador != "":
+		var lente_ganador = $Contenedor_piezas.get_node_or_null(GestorEstadoNivelBryan.laser_lente_ganador)
 		if lente_ganador:
 			lente_ganador.global_position = slot_central.global_position
 			lente_actual = lente_ganador
@@ -84,21 +84,21 @@ func _restaurar_estado_resuelto() -> void:
 	var sprites_incisos = [sprite_inciso_1, sprite_inciso_2, sprite_inciso_3]
 	
 	for i in range(pedestales.size()):
-		if i < GameManager.laser_posiciones_hojas.size():
-			pedestales[i].global_position = GameManager.laser_posiciones_hojas[i]
-		if i < GameManager.laser_texturas_hojas.size():
-			pedestales[i].texture = GameManager.laser_texturas_hojas[i]
-		if i < GameManager.laser_incisos_guardados.size() and sprites_incisos[i] != null:
-			var idx_tex = GameManager.laser_incisos_guardados[i]
+		if i < GestorEstadoNivelBryan.laser_posiciones_hojas.size():
+			pedestales[i].global_position = GestorEstadoNivelBryan.laser_posiciones_hojas[i]
+		if i < GestorEstadoNivelBryan.laser_texturas_hojas.size():
+			pedestales[i].texture = GestorEstadoNivelBryan.laser_texturas_hojas[i]
+		if i < GestorEstadoNivelBryan.laser_incisos_guardados.size() and sprites_incisos[i] != null:
+			var idx_tex = GestorEstadoNivelBryan.laser_incisos_guardados[i]
 			if idx_tex >= 0 and idx_tex < TEX_INCISOS.size():
 				sprites_incisos[i].texture = TEX_INCISOS[idx_tex]
 				sprites_incisos[i].visible = (pedestales[i].texture != TEX_VACIO)
 	
-	if label_pregunta and GameManager.laser_pregunta_guardada != "":
-		label_pregunta.text = GameManager.laser_pregunta_guardada
+	if label_pregunta and GestorEstadoNivelBryan.laser_pregunta_guardada != "":
+		label_pregunta.text = GestorEstadoNivelBryan.laser_pregunta_guardada
 
 func _cargar_trivia_laser_json() -> void:
-	var path = "res://acertijos.json"
+	var path = "res://Nivel_Bryan/acertijos.json"
 	if not FileAccess.file_exists(path):
 		_fallback_pregunta_local()
 		return
@@ -130,7 +130,7 @@ func _cargar_trivia_laser_json() -> void:
 		_fallback_pregunta_local()
 		return
 	
-	GameManager.laser_datos_activos = data
+	GestorEstadoNivelBryan.laser_datos_activos = data
 	_aplicar_datos_trivia(data, true)
 
 func _fallback_pregunta_local() -> void:
@@ -142,7 +142,7 @@ func _fallback_pregunta_local() -> void:
 			{ "texto": "FILTRO POLARIZADO", "correcta": false }
 		]
 	}
-	GameManager.laser_datos_activos = fallback_data
+	GestorEstadoNivelBryan.laser_datos_activos = fallback_data
 	_aplicar_datos_trivia(fallback_data, true)
 
 func _aplicar_datos_trivia(data: Dictionary, mezclar: bool = true) -> void:
@@ -157,7 +157,7 @@ func _aplicar_datos_trivia(data: Dictionary, mezclar: bool = true) -> void:
 	var pedestales = [hoja1, hoja2, hoja3]
 	var sprites_incisos = [sprite_inciso_1, sprite_inciso_2, sprite_inciso_3]
 	
-	GameManager.laser_incisos_guardados = []
+	GestorEstadoNivelBryan.laser_incisos_guardados = []
 	
 	for i in range(pedestales.size()):
 		pedestales[i].texture = TEX_CON_HOJA
@@ -173,18 +173,18 @@ func _aplicar_datos_trivia(data: Dictionary, mezclar: bool = true) -> void:
 				sprites_incisos[i].modulate.a = 1.0
 				sprites_incisos[i].visible = true
 			
-			GameManager.laser_incisos_guardados.append(i)
+			GestorEstadoNivelBryan.laser_incisos_guardados.append(i)
 			
 			if opciones[i].get("correcta", false):
 				hoja_ganadora = pedestales[i]
-				GameManager.laser_idx_ganador = i
+				GestorEstadoNivelBryan.laser_idx_ganador = i
 	
 	if label_pregunta:
 		label_pregunta.text = texto_pergamino
-		GameManager.laser_pregunta_guardada = texto_pergamino
+		GestorEstadoNivelBryan.laser_pregunta_guardada = texto_pergamino
 
 func intentar_encajar_lente(pieza: Node, _dir_num: int) -> bool:
-	if bloqueado or GameManager.laser_resuelto:
+	if bloqueado or GestorEstadoNivelBryan.laser_resuelto:
 		return false
 	
 	var dist = pieza.global_position.distance_to(slot_central.global_position)
@@ -211,7 +211,7 @@ func _on_boton_disparar_input(_viewport: Node, event: InputEvent, _shape_idx: in
 		ejecutar_disparo()
 
 func ejecutar_disparo() -> void:
-	if bloqueado or GameManager.laser_resuelto or lente_actual == null:
+	if bloqueado or GestorEstadoNivelBryan.laser_resuelto or lente_actual == null:
 		return
 	
 	bloqueado = true
@@ -281,16 +281,16 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 	tween_color.tween_property(hoja, "modulate", Color(1, 1, 1, 1), 0.4)
 	
 	if es_correcta:
-		GameManager.laser_resuelto = true
-		GameManager.laser_lente_ganador = String(lente_actual.name) if lente_actual != null else ""
-		GameManager.laser_posiciones_hojas = [hoja1.global_position, hoja2.global_position, hoja3.global_position]
-		GameManager.laser_texturas_hojas = [hoja1.texture, hoja2.texture, hoja3.texture]
+		GestorEstadoNivelBryan.laser_resuelto = true
+		GestorEstadoNivelBryan.laser_lente_ganador = String(lente_actual.name) if lente_actual != null else ""
+		GestorEstadoNivelBryan.laser_posiciones_hojas = [hoja1.global_position, hoja2.global_position, hoja3.global_position]
+		GestorEstadoNivelBryan.laser_texturas_hojas = [hoja1.texture, hoja2.texture, hoja3.texture]
 		
 		var timer_exito = get_tree().create_timer(1.2)
 		timer_exito.timeout.connect(func():
 			_apagar_lasers()
 			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-			get_tree().change_scene_to_file("res://sala_3.tscn")
+			get_tree().change_scene_to_file("res://Nivel_Bryan/sala_3.tscn")
 		)
 	else:
 		var timer_fallo = get_tree().create_timer(0.6)
@@ -341,7 +341,7 @@ func _apagar_lasers() -> void:
 func _on_flecha_input(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-		if GameManager.laser_resuelto:
-			get_tree().change_scene_to_file("res://sala_3.tscn")
+		if GestorEstadoNivelBryan.laser_resuelto:
+			get_tree().change_scene_to_file("res://Nivel_Bryan/sala_3.tscn")
 		else:
-			get_tree().change_scene_to_file("res://sala_2.tscn")
+			get_tree().change_scene_to_file("res://Nivel_Bryan/sala_2.tscn")

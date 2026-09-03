@@ -4,7 +4,7 @@ extends Node2D
 @onready var area_rodillos: Area2D = $AreaRodillos
 @onready var area_salida: Area2D = $Salida
 
-const ESCENA_OUTRO: String = "res://outro_video.tscn"
+const ESCENA_OUTRO: String = "res://Nivel_Bryan/outro_video.tscn"
 
 func _ready() -> void:
 	_conectar_area(area_laser, _on_area_laser_input)
@@ -17,21 +17,21 @@ func _conectar_area(area: Area2D, callback: Callable) -> void:
 		area.mouse_entered.connect(func(): Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND))
 		area.mouse_exited.connect(func(): Input.set_default_cursor_shape(Input.CURSOR_ARROW))
 
-# Regresar al láser
+# Regresar al láser dentro de Nivel_Bryan
 func _on_area_laser_input(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-		get_tree().change_scene_to_file("res://laser_mecanismo.tscn")
+		get_tree().change_scene_to_file("res://Nivel_Bryan/laser_mecanismo.tscn")
 
-# Regresar a los cilindros
+# Regresar a los cilindros dentro de Nivel_Bryan
 func _on_area_rodillos_input(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-		get_tree().change_scene_to_file("res://MecanismoZoom.tscn")
+		get_tree().change_scene_to_file("res://Nivel_Bryan/MecanismoZoom.tscn")
 
 # Clic en la puerta de salida para activar la cinemática
 func _on_salida_input(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		if GameManager.laser_resuelto and GameManager.cilindros_resuelto:
+		if GestorEstadoNivelBryan.laser_resuelto and GestorEstadoNivelBryan.cilindros_resuelto:
 			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 			get_tree().change_scene_to_file(ESCENA_OUTRO)

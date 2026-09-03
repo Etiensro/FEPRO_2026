@@ -19,10 +19,10 @@ func _ready() -> void:
 func _on_area_rodillos_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-		get_tree().change_scene_to_file("res://MecanismoZoom.tscn")
+		get_tree().change_scene_to_file("res://Nivel_Bryan/MecanismoZoom.tscn")
 
 func _on_area_laser_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-		# Redirige a la escena del láser
-		get_tree().change_scene_to_file("res://laser_mecanismo.tscn")
+		# Redirige a la escena del láser dentro de Nivel_Bryan
+		get_tree().change_scene_to_file("res://Nivel_Bryan/laser_mecanismo.tscn")

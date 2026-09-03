@@ -1,12 +1,12 @@
 extends Node2D
 
-const ESCENA_RODILLO = preload("res://Cilindro.tscn")
+const ESCENA_RODILLO = preload("res://Nivel_Bryan/Cilindro.tscn")
 
 # --- LOS 4 ATLAS RECORTADOS EXACTOS ---
-const TEX_BTN_NORMAL = preload("res://Assets/Boton_Up_Atlas.tres")
-const TEX_BTN_DOWN   = preload("res://Assets/Boton_Down_Atlas.tres")
-const TEX_BTN_ERROR  = preload("res://Assets/Boton_Rojo_Atlas.tres")
-const TEX_BTN_EXITO  = preload("res://Assets/Boton_Verde_Atlas.tres")
+const TEX_BTN_NORMAL = preload("res://Nivel_Bryan/Assets/Boton_Up_Atlas.tres")
+const TEX_BTN_DOWN   = preload("res://Nivel_Bryan/Assets/Boton_Down_Atlas.tres")
+const TEX_BTN_ERROR  = preload("res://Nivel_Bryan/Assets/Boton_Rojo_Atlas.tres")
+const TEX_BTN_EXITO  = preload("res://Nivel_Bryan/Assets/Boton_Verde_Atlas.tres")
 
 const ALFABETO = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 const NUMEROS = ["0","1","2","3","4","5","6","7","8","9"]
@@ -36,14 +36,13 @@ func _ready() -> void:
 		if not btn_comprobar.pressed.is_connected(_on_btn_comprobar_pressed):
 			btn_comprobar.pressed.connect(_on_btn_comprobar_pressed)
 	
-	cargar_json("res://acertijos.json")
+	cargar_json("res://Nivel_Bryan/acertijos.json")
 	
-	if GameManager.cilindros_resuelto:
+	if GestorEstadoNivelBryan.cilindros_resuelto:
 		_restaurar_estado_resuelto()
 	else:
-		# Si ya se eligió un acertijo anteriormente, mantenerlo fijo
-		if GameManager.cilindros_id_actual != "" and datos_acertijos.has(GameManager.cilindros_id_actual):
-			cargar_acertijo_desde_json(GameManager.cilindros_id_actual)
+		if GestorEstadoNivelBryan.cilindros_id_actual != "" and datos_acertijos.has(GestorEstadoNivelBryan.cilindros_id_actual):
+			cargar_acertijo_desde_json(GestorEstadoNivelBryan.cilindros_id_actual)
 		else:
 			cargar_acertijo_aleatorio()
 
@@ -57,13 +56,13 @@ func _restaurar_estado_resuelto() -> void:
 		btn_comprobar.disabled = true
 		
 	if label_pregunta:
-		label_pregunta.text = GameManager.cilindros_pregunta_guardada if GameManager.cilindros_pregunta_guardada != "" else "¡CORRECTO! MECANISMO DESBLOQUEADO"
+		label_pregunta.text = GestorEstadoNivelBryan.cilindros_pregunta_guardada if GestorEstadoNivelBryan.cilindros_pregunta_guardada != "" else "¡CORRECTO! MECANISMO DESBLOQUEADO"
 	
 	for hijo in contenedor.get_children():
 		hijo.free()
 	lista_rodillos.clear()
 	
-	var letras = GameManager.cilindros_valores_guardados
+	var letras = GestorEstadoNivelBryan.cilindros_valores_guardados
 	var num_letras = letras.size()
 	
 	var tiene_letras = false
@@ -134,12 +133,12 @@ func cargar_acertijo_desde_json(id_acertijo: String) -> void:
 	var info = datos_acertijos[id_acertijo]
 	var tipo = str(info.get("tipo", "numeros"))
 	
-	GameManager.cilindros_id_actual = id_acertijo
-	GameManager.cilindros_pregunta_guardada = str(info.get("pregunta", ""))
-	GameManager.cilindros_tipo_guardado = tipo
+	GestorEstadoNivelBryan.cilindros_id_actual = id_acertijo
+	GestorEstadoNivelBryan.cilindros_pregunta_guardada = str(info.get("pregunta", ""))
+	GestorEstadoNivelBryan.cilindros_tipo_guardado = tipo
 	
 	if label_pregunta:
-		label_pregunta.text = GameManager.cilindros_pregunta_guardada
+		label_pregunta.text = GestorEstadoNivelBryan.cilindros_pregunta_guardada
 	
 	var objetivo = str(info.get("objetivo", "0")).to_upper().strip_edges()
 	generar_cilindros_multiples(objetivo, tipo)
@@ -184,7 +183,7 @@ func generar_cilindros_multiples(objetivo: String, tipo: String) -> void:
 		lista_rodillos.append(nuevo_rodillo)
 
 func _on_btn_comprobar_pressed() -> void:
-	if bloqueado or GameManager.cilindros_resuelto:
+	if bloqueado or GestorEstadoNivelBryan.cilindros_resuelto:
 		return
 	
 	var respuesta_jugador: String = ""
@@ -199,12 +198,12 @@ func _on_btn_comprobar_pressed() -> void:
 
 func _efecto_acierto() -> void:
 	bloqueado = true
-	GameManager.cilindros_resuelto = true
-	GameManager.cilindros_valores_guardados = []
+	GestorEstadoNivelBryan.cilindros_resuelto = true
+	GestorEstadoNivelBryan.cilindros_valores_guardados = []
 	for r in lista_rodillos:
 		if is_instance_valid(r) and r.has_method("obtener_valor"):
-			GameManager.cilindros_valores_guardados.append(str(r.obtener_valor()).strip_edges().to_upper())
-	
+			GestorEstadoNivelBryan.cilindros_valores_guardados.append(str(r.obtener_valor()).strip_edges().to_upper())
+
 	if btn_comprobar:
 		btn_comprobar.texture_normal = TEX_BTN_EXITO
 		btn_comprobar.texture_pressed = TEX_BTN_EXITO
@@ -223,6 +222,7 @@ func _efecto_acierto() -> void:
 
 func _efecto_error() -> void:
 	bloqueado = true
+
 	if not btn_comprobar:
 		bloqueado = false
 		return
@@ -251,11 +251,10 @@ func _on_flecha_volver(_viewport: Node, event: InputEvent, _shape_idx: int) -> v
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		_redirigir_sala()
 
-# Redirección coherente con el avance del juego
 func _redirigir_sala() -> void:
-	if GameManager.cilindros_resuelto and GameManager.laser_resuelto:
-		get_tree().change_scene_to_file("res://sala_3.tscn")
-	elif GameManager.cilindros_resuelto:
-		get_tree().change_scene_to_file("res://sala_2.tscn")
+	if GestorEstadoNivelBryan.cilindros_resuelto and GestorEstadoNivelBryan.laser_resuelto:
+		get_tree().change_scene_to_file("res://Nivel_Bryan/sala_3.tscn")
+	elif GestorEstadoNivelBryan.cilindros_resuelto:
+		get_tree().change_scene_to_file("res://Nivel_Bryan/sala_2.tscn")
 	else:
-		get_tree().change_scene_to_file("res://sala_1.tscn")
+		get_tree().change_scene_to_file("res://Nivel_Bryan/sala_1.tscn")

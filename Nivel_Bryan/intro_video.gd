@@ -2,7 +2,7 @@ extends Control
 
 @onready var video_player: VideoStreamPlayer = $VideoStreamPlayer
 
-const ESCENA_SIGUIENTE: String = "res://sala_1.tscn"
+const ESCENA_SIGUIENTE: String = "res://Nivel_Bryan/sala_1.tscn"
 
 var puede_saltar: bool = false
 
@@ -28,5 +28,3 @@ func _on_video_finished() -> void:
 func _cambiar_a_sala() -> void:
 	set_process_input(false)
 	get_tree().change_scene_to_file(ESCENA_SIGUIENTE)
-	
-	

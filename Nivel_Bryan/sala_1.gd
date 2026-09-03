@@ -10,8 +10,8 @@ func _on_area_rodillos_input_event(_viewport: Node, event: InputEvent, _shape_id
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			# Restaura el cursor a flecha normal antes de salir
 			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-			# Carga la escena del puzzle
-			get_tree().change_scene_to_file("res://MecanismoZoom.tscn")
+			# Carga la escena del puzzle desde Nivel_Bryan
+			get_tree().change_scene_to_file("res://Nivel_Bryan/MecanismoZoom.tscn")
 
 func _on_area_rodillos_mouse_entered() -> void:
 	Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)

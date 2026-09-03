@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://53te3xieoyfn"]
 
-[ext_resource type="Texture2D" uid="uid://bb7uhp46hmsjg" path="res://Imagenes_Back/Sala_1.jpg" id="1_bjdmb"]
-[ext_resource type="Script" uid="uid://dyeddqaib2p8b" path="res://sala_1.gd" id="1_pikch"]
+[ext_resource type="Texture2D" uid="uid://bb7uhp46hmsjg" path="res://Nivel_Bryan/Imagenes_Back/Sala_1.jpg" id="1_bjdmb"]
+[ext_resource type="Script" uid="uid://dyeddqaib2p8b" path="res://Nivel_Bryan/sala_1.gd" id="1_pikch"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l8awi"]
 size = Vector2(540, 275)

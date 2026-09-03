@@ -2,7 +2,7 @@ extends Control
 
 @onready var video_player: VideoStreamPlayer = $VideoStreamPlayer
 
-const ESCENA_FINAL: String = "res://sala_1.tscn"
+const ESCENA_FINAL: String = "res://main.tscn"
 
 var puede_saltar: bool = false
 
@@ -24,12 +24,11 @@ func _on_video_finished() -> void:
 func _finalizar() -> void:
 	set_process_input(false)
 	
-	# Reiniciar variables para jugar de nuevo
-	GameManager.laser_resuelto = false
-	GameManager.cilindros_resuelto = false
-	GameManager.cilindros_valores_guardados.clear()
-	GameManager.laser_posiciones_hojas.clear()
-	GameManager.laser_texturas_hojas.clear()
-	GameManager.laser_incisos_guardados.clear()
+	GestorEstadoNivelBryan.laser_resuelto = false
+	GestorEstadoNivelBryan.cilindros_resuelto = false
+	GestorEstadoNivelBryan.cilindros_valores_guardados.clear()
+	GestorEstadoNivelBryan.laser_posiciones_hojas.clear()
+	GestorEstadoNivelBryan.laser_texturas_hojas.clear()
+	GestorEstadoNivelBryan.laser_incisos_guardados.clear()
 	
 	get_tree().change_scene_to_file(ESCENA_FINAL)

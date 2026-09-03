@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 GestorTelemetria="*uid://dxn0jv7wuf1vt"
 GestorEstadoNivelE="*uid://bxa2v73jbqwlg"
 TransicionGlobal="*uid://ck74g1g6e4fdm"
+GestorEstadoNivelBryan="*uid://bjyymdhudqdap"
 
 [display]
 

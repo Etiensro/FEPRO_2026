@@ -23,3 +23,7 @@ layout_mode = 0
 offset_right = 1148.0
 offset_bottom = 644.0
 color = Color(0, 0, 0, 1)
+
+[node name="CameraFix" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+zoom = Vector2(1.667, 1.667)

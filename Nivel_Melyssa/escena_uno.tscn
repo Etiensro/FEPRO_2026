@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bhsibd4bt3w5p"]
 
 [ext_resource type="Texture2D" uid="uid://6ym1ajxymk3o" path="res://Nivel_Melyssa/AssetsVisuales/FondoPrincipal.jpg" id="1_5a1eg"]
-[ext_resource type="Script" uid="uid://ce63fgmrgixv0" path="res://Nivel_Melyssa/fondo_principal.gd" id="2_wfv2b"]
+[ext_resource type="Script" uid="uid://demoh3oydul0m" path="res://Nivel_Melyssa/fondo_principal.gd" id="2_wfv2b"]
 [ext_resource type="Texture2D" uid="uid://dqi7x1js5kiy4" path="res://Nivel_Melyssa/AssetsVisuales/Esfera reloj.jpg" id="3_le402"]
 [ext_resource type="Texture2D" uid="uid://c02bop6rfrwjy" path="res://Nivel_Melyssa/AssetsVisuales/Esfera2.jpg" id="4_5h4iv"]
 [ext_resource type="FontFile" uid="uid://dmq2h0mgosbix" path="res://Nivel_Melyssa/AssetsVisuales/Comico-Regular.otf" id="4_316aw"]
@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bggpghysyp8gf" path="res://Nivel_Melyssa/AssetsVisuales/Esfera3.jpg" id="5_s117w"]
 [ext_resource type="Texture2D" uid="uid://ceba8d8cb0tai" path="res://Nivel_Melyssa/AssetsVisuales/Esfera4.jpg" id="6_ik48r"]
 [ext_resource type="Texture2D" uid="uid://dhh15gyt8h6wx" path="res://Nivel_Melyssa/AssetsVisuales/CañonBuho.png" id="8_hbnni"]
-[ext_resource type="Script" uid="uid://bp8nsmhbgicbo" path="res://Nivel_Melyssa/canon.gd" id="9_7erbs"]
+[ext_resource type="Script" uid="uid://5m3ennhkoncs" path="res://Nivel_Melyssa/canon.gd" id="9_7erbs"]
 [ext_resource type="PackedScene" uid="uid://7salxpjufeaf" path="res://Nivel_Melyssa/lanza.tscn" id="10_38ey4"]
 [ext_resource type="Texture2D" uid="uid://cp0hwf06fwtjv" path="res://Nivel_Melyssa/AssetsVisuales/FlechaDerecha.png" id="11_7erbs"]
 [ext_resource type="AudioStream" uid="uid://p11cchi5cd5u" path="res://Nivel_Melyssa/AssetsVisuales/SonidoAcierto.mp3" id="12_hawd6"]
@@ -34,10 +34,10 @@ anchor_left = 0.20300001
 anchor_top = 0.536
 anchor_right = 0.20300001
 anchor_bottom = 0.536
-offset_left = -893.9763
-offset_top = -314.1715
-offset_right = -825.369
-offset_bottom = -209.31435
+offset_left = -925.739
+offset_top = -411.71304
+offset_right = -765.6553
+offset_bottom = -147.13165
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="FondoPrincipal/Palanca" unique_id=985736256]
 visible = false
@@ -289,3 +289,7 @@ stream = ExtResource("15_5epf7")
 [connection signal="pressed" from="FondoPrincipal/ZoomEsfera2/BotonCerrarZoom2" to="FondoPrincipal" method="_on_boton_cerrar_zoom_2_pressed"]
 [connection signal="pressed" from="FondoPrincipal/ZoomEsfera3/BotonCerrarZoom3" to="FondoPrincipal" method="_on_boton_cerrar_zoom_3_pressed"]
 [connection signal="pressed" from="FondoPrincipal/ZoomEsfera4/BotonCerrarZoom4" to="FondoPrincipal" method="_on_boton_cerrar_zoom_4_pressed"]
+
+[node name="CameraFix" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+zoom = Vector2(1.667, 1.667)

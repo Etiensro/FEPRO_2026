@@ -41,3 +41,7 @@ ignore_texture_size = true
 stretch_mode = 4
 
 [connection signal="pressed" from="Instrucciones/BotonRegresar" to="." method="_on_boton_regresar_pressed"]
+
+[node name="CameraFix" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+zoom = Vector2(1.667, 1.667)

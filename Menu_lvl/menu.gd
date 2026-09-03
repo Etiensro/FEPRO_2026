@@ -67,7 +67,7 @@ func _on_sala_verificada(_result: int, response_code: int, _headers: PackedStrin
 		print("--- DEBUG SALA ---")
 		print("Campos encontrados en Firestore: ", campos.keys())
 		
-		# Guardar sesión y datos en el gestor global para que los niveles lean sus preguntas
+		# Guardar sesión y datos en el gestor global
 		var cod_sala = input_sala.text.strip_edges()
 		var nom_usuario = input_usuario.text.strip_edges()
 		
@@ -79,22 +79,25 @@ func _on_sala_verificada(_result: int, response_code: int, _headers: PackedStrin
 			if "datos_sala_actual" in GestorTelemetria:
 				GestorTelemetria.datos_sala_actual = campos
 		
-		# Detección de sala según los campos de Firestore
+		# Reiniciar y barajar el tour de la ruleta al iniciar sesión
+		if Engine.has_singleton("GestorRutaJuego"):
+			GestorRutaJuego.reiniciar_recorridos()
+		
+		# Detección precisa de qué sala corresponde según los campos de Firestore
 		var escena_destino: String = SALA_BRYAN
 		
 		if campos.has("escena_computadora"):
 			escena_destino = SALA_ETIENNE
 		elif campos.has("carrito_fase") or campos.has("tuneles_fase"):
 			escena_destino = SALA_SOFIA
-		elif campos.has("melyssa_puzzles") or campos.has("quimica"):
+		elif campos.has("preguntas") or campos.has("melyssa_puzzles"): # <--- Detecta correctamente las esferas de Melyssa
 			escena_destino = SALA_MELYSSA
-		elif campos.has("laser_puzzles") or campos.has("tema_1") or campos.has("tema_2"):
-			escena_destino = SALA_BRYAN
 		else:
-			print("Aviso: Formato no reconocido, usando sala por defecto.")
-			escena_destino = SALA_BRYAN
+			# Si usa la ruleta aleatoria general cuando no hay una fase forzada:
+			if Engine.has_singleton("GestorRutaJuego"):
+				escena_destino = GestorRutaJuego.obtener_siguiente_sala()
 
-		print("Escena elegida: ", escena_destino)
+		print("Escena elegida según Firestore: ", escena_destino)
 		
 		if not ResourceLoader.exists(escena_destino):
 			print("ERROR: La ruta '", escena_destino, "' no existe. Usando respaldo.")

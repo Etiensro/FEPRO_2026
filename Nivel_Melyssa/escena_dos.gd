@@ -7,7 +7,7 @@ func _ready():
 		# Conectarnos a la señal antes de pedir la descarga (solo una vez)
 		GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
 		# Llamar a la Obra Maestra
-		GestorTelemetria.descargar_preguntas("escena_garra")
+		GestorTelemetria.descargar_preguntas("preguntas")
 	else:
 		# Siempre mostramos la pregunta que está guardada en el Autoload
 		$Instrucciones/ScrollTexto1/Label.text = GlobalEsferas.pregunta_actual
@@ -18,15 +18,10 @@ func _on_preguntas_listas(array_preguntas: Array) -> void:
 		var indice_azar = randi() % array_preguntas.size()
 		var pregunta_elegida = array_preguntas[indice_azar]
 		
-		# Encontrar cuál es el índice correcto 
-		var correcta = pregunta_elegida["respuesta_correcta"]
-		var opciones_db = pregunta_elegida["opciones"]
-		var idx_correcto = opciones_db.find(correcta)
-		
 		# Guardamos los datos en el Autoload
-		GlobalEsferas.pregunta_actual = pregunta_elegida["pregunta_texto"]
-		GlobalEsferas.opciones_cargadas = opciones_db
-		GlobalEsferas.indice_correcto = idx_correcto
+		GlobalEsferas.pregunta_actual = pregunta_elegida["pregunta"]
+		GlobalEsferas.opciones_cargadas = pregunta_elegida["opciones"]
+		GlobalEsferas.indice_correcto = int(pregunta_elegida["indice_correcto"])
 		
 		# Reiniciar el puzzle
 		GlobalEsferas.esferas_vistas = [false, false, false, false]

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dxfthhhu2mce1"
-path="res://.godot/imported/Botton_DownT.png-caf5b85026dcbd0be6cc928299d2290a.ctex"
+path="res://.godot/imported/Botton_DownT.png-bf8193ac9c90aaaf298f33df9d7bb1c1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Botton_DownT.png"
-dest_files=["res://.godot/imported/Botton_DownT.png-caf5b85026dcbd0be6cc928299d2290a.ctex"]
+source_file="res://Nivel_Bryan/Assets/Botton_DownT.png"
+dest_files=["res://.godot/imported/Botton_DownT.png-bf8193ac9c90aaaf298f33df9d7bb1c1.ctex"]
 
 [params]
 

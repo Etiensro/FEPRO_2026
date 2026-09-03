@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ctqj4hk38auxt"
-path="res://.godot/imported/Boton_RedF.png-947e7c45e36002b063f258822230ba71.ctex"
+path="res://.godot/imported/Boton_RedF.png-16c830b1b8175022dac2c103aadda32b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Boton_RedF.png"
-dest_files=["res://.godot/imported/Boton_RedF.png-947e7c45e36002b063f258822230ba71.ctex"]
+source_file="res://Nivel_Bryan/Assets/Boton_RedF.png"
+dest_files=["res://.godot/imported/Boton_RedF.png-16c830b1b8175022dac2c103aadda32b.ctex"]
 
 [params]
 

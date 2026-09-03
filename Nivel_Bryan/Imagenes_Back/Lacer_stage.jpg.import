@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://coeikxd4he1id"
-path="res://.godot/imported/Lacer_stage.jpg-0894434e7cf3207ede292d1f7382823f.ctex"
+path="res://.godot/imported/Lacer_stage.jpg-dc0233aaa967aea52ae5dbcab62557bc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Imagenes_Back/Lacer_stage.jpg"
-dest_files=["res://.godot/imported/Lacer_stage.jpg-0894434e7cf3207ede292d1f7382823f.ctex"]
+source_file="res://Nivel_Bryan/Imagenes_Back/Lacer_stage.jpg"
+dest_files=["res://.godot/imported/Lacer_stage.jpg-dc0233aaa967aea52ae5dbcab62557bc.ctex"]
 
 [params]
 

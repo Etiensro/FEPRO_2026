@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://rl4j08kuvqby"
-path="res://.godot/imported/Cil_ind.png-b32881c61ee61afa65e4e00f9f499258.ctex"
+path="res://.godot/imported/Cil_ind.png-fde72fdfade93f8aa5124c1dc79254b3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Cil_ind.png"
-dest_files=["res://.godot/imported/Cil_ind.png-b32881c61ee61afa65e4e00f9f499258.ctex"]
+source_file="res://Nivel_Bryan/Assets/Cil_ind.png"
+dest_files=["res://.godot/imported/Cil_ind.png-fde72fdfade93f8aa5124c1dc79254b3.ctex"]
 
 [params]
 

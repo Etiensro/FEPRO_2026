@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b0qv6m2u0lcbk"
-path="res://.godot/imported/Lente_Vacio.png-debf0b7cb50ad2d41a22e0a3df0b70c9.ctex"
+path="res://.godot/imported/Lente_Vacio.png-958c5d0223a7c7e6b4981f33e438cf6b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Lente_Vacio.png"
-dest_files=["res://.godot/imported/Lente_Vacio.png-debf0b7cb50ad2d41a22e0a3df0b70c9.ctex"]
+source_file="res://Nivel_Bryan/Assets/Lente_Vacio.png"
+dest_files=["res://.godot/imported/Lente_Vacio.png-958c5d0223a7c7e6b4981f33e438cf6b.ctex"]
 
 [params]
 

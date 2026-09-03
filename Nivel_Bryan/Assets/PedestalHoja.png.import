@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bnoqsmnr8rxvo"
-path="res://.godot/imported/PedestalHoja.png-202156030c893c21cb54e28a0e5c90e8.ctex"
+path="res://.godot/imported/PedestalHoja.png-e52421214abe1d157d68878488603bce.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/PedestalHoja.png"
-dest_files=["res://.godot/imported/PedestalHoja.png-202156030c893c21cb54e28a0e5c90e8.ctex"]
+source_file="res://Nivel_Bryan/Assets/PedestalHoja.png"
+dest_files=["res://.godot/imported/PedestalHoja.png-e52421214abe1d157d68878488603bce.ctex"]
 
 [params]
 

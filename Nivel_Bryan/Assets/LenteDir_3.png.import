@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bmrtelc1y000r"
-path="res://.godot/imported/LenteDir_3.png-05b63d6dafff04d168904f3bde1f4dc1.ctex"
+path="res://.godot/imported/LenteDir_3.png-a41738b297f83e7cd863ccc87a3408da.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/LenteDir_3.png"
-dest_files=["res://.godot/imported/LenteDir_3.png-05b63d6dafff04d168904f3bde1f4dc1.ctex"]
+source_file="res://Nivel_Bryan/Assets/LenteDir_3.png"
+dest_files=["res://.godot/imported/LenteDir_3.png-a41738b297f83e7cd863ccc87a3408da.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ci2hxw4uwsmuk"
-path="res://.godot/imported/PedestalIncendiada.png-10dadac80cad74b09096d0c70149a285.ctex"
+path="res://.godot/imported/PedestalIncendiada.png-a6e9ee445f490e47ed9368680af53f23.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/PedestalIncendiada.png"
-dest_files=["res://.godot/imported/PedestalIncendiada.png-10dadac80cad74b09096d0c70149a285.ctex"]
+source_file="res://Nivel_Bryan/Assets/PedestalIncendiada.png"
+dest_files=["res://.godot/imported/PedestalIncendiada.png-a6e9ee445f490e47ed9368680af53f23.ctex"]
 
 [params]
 

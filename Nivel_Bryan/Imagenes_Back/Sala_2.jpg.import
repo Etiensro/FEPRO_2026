@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bkmaxoyxw3rue"
-path="res://.godot/imported/Sala_2.jpg-bc9c126808a456aae57de220b9cf36ee.ctex"
+path="res://.godot/imported/Sala_2.jpg-36874b331909ef154baf56244ba29235.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Imagenes_Back/Sala_2.jpg"
-dest_files=["res://.godot/imported/Sala_2.jpg-bc9c126808a456aae57de220b9cf36ee.ctex"]
+source_file="res://Nivel_Bryan/Imagenes_Back/Sala_2.jpg"
+dest_files=["res://.godot/imported/Sala_2.jpg-36874b331909ef154baf56244ba29235.ctex"]
 
 [params]
 

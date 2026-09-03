@@ -27,6 +27,18 @@ func reproducir_acierto() -> void:
 	if video:
 		video.show()
 		video.play()
+		# Conectamos para que salte al siguiente nivel al terminar de abrir la puerta
+		if not video.finished.is_connected(_on_video_puerta_terminado):
+			video.finished.connect(_on_video_puerta_terminado)
+
+func _on_video_puerta_terminado():
+	# Le pedimos al nuevo cerebro (GestorRutaJuego) a dónde ir
+	var siguiente_nivel = GestorRutaJuego.obtener_siguiente_sala("res://Nivel_Melyssa/intro_esferas.tscn")
+	if siguiente_nivel != "":
+		get_tree().change_scene_to_file(siguiente_nivel)
+	else:
+		print("¡Juego terminado! Regresando al menú...")
+		get_tree().change_scene_to_file("res://Menu_lvl/Menu.tscn")
 
 func reproducir_error() -> void:
 	var sonido = get_node_or_null("SonidoError")

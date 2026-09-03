@@ -91,12 +91,19 @@ func procesar_eleccion(eleccion):
 		video_der.visible = true
 		video_der.play()
 		
+	var texto_elegido = ""
+	if eleccion == "izquierda" and letrero_izq: texto_elegido = letrero_izq.text
+	elif eleccion == "frente" and letrero_frente: texto_elegido = letrero_frente.text
+	elif eleccion == "derecha" and letrero_der: texto_elegido = letrero_der.text
+	
 	if eleccion == respuesta_correcta:
 		print("Resultado: ¡CORRECTO!")
 		Global.suma_niveles += 1
+		GestorTelemetria.enviar_reporte_final("jugador_sofia_tuneles", "victoria", 1, [texto_elegido], [])
 	else:
 		print("Resultado: ¡INCORRECTO!")
 		Global.intentos_restantes -= 1
+		GestorTelemetria.enviar_reporte_final("jugador_sofia_tuneles", "derrota", 1, [], [texto_elegido])
 
 func _on_video_terminado():
 	print("El video del túnel ha finalizado.")

@@ -61,6 +61,7 @@ func mostrar_pregunta():
 func evaluar_respuesta(opcion_usuario: bool):
 	var respuesta_correcta = pregunta_actual["respuesta"]
 	var fue_acierto = (opcion_usuario == respuesta_correcta)
+	var texto_opcion = "Verdadero" if opcion_usuario else "Falso"
 	
 	if fue_acierto:
 		print("Resultado: ¡CORRECTO!")
@@ -68,8 +69,10 @@ func evaluar_respuesta(opcion_usuario: bool):
 		
 		# Se transfiere el acierto a la memoria global permanente
 		Global.suma_niveles += 1 
+		GestorTelemetria.enviar_reporte_final("jugador_sofia_carrito", "victoria", 1, [texto_opcion], [])
 	else:
 		print("Resultado: ¡INCORRECTO!")
+		GestorTelemetria.enviar_reporte_final("jugador_sofia_carrito", "derrota", 1, [], [texto_opcion])
 		
 		# Opcional: Si manejan intentos globales, se restaría aquí
 		# Global.intentos_restantes -= 1

@@ -27,26 +27,25 @@ func _ready():
 	cargar_json_tuneles()
 
 func cargar_json_tuneles():
-	var archivo = FileAccess.open("res://Nivel_Sofia/acertijos.json", FileAccess.READ)
-	if archivo:
-		var texto_json = archivo.get_as_text()
-		var datos = JSON.parse_string(texto_json)
+	if pantalla_acertijo: pantalla_acertijo.text = "Cargando datos desde la nube..."
+	# Conectarnos a la señal maestra
+	GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
+	# Pedir la etiqueta de Sofia
+	GestorTelemetria.descargar_preguntas("tuneles_fase")
+
+func _on_preguntas_listas(array_preguntas: Array) -> void:
+	if array_preguntas.size() > 0:
+		# Elegir pregunta aleatoria
+		array_preguntas.shuffle()
+		var puzzle_actual = array_preguntas[0]
 		
-		if datos and datos.has("tuneles_fase"):
-			var lista_puzzles = datos["tuneles_fase"]
-			if lista_puzzles.size() > 0:
-				lista_puzzles.shuffle()
-				var puzzle_actual = lista_puzzles[0]
-				
-				respuesta_correcta = puzzle_actual["correcta"]
-				if pantalla_acertijo: pantalla_acertijo.text = puzzle_actual["pregunta"]
-				if letrero_izq: letrero_izq.text = puzzle_actual["opciones"]["izquierda"]
-				if letrero_frente: letrero_frente.text = puzzle_actual["opciones"]["frente"]
-				if letrero_der: letrero_der.text = puzzle_actual["opciones"]["derecha"]
-		else:
-			if pantalla_acertijo: pantalla_acertijo.text = "Error: Llave 'laser_puzzles' no encontrada."
+		respuesta_correcta = puzzle_actual["correcta"]
+		if pantalla_acertijo: pantalla_acertijo.text = puzzle_actual["pregunta"]
+		if letrero_izq: letrero_izq.text = puzzle_actual["opciones"]["izquierda"]
+		if letrero_frente: letrero_frente.text = puzzle_actual["opciones"]["frente"]
+		if letrero_der: letrero_der.text = puzzle_actual["opciones"]["derecha"]
 	else:
-		if pantalla_acertijo: pantalla_acertijo.text = "Error al abrir acertijos.json"
+		if pantalla_acertijo: pantalla_acertijo.text = "Error al descargar preguntas de internet"
 
 func configurar_estilo_textos():
 	if letrero_izq:

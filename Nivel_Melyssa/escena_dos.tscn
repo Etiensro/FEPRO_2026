@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dmvrs8vqclk62"]
 
-[ext_resource type="Script" uid="uid://csycp10a7ocgp" path="res://Nivel_Melyssa/escena_dos.gd" id="1_4np06"]
+[ext_resource type="Script" uid="uid://mhsrehiy6q3u" path="res://Nivel_Melyssa/escena_dos.gd" id="1_4np06"]
 [ext_resource type="Texture2D" uid="uid://bbml4gpuf0416" path="res://Nivel_Melyssa/AssetsVisuales/Instrucciones.jpg" id="1_i8gqo"]
 [ext_resource type="FontFile" uid="uid://b06mctbut06uf" path="res://Nivel_Melyssa/AssetsVisuales/Array-Bold.otf" id="3_m743b"]
 [ext_resource type="Texture2D" uid="uid://dbxj8l1b3ptdl" path="res://Nivel_Melyssa/AssetsVisuales/Flecha1.png" id="4_axk7y"]
@@ -9,8 +9,8 @@
 script = ExtResource("1_4np06")
 
 [node name="Instrucciones" type="Sprite2D" parent="." unique_id=468055215]
-position = Vector2(661.00006, 320)
-scale = Vector2(0.4527816, 0.44448227)
+position = Vector2(997.875, 557.875)
+scale = Vector2(0.6841518, 0.7685627)
 texture = ExtResource("1_i8gqo")
 
 [node name="ScrollTexto1" type="ScrollContainer" parent="Instrucciones" unique_id=94036698]
@@ -41,7 +41,3 @@ ignore_texture_size = true
 stretch_mode = 4
 
 [connection signal="pressed" from="Instrucciones/BotonRegresar" to="." method="_on_boton_regresar_pressed"]
-
-[node name="CameraFix" type="Camera2D" parent="."]
-position = Vector2(576, 324)
-zoom = Vector2(1.667, 1.667)

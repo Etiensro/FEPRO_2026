@@ -23,8 +23,8 @@ radius = 75.0
 metadata/_edit_vertical_guides_ = [-333.0]
 
 [node name="FondoPrincipal" type="Sprite2D" parent="." unique_id=746479224]
-position = Vector2(576, 348)
-scale = Vector2(0.787088, 0.8201635)
+position = Vector2(1036.3749, 538.99994)
+scale = Vector2(1.4184408, 1.4686648)
 texture = ExtResource("1_5a1eg")
 script = ExtResource("2_wfv2b")
 
@@ -34,10 +34,10 @@ anchor_left = 0.20300001
 anchor_top = 0.536
 anchor_right = 0.20300001
 anchor_bottom = 0.536
-offset_left = -925.739
-offset_top = -411.71304
-offset_right = -765.6553
-offset_bottom = -147.13165
+offset_left = -893.9763
+offset_top = -314.1715
+offset_right = -825.369
+offset_bottom = -209.31435
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="FondoPrincipal/Palanca" unique_id=985736256]
 visible = false
@@ -123,11 +123,13 @@ unique_name_in_owner = true
 layout_mode = 0
 offset_left = 551.39966
 offset_top = 221.90697
-offset_right = 918.576
-offset_bottom = 406.0166
+offset_right = 859.70996
+offset_bottom = 408.3602
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_316aw")
 theme_override_font_sizes/font_size = 40
+autowrap_mode = 2
+autowrap_trim_flags = 64
 
 [node name="BotonCerrarZoom1" type="TextureButton" parent="FondoPrincipal/ZoomEsfera1" unique_id=1183126240]
 layout_mode = 0
@@ -158,6 +160,7 @@ offset_bottom = 451.1296
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_316aw")
 theme_override_font_sizes/font_size = 40
+autowrap_mode = 2
 
 [node name="BotonCerrarZoom2" type="TextureButton" parent="FondoPrincipal/ZoomEsfera2" unique_id=2005487765]
 layout_mode = 0
@@ -183,11 +186,12 @@ unique_name_in_owner = true
 layout_mode = 0
 offset_left = 586.97375
 offset_top = 310.91364
-offset_right = 863.9441
+offset_right = 845.4706
 offset_bottom = 465.76083
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_316aw")
 theme_override_font_sizes/font_size = 40
+autowrap_mode = 2
 
 [node name="BotonCerrarZoom3" type="TextureButton" parent="FondoPrincipal/ZoomEsfera3" unique_id=1839434866]
 layout_mode = 0
@@ -218,20 +222,21 @@ offset_bottom = 484.04993
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_316aw")
 theme_override_font_sizes/font_size = 40
+autowrap_mode = 2
 
 [node name="BotonCerrarZoom4" type="TextureButton" parent="FondoPrincipal/ZoomEsfera4" unique_id=540928370]
 layout_mode = 0
-offset_left = 849.96857
+offset_left = 846.8956
 offset_top = 204.83728
 offset_right = 905.87085
-offset_bottom = 269.45862
+offset_bottom = 271.6437
 texture_normal = ExtResource("4_s117w")
 ignore_texture_size = true
 stretch_mode = 4
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1942947452]
-position = Vector2(501, 581)
-scale = Vector2(0.3754267, 0.40816334)
+position = Vector2(1065.375, 966)
+scale = Vector2(0.4765359, 0.4931971)
 texture = ExtResource("8_hbnni")
 script = ExtResource("9_7erbs")
 escena_lanza = ExtResource("10_38ey4")
@@ -245,6 +250,7 @@ offset_left = 45.0
 offset_top = 80.0
 offset_right = 208.0
 offset_bottom = 135.0
+scale = Vector2(2.5, 2.5)
 
 [node name="TextureRect" type="TextureRect" parent="ContenedorVidas" unique_id=1948691914]
 custom_minimum_size = Vector2(50, 50)
@@ -275,10 +281,11 @@ stream = ExtResource("13_cexnq")
 
 [node name="VideoPuerta" type="VideoStreamPlayer" parent="." unique_id=519089756]
 visible = false
-offset_right = 1280.0
-offset_bottom = 720.0
+offset_right = 2141.1113
+offset_bottom = 1196.6667
 scale = Vector2(0.9, 0.9)
 stream = ExtResource("15_5epf7")
+expand = true
 
 [connection signal="pressed" from="FondoPrincipal/Palanca" to="FondoPrincipal" method="_on_palanca_pressed"]
 [connection signal="pressed" from="FondoPrincipal/EsferaReloj" to="FondoPrincipal" method="_on_esfera_reloj_pressed"]
@@ -289,7 +296,3 @@ stream = ExtResource("15_5epf7")
 [connection signal="pressed" from="FondoPrincipal/ZoomEsfera2/BotonCerrarZoom2" to="FondoPrincipal" method="_on_boton_cerrar_zoom_2_pressed"]
 [connection signal="pressed" from="FondoPrincipal/ZoomEsfera3/BotonCerrarZoom3" to="FondoPrincipal" method="_on_boton_cerrar_zoom_3_pressed"]
 [connection signal="pressed" from="FondoPrincipal/ZoomEsfera4/BotonCerrarZoom4" to="FondoPrincipal" method="_on_boton_cerrar_zoom_4_pressed"]
-
-[node name="CameraFix" type="Camera2D" parent="."]
-position = Vector2(576, 324)
-zoom = Vector2(1.667, 1.667)

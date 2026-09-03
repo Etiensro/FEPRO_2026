@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bktu35bgph3qm"]
 
-[ext_resource type="Script" uid="uid://dof2jpxt2m35a" path="res://Nivel_Melyssa/intro_esferas.gd" id="1_5r7q7"]
+[ext_resource type="Script" uid="uid://bfjlsgl0pwx3p" path="res://Nivel_Melyssa/intro_esferas.gd" id="1_5r7q7"]
 [ext_resource type="VideoStream" uid="uid://b1hq3b0hjuhke" path="res://Nivel_Melyssa/AssetsVisuales/IntroEsferas.ogv" id="2_j7qux"]
 
 [node name="IntroEsferas" type="Control" unique_id=1576652482]
@@ -14,16 +14,16 @@ script = ExtResource("1_5r7q7")
 
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=2070457599]
 layout_mode = 0
-offset_right = 1153.0
-offset_bottom = 644.0
+anchor_right = 1.0046875
+anchor_bottom = 1.0185186
+offset_right = -9.000122
+offset_bottom = -20.0
 stream = ExtResource("2_j7qux")
+expand = true
+metadata/_edit_use_anchors_ = true
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1940404606]
 layout_mode = 0
-offset_right = 1148.0
-offset_bottom = 644.0
+offset_right = 1926.0
+offset_bottom = 1098.0
 color = Color(0, 0, 0, 1)
-
-[node name="CameraFix" type="Camera2D" parent="."]
-position = Vector2(576, 324)
-zoom = Vector2(1.667, 1.667)

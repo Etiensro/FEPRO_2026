@@ -109,7 +109,11 @@ func _on_video_terminado():
 	print("El video del túnel ha finalizado. Saltando a la siguiente sala...")
 	
 	# Llamado al gestor global para avanzar en el tour aleatorio sin repetición
-	var siguiente_destino = GestorRutaJuego.obtener_siguiente_sala()
+	var siguiente_destino = GestorRutaJuego.obtener_siguiente_sala("res://Nivel_Sofia/nivel_carrito.tscn")
 	print("Siguiente destino en la ruleta: ", siguiente_destino)
 	
-	get_tree().change_scene_to_file(siguiente_destino)
+	if siguiente_destino != "":
+		get_tree().change_scene_to_file(siguiente_destino)
+	else:
+		print("¡Juego terminado! Regresando al menú principal...")
+		get_tree().change_scene_to_file("res://Menu_lvl/Menu.tscn")

@@ -9,8 +9,13 @@ const TEX_BTN_ERROR  = preload("res://Nivel_Bryan/Assets/Boton_Rojo_Atlas.tres")
 const TEX_BTN_EXITO  = preload("res://Nivel_Bryan/Assets/Boton_Verde_Atlas.tres")
 
 const ALFABETO = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
-const NUMEROS = ["0","1","2","3","4","5","6","7","8","9"]
-const ALFANUMERICO = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+const CARACTERES_ESPECIALES = ["(", ")", ",", ".", "?", "¿", "+", "-", "x"]
+const NUMEROS = ["0","1","2","3","4","5","6","7","8","9","+","-","x",".",","]
+const ALFANUMERICO = [
+	"0","1","2","3","4","5","6","7","8","9",
+	"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
+	"(", ")", ",", ".", "?", "¿", "+", "-", "x"
+]
 
 @onready var contenedor: HBoxContainer = $ContCilindros
 @onready var label_pregunta: Label = $LabelPregunta
@@ -140,8 +145,10 @@ func generar_cilindros_multiples(objetivo: String, tipo: String) -> void:
 	var conjunto = NUMEROS
 	if tipo == "letras":
 		conjunto = ALFABETO
-	elif tipo == "mixto":
+	elif tipo == "mixto" or tipo == "completo":
 		conjunto = ALFANUMERICO
+	elif tipo == "especiales":
+		conjunto = CARACTERES_ESPECIALES
 
 	for i in range(num_letras):
 		var nuevo_rodillo = ESCENA_RODILLO.instantiate()
@@ -152,7 +159,7 @@ func generar_cilindros_multiples(objetivo: String, tipo: String) -> void:
 		else:
 			nuevo_rodillo.scale = Vector2(1.0, 1.0)
 			
-		var valor_inicial = "0" if tipo == "numeros" else ("A" if tipo == "letras" else "0")
+		var valor_inicial = conjunto[0]
 		if nuevo_rodillo.has_method("configurar"):
 			nuevo_rodillo.configurar(conjunto, valor_inicial)
 		lista_rodillos.append(nuevo_rodillo)
@@ -177,11 +184,21 @@ func _restaurar_estado_resuelto() -> void:
 	var num_letras = letras.size()
 	
 	var tiene_letras = false
+	var tiene_especiales = false
 	for c in letras:
-		if str(c).to_upper() in ALFABETO and not str(c) in NUMEROS:
+		var c_str = str(c).to_upper()
+		if c_str in CARACTERES_ESPECIALES:
+			tiene_especiales = true
+		elif c_str in ALFABETO and not c_str in NUMEROS:
 			tiene_letras = true
-			break
-	var conjunto = ALFABETO if tiene_letras else NUMEROS
+	
+	var conjunto = NUMEROS
+	if tiene_especiales and tiene_letras:
+		conjunto = ALFANUMERICO
+	elif tiene_letras:
+		conjunto = ALFABETO
+	elif tiene_especiales:
+		conjunto = ALFANUMERICO
 
 	contenedor.alignment = BoxContainer.ALIGNMENT_CENTER
 	if num_letras >= 5:
@@ -256,9 +273,14 @@ func _efecto_acierto() -> void:
 	var hora_actual = Time.get_time_string_from_system().replace(":", "-")
 	var nombre_doc = "Juego_Cilindros_" + hora_actual
 	
+	var id_estudiante = "jugador_bryan"
+	if get_tree().root.has_node("GestorTelemetria"):
+		if "alumno_id" in GestorTelemetria and GestorTelemetria.alumno_id != "":
+			id_estudiante = GestorTelemetria.alumno_id
+	
 	_enviar_a_firestore_con_nombre(
 		nombre_doc,
-		"jugador_bryan",
+		id_estudiante,
 		"victoria",
 		intentos_cilindros,
 		detalle_acierto,

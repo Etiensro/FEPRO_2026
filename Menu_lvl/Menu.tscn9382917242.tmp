@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://dr2twt8ygqwt"]
+
+[ext_resource type="Script" uid="uid://bnpy5603rkg2i" path="res://Menu_lvl/menu.gd" id="1_u0665"]
+[ext_resource type="VideoStream" uid="uid://cfc4o1wgikbyb" path="res://Menu_lvl/Assets/Menu.ogv" id="1_yfqra"]
+[ext_resource type="FontFile" uid="uid://b4aucvwhv0wlf" path="res://Nivel_E/Assets/Array-Bold.otf" id="3_u0665"]
+
+[node name="Control" type="Control" unique_id=653370298]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_u0665")
+metadata/_edit_use_anchors_ = true
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=1473710686]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stream = ExtResource("1_yfqra")
+autoplay = true
+expand = true
+loop = true
+
+[node name="Interfaz" type="Control" parent="." unique_id=402978106]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InputUsuario" type="LineEdit" parent="Interfaz" unique_id=380643907]
+layout_mode = 0
+offset_left = 636.0
+offset_top = 496.0
+offset_right = 1153.0
+offset_bottom = 562.0
+theme_override_fonts/font = ExtResource("3_u0665")
+theme_override_font_sizes/font_size = 26
+placeholder_text = "Ingresa tu nombre..."
+alignment = 1
+
+[node name="InputSala" type="LineEdit" parent="Interfaz" unique_id=501267153]
+layout_mode = 0
+offset_left = 781.0
+offset_top = 888.0
+offset_right = 1129.0
+offset_bottom = 949.0
+theme_override_fonts/font = ExtResource("3_u0665")
+theme_override_font_sizes/font_size = 25
+placeholder_text = "PIN/CODIGO DE SALA"
+alignment = 1
+
+[node name="BtnConfirmar" type="Button" parent="Interfaz" unique_id=1782930125]
+layout_mode = 0
+offset_left = 1293.0
+offset_top = 450.0
+offset_right = 1450.0
+offset_bottom = 586.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0)
+flat = true
+
+[node name="BtnProfesor" type="Button" parent="Interfaz" unique_id=509234800]
+layout_mode = 0
+offset_left = 1706.0
+offset_top = 430.0
+offset_right = 1913.0
+offset_bottom = 722.0
+flat = true
+
+[node name="LabelEstado" type="Label" parent="Interfaz" unique_id=1658095913]
+layout_mode = 0
+offset_left = 751.0
+offset_top = 653.0
+offset_right = 1150.0
+offset_bottom = 755.0
+theme_override_fonts/font = ExtResource("3_u0665")
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=2089656048]

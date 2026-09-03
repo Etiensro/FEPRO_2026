@@ -98,10 +98,7 @@ func reproducir_video_transicion():
 		_on_video_transicion_terminado()
 
 func _on_video_transicion_terminado():
-	# Modificado para utilizar el gestor de la ruleta del tour sin repetición
-	var siguiente_destino = GestorRutaJuego.obtener_siguiente_sala()
-	print("Nivel de Sofia completado. Siguiente sala en la ruleta: ", siguiente_destino)
-	get_tree().change_scene_to_file(siguiente_destino)
+	get_tree().change_scene_to_file("res://Nivel_Sofia/sala_tuneles.tscn")
 
 func _on_boton_verdadero_pressed():
 	evaluar_respuesta(true)

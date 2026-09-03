@@ -106,5 +106,10 @@ func procesar_eleccion(eleccion):
 		GestorTelemetria.enviar_reporte_final("jugador_sofia_tuneles", "derrota", 1, [], [texto_elegido])
 
 func _on_video_terminado():
-	print("El video del túnel ha finalizado.")
-	# Aquí irá la transición al siguiente nivel
+	print("El video del túnel ha finalizado. Saltando a la siguiente sala...")
+	
+	# Llamado al gestor global para avanzar en el tour aleatorio sin repetición
+	var siguiente_destino = GestorRutaJuego.obtener_siguiente_sala()
+	print("Siguiente destino en la ruleta: ", siguiente_destino)
+	
+	get_tree().change_scene_to_file(siguiente_destino)

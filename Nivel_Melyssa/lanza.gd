@@ -58,6 +58,16 @@ func _on_area_entered(area: Area2D) -> void:
 					GlobalEsferas.historial_aciertos, 
 					GlobalEsferas.historial_errores
 				)
+				
+				# ---> SECCIÓN AGREGADA: Salto automático al siguiente nivel de la ruleta <---
+				print("¡Nivel completado con éxito! Pasando a la siguiente sala...")
+				var timer = get_tree().create_timer(1.5)
+				timer.timeout.connect(func():
+					var siguiente_destino = GestorRutaJuego.obtener_siguiente_sala()
+					get_tree().change_scene_to_file(siguiente_destino)
+				)
+				# --------------------------------------------------------------------------
+				
 		else:
 			print("¡Respuesta incorrecta!")
 			if fondo: fondo.reproducir_error()

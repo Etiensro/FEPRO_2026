@@ -9,9 +9,11 @@ extends Control
 
 const PROJECT_ID: String = "lore-fepro"
 
-# Rutas de inicio de cada sala
+# Rutas de inicio de cada sala del equipo
 const SALA_BRYAN: String = "res://Nivel_Bryan/intro_video.tscn"
 const SALA_ETIENNE: String = "res://Nivel_E/Hub_Principal.tscn"
+const SALA_MELYSSA: String = "res://Nivel_Melyssa/intro_esferas.tscn"
+const SALA_SOFIA: String = "res://Nivel_Sofia/nivel_carrito.tscn"
 
 func _ready() -> void:
 	label_estado.text = ""
@@ -65,7 +67,7 @@ func _on_sala_verificada(_result: int, response_code: int, _headers: PackedStrin
 		print("--- DEBUG SALA ---")
 		print("Campos encontrados en Firestore: ", campos.keys())
 		
-		# Guardar sesión en el gestor global
+		# Guardar sesión y datos en el gestor global para que los niveles lean sus preguntas
 		var cod_sala = input_sala.text.strip_edges()
 		var nom_usuario = input_usuario.text.strip_edges()
 		
@@ -74,23 +76,28 @@ func _on_sala_verificada(_result: int, response_code: int, _headers: PackedStrin
 				GestorTelemetria.codigo_sala = cod_sala
 			if "alumno_id" in GestorTelemetria:
 				GestorTelemetria.alumno_id = nom_usuario
+			if "datos_sala_actual" in GestorTelemetria:
+				GestorTelemetria.datos_sala_actual = campos
 		
-		# Selección de nivel según los campos devueltos por Firestore
+		# Detección de sala según los campos de Firestore
 		var escena_destino: String = SALA_BRYAN
 		
-		if campos.has("escena_computadora") or campos.has("carrito_fase") or campos.has("tuneles_fase"):
+		if campos.has("escena_computadora"):
 			escena_destino = SALA_ETIENNE
+		elif campos.has("carrito_fase") or campos.has("tuneles_fase"):
+			escena_destino = SALA_SOFIA
+		elif campos.has("melyssa_puzzles") or campos.has("quimica"):
+			escena_destino = SALA_MELYSSA
 		elif campos.has("laser_puzzles") or campos.has("tema_1") or campos.has("tema_2"):
 			escena_destino = SALA_BRYAN
 		else:
-			print("Aviso: Formato desconocido, redirigiendo a intro de Bryan.")
+			print("Aviso: Formato no reconocido, usando sala por defecto.")
 			escena_destino = SALA_BRYAN
 
 		print("Escena elegida: ", escena_destino)
-		print("¿El archivo existe físicamente?: ", ResourceLoader.exists(escena_destino))
-
+		
 		if not ResourceLoader.exists(escena_destino):
-			print("ERROR: La ruta '", escena_destino, "' no existe en el proyecto. Forzando a SALA_BRYAN.")
+			print("ERROR: La ruta '", escena_destino, "' no existe. Usando respaldo.")
 			escena_destino = SALA_BRYAN
 			
 		label_estado.modulate = Color(0.4, 1.0, 0.4)

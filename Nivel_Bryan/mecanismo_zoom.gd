@@ -43,7 +43,6 @@ func _ready() -> void:
 	if GestorEstadoNivelBryan.cilindros_resuelto:
 		_restaurar_estado_resuelto()
 	else:
-		# Pedir a Firestore tema_1 o tema_2 al azar
 		if get_tree().root.has_node("GestorTelemetria"):
 			GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
 			var clave_elegida = "tema_1" if randf() > 0.5 else "tema_2"
@@ -52,7 +51,6 @@ func _ready() -> void:
 		else:
 			_fallback_local()
 
-# Procesa el mapa devuelto por Firestore
 func _on_preguntas_listas(datos_recibidos) -> void:
 	var info_acertijo: Dictionary = {}
 	
@@ -227,7 +225,9 @@ func _on_btn_comprobar_pressed() -> void:
 	if respuesta_jugador == clave_correcta:
 		_efecto_acierto()
 	else:
-		errores_cilindros.append(respuesta_jugador)
+		var pregunta = GestorEstadoNivelBryan.cilindros_pregunta_guardada
+		var detalle_error = "Falló con: '%s' (Pregunta: %s)" % [respuesta_jugador, pregunta]
+		errores_cilindros.append(str(detalle_error))
 		_efecto_error()
 
 func _efecto_acierto() -> void:
@@ -247,21 +247,66 @@ func _efecto_acierto() -> void:
 	if label_pregunta:
 		label_pregunta.text = "¡CORRECTO! MECANISMO DESBLOQUEADO"
 	
-	if get_tree().root.has_node("GestorTelemetria"):
-		GestorTelemetria.enviar_reporte_final(
-			"jugador_bryan",
-			"victoria",
-			intentos_cilindros,
-			[clave_correcta],
-			errores_cilindros
-		)
+	var pregunta = GestorEstadoNivelBryan.cilindros_pregunta_guardada
+	var detalle_acierto: Array = [
+		"Acertó con: '%s' (Pregunta: %s)" % [clave_correcta, pregunta]
+	]
+	
+	# Genera el ID legible con la hora exacta
+	var hora_actual = Time.get_time_string_from_system().replace(":", "-")
+	var nombre_doc = "Juego_Cilindros_" + hora_actual
+	
+	_enviar_a_firestore_con_nombre(
+		nombre_doc,
+		"jugador_bryan",
+		"victoria",
+		intentos_cilindros,
+		detalle_acierto,
+		errores_cilindros
+	)
 	
 	var tween = create_tween()
-	tween.tween_interval(1.2)
+	tween.tween_interval(1.5)
 	tween.chain().tween_callback(func():
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		_redirigir_sala()
 	)
+
+func _enviar_a_firestore_con_nombre(id_documento: String, alumno: String, estado: String, disparos: int, aciertos: Array, errores: Array) -> void:
+	var http_custom = HTTPRequest.new()
+	add_child(http_custom)
+	
+	http_custom.request_completed.connect(func(_result, code, _headers, _body):
+		if code == 200:
+			print("¡Documento de Cilindros creado con éxito! ID: ", id_documento)
+		else:
+			print("Error al guardar reporte de Cilindros: ", code)
+		http_custom.queue_free()
+	)
+	
+	var project_id = "lore-fepro"
+	var url = "https://firestore.googleapis.com/v1/projects/" + project_id + "/databases/(default)/documents/telemetria_resultados/" + id_documento
+	var headers = ["Content-Type: application/json"]
+	
+	var array_errores = []
+	for e in errores:
+		array_errores.append({"stringValue": str(e)})
+		
+	var array_aciertos = []
+	for a in aciertos:
+		array_aciertos.append({"stringValue": str(a)})
+	
+	var cuerpo = {
+		"fields": {
+			"alumno_id": { "stringValue": str(alumno) },
+			"estado_final": { "stringValue": str(estado) },
+			"total_disparos": { "integerValue": str(disparos) },
+			"historial_aciertos": { "arrayValue": { "values": array_aciertos } },
+			"historial_errores": { "arrayValue": { "values": array_errores } }
+		}
+	}
+	
+	http_custom.request(url, headers, HTTPClient.METHOD_PATCH, JSON.stringify(cuerpo))
 
 func _efecto_error() -> void:
 	bloqueado = true

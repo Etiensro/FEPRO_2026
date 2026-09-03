@@ -49,6 +49,15 @@ func _on_area_entered(area: Area2D) -> void:
 				var texto_opcion = GlobalEsferas.opciones_cargadas[id_golpeado]
 				GlobalEsferas.historial_aciertos.append(texto_opcion)
 				print("Registrando acierto en Dashboard: ", texto_opcion)
+				
+				# ¡VICTORIA! Enviamos el reporte
+				GestorTelemetria.enviar_reporte_final(
+					"jugador_melyssa", 
+					"victoria", 
+					GlobalEsferas.total_disparos, 
+					GlobalEsferas.historial_aciertos, 
+					GlobalEsferas.historial_errores
+				)
 		else:
 			print("¡Respuesta incorrecta!")
 			if fondo: fondo.reproducir_error()

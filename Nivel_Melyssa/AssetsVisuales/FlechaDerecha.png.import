@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cp0hwf06fwtjv"
-path="res://.godot/imported/FlechaDerecha.png-103cbf47f8dbce33e9e7dd3df9ff61af.ctex"
+path="res://.godot/imported/FlechaDerecha.png-17219fe13619f97d81d7f31a1020a0fd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://AssetsVisuales/FlechaDerecha.png"
-dest_files=["res://.godot/imported/FlechaDerecha.png-103cbf47f8dbce33e9e7dd3df9ff61af.ctex"]
+source_file="res://Nivel_Melyssa/AssetsVisuales/FlechaDerecha.png"
+dest_files=["res://.godot/imported/FlechaDerecha.png-17219fe13619f97d81d7f31a1020a0fd.ctex"]
 
 [params]
 

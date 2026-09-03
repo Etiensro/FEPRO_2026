@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbml4gpuf0416"
-path="res://.godot/imported/Instrucciones.jpg-d4de0f1a73df4b8b87683b290b92f61a.ctex"
+path="res://.godot/imported/Instrucciones.jpg-5dc08339a0823f8ae85d23c3feac3620.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://AssetsVisuales/Instrucciones.jpg"
-dest_files=["res://.godot/imported/Instrucciones.jpg-d4de0f1a73df4b8b87683b290b92f61a.ctex"]
+source_file="res://Nivel_Melyssa/AssetsVisuales/Instrucciones.jpg"
+dest_files=["res://.godot/imported/Instrucciones.jpg-5dc08339a0823f8ae85d23c3feac3620.ctex"]
 
 [params]
 

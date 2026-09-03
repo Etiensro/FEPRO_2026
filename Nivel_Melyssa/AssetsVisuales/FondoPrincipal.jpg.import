@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://6ym1ajxymk3o"
-path="res://.godot/imported/FondoPrincipal.jpg-70df9d176190640836dbd4d2fb3dd82a.ctex"
+path="res://.godot/imported/FondoPrincipal.jpg-6dc22e110c5157ff1079120dad1d3a11.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://AssetsVisuales/FondoPrincipal.jpg"
-dest_files=["res://.godot/imported/FondoPrincipal.jpg-70df9d176190640836dbd4d2fb3dd82a.ctex"]
+source_file="res://Nivel_Melyssa/AssetsVisuales/FondoPrincipal.jpg"
+dest_files=["res://.godot/imported/FondoPrincipal.jpg-6dc22e110c5157ff1079120dad1d3a11.ctex"]
 
 [params]
 

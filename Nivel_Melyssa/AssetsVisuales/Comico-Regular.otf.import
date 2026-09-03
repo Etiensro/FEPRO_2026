@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://dmq2h0mgosbix"
-path="res://.godot/imported/Comico-Regular.otf-ebaedb73ed51dc44931083722d0f7f1c.fontdata"
+path="res://.godot/imported/Comico-Regular.otf-fdc1d6b1d29b77d2f812ffd722c2d7bf.fontdata"
 
 [deps]
 
-source_file="res://AssetsVisuales/Comico-Regular.otf"
-dest_files=["res://.godot/imported/Comico-Regular.otf-ebaedb73ed51dc44931083722d0f7f1c.fontdata"]
+source_file="res://Nivel_Melyssa/AssetsVisuales/Comico-Regular.otf"
+dest_files=["res://.godot/imported/Comico-Regular.otf-fdc1d6b1d29b77d2f812ffd722c2d7bf.fontdata"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://b06mctbut06uf"
-path="res://.godot/imported/Array-Bold.otf-bebc10f6cb3186268893bbdb1f9139eb.fontdata"
+path="res://.godot/imported/Array-Bold.otf-2008d2e5f86086063828c7e7017f8a31.fontdata"
 
 [deps]
 
-source_file="res://AssetsVisuales/Array-Bold.otf"
-dest_files=["res://.godot/imported/Array-Bold.otf-bebc10f6cb3186268893bbdb1f9139eb.fontdata"]
+source_file="res://Nivel_Melyssa/AssetsVisuales/Array-Bold.otf"
+dest_files=["res://.godot/imported/Array-Bold.otf-2008d2e5f86086063828c7e7017f8a31.fontdata"]
 
 [params]
 

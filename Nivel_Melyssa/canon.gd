@@ -75,5 +75,14 @@ func disparar() -> void:
 			var fondo = get_tree().current_scene.get_node_or_null("FondoPrincipal")
 			if fondo and fondo.has_method("mostrar_mensaje_reinicio"):
 				fondo.mostrar_mensaje_reinicio()
+				
+			# ¡DERROTA! Enviamos el reporte
+			GestorTelemetria.enviar_reporte_final(
+				"jugador_melyssa", 
+				"derrota", 
+				GlobalEsferas.total_disparos, 
+				GlobalEsferas.historial_aciertos, 
+				GlobalEsferas.historial_errores
+			)
 	else:
 		print("Falta asignar la Escena Lanza en el Cañón")

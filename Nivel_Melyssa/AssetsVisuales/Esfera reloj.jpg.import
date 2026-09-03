@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dqi7x1js5kiy4"
-path="res://.godot/imported/Esfera reloj.jpg-5e0a8ac832f1f00b9253ddf276f380d5.ctex"
+path="res://.godot/imported/Esfera reloj.jpg-3494e61054e1cf51592ad3209a8c50bd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://AssetsVisuales/Esfera reloj.jpg"
-dest_files=["res://.godot/imported/Esfera reloj.jpg-5e0a8ac832f1f00b9253ddf276f380d5.ctex"]
+source_file="res://Nivel_Melyssa/AssetsVisuales/Esfera reloj.jpg"
+dest_files=["res://.godot/imported/Esfera reloj.jpg-3494e61054e1cf51592ad3209a8c50bd.ctex"]
 
 [params]
 

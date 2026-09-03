@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b6flhkv5qffdy"
-path="res://.godot/imported/Esferas.jpg-956099aae677463f6c16544143eec2c3.ctex"
+path="res://.godot/imported/Esferas.jpg-ca28310fc1e6cf0e980cad68a50e7733.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://AssetsVisuales/Esferas.jpg"
-dest_files=["res://.godot/imported/Esferas.jpg-956099aae677463f6c16544143eec2c3.ctex"]
+source_file="res://Nivel_Melyssa/AssetsVisuales/Esferas.jpg"
+dest_files=["res://.godot/imported/Esferas.jpg-ca28310fc1e6cf0e980cad68a50e7733.ctex"]
 
 [params]
 

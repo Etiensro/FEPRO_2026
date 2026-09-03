@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dhh15gyt8h6wx"
-path="res://.godot/imported/CañonBuho.png-91f0e062421806f53be9cec34cbc4002.ctex"
+path="res://.godot/imported/CañonBuho.png-d5e76643fd8739ad35d5ba765292850c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://AssetsVisuales/CañonBuho.png"
-dest_files=["res://.godot/imported/CañonBuho.png-91f0e062421806f53be9cec34cbc4002.ctex"]
+source_file="res://Nivel_Melyssa/AssetsVisuales/CañonBuho.png"
+dest_files=["res://.godot/imported/CañonBuho.png-d5e76643fd8739ad35d5ba765292850c.ctex"]
 
 [params]
 

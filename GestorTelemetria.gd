@@ -9,22 +9,33 @@ func _ready():
 	add_child(http_request)
 	http_request.request_completed.connect(_on_request_completed)
 
-# Función para enviar un reporte a la colección telemetria_resultados
-func enviar_reporte_prueba(alumno: String, estado: String):
+# Función para enviar los resultados pedagógicos a Firebase
+func enviar_reporte_final(alumno: String, estado: String, disparos: int, aciertos: Array, errores: Array):
 	var url = "https://firestore.googleapis.com/v1/projects/" + project_id + "/databases/(default)/documents/telemetria_resultados"
 	var headers = ["Content-Type: application/json"]
 	
-	# Estructuramos el JSON tal como Firestore lo pide
+	# Firestore requiere que los arrays se estructuren de esta forma
+	var array_errores = []
+	for e in errores:
+		array_errores.append({"stringValue": e})
+		
+	var array_aciertos = []
+	for a in aciertos:
+		array_aciertos.append({"stringValue": a})
+	
 	var cuerpo = {
 		"fields": {
 			"alumno_id": { "stringValue": alumno },
-			"estado_final": { "stringValue": estado }
+			"estado_final": { "stringValue": estado },
+			"total_disparos": { "integerValue": str(disparos) },
+			"historial_aciertos": { "arrayValue": { "values": array_aciertos } },
+			"historial_errores": { "arrayValue": { "values": array_errores } }
 		}
 	}
 	
 	var json_string = JSON.stringify(cuerpo)
 	
-	print("Enviando datos a Firebase...")
+	print("Enviando resultados de Melyssa a Firebase Dashboard...")
 	http_request.request(url, headers, HTTPClient.METHOD_POST, json_string)
 
 func _on_request_completed(_result, response_code, _headers, body):

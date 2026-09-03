@@ -8,6 +8,9 @@ var intentos_teclado: int = 0
 var errores_jugador: Array = []
 var aciertos_jugador: Array = []
 
+var lista_preguntas: Array = []
+var fallos_consecutivos: int = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$Interfaz/ScrollContainer/TextoPantalla.text = "SISTEMA INICIADO...\nDescargando datos del servidor central..."
@@ -22,10 +25,8 @@ func _ready() -> void:
 
 func _on_preguntas_listas(datos: Array) -> void:
 	if datos.size() > 0:
-		datos.shuffle() # Elegimos una al azar de la lista
-		var puzzle_actual = datos[0] 
-		pregunta_prueba = puzzle_actual["pregunta_texto"]
-		respuesta_prueba = puzzle_actual["respuesta_correcta"].to_lower()
+		lista_preguntas = datos
+		cargar_nueva_pregunta()
 	else:
 		pregunta_prueba = "Error: No se encontró la escena_computadora en la base de datos."
 		respuesta_prueba = "error"
@@ -34,6 +35,20 @@ func _on_preguntas_listas(datos: Array) -> void:
 	# 2. Barra de carga
 	tween.tween_property($Interfaz/BarraCarga, "value", 100, 2.5)
 	tween.tween_callback(mostrar_pregunta)
+
+func cargar_nueva_pregunta():
+	if lista_preguntas.size() > 0:
+		lista_preguntas.shuffle()
+		var puzzle_actual = lista_preguntas[0] 
+		pregunta_prueba = puzzle_actual["pregunta_texto"]
+		respuesta_prueba = puzzle_actual["respuesta_correcta"].to_lower()
+		
+		# Ajustar el input a la nueva palabra
+		if has_node("Interfaz/CapturaTeclado"):
+			var letras_totales = respuesta_prueba.replace(" ", "").length()
+			$Interfaz/CapturaTeclado.max_length = letras_totales
+			$Interfaz/CapturaTeclado.text = ""
+			actualizar_visor("")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -95,6 +110,8 @@ func _on_boton_confirmar_pressed():
 		TransicionGlobal.cambiar_escena("res://Nivel_E/Hub_Principal.tscn")
 	else:
 		errores_jugador.append(texto_jugador)
+		fallos_consecutivos += 1
+		
 		# 1. Bloqueamos el teclado y ocultamos la respuesta del jugador
 		$Interfaz/VisorRespuesta.hide()
 		$Interfaz/BotonConfirmar.hide()
@@ -107,6 +124,10 @@ func _on_boton_confirmar_pressed():
 		
 		# 3. Congelamos la función durante 1.0 segundo
 		await get_tree().create_timer(1.0).timeout
+		
+		if fallos_consecutivos >= 3:
+			fallos_consecutivos = 0
+			cargar_nueva_pregunta()
 		
 		# 4. Restauramos la pregunta y eliminamos el color rojo
 		$Interfaz/ScrollContainer/TextoPantalla.text = pregunta_prueba

@@ -44,15 +44,31 @@ func _ready() -> void:
 		$FiltroOscuridad.show()
 		$CapaUI/FiltroBotonSalir.show()
 
+var lista_preguntas: Array = []
+var fallos_consecutivos_garra: int = 0
+
 func _on_preguntas_listas(datos: Array) -> void:
 	if datos.size() > 0:
-		datos.shuffle()
-		var puzzle_actual = datos[0] 
+		lista_preguntas = datos
+		cargar_nueva_pregunta_garra()
+	else:
+		$PlacaPregunta.text = "ERROR AL DESCARGAR DATOS"
+		bloqueado = true # Evita interacciones con las esferas
+
+func cargar_nueva_pregunta_garra():
+	if lista_preguntas.size() > 0:
+		lista_preguntas.shuffle()
+		var puzzle_actual = lista_preguntas[0] 
 		pregunta_actual = puzzle_actual["pregunta_texto"]
 		respuesta_correcta = puzzle_actual["respuesta_correcta"]
 		
 		var opciones = puzzle_actual["opciones"].duplicate()
 		opciones.shuffle()
+		
+		# Reactivar todas las esferas y restaurar textura
+		for esfera in $RepisaOpciones.get_children():
+			esfera.disabled = false
+			esfera.texture_normal = preload("res://Nivel_E/Assets/Esfera.png")
 		
 		$RepisaOpciones/EsferaA/Label.text = opciones[0]
 		$RepisaOpciones/EsferaB/Label.text = opciones[1]
@@ -60,10 +76,6 @@ func _on_preguntas_listas(datos: Array) -> void:
 		$RepisaOpciones/EsferaD/Label.text = opciones[3]
 		
 		$PlacaPregunta.text = pregunta_actual
-	else:
-		$PlacaPregunta.text = "ERROR AL DESCARGAR DATOS"
-		bloqueado = true # Evita interacciones con las esferas
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -128,10 +140,17 @@ func agarrar_y_evaluar(nodo_esfera: TextureButton):
 		secuencia_victoria(nodo_esfera)
 	else:
 		errores_jugador.append(texto_seleccionado)
+		fallos_consecutivos_garra += 1
 		
 		$PlacaPregunta.text = "SISTEMA HIDRÁULICO INESTABLE. REINTENTE."
 		nodo_esfera.disabled = true
 		animar_temblor_y_romper(nodo_esfera)
+		
+		if fallos_consecutivos_garra >= 2:
+			fallos_consecutivos_garra = 0
+			await get_tree().create_timer(1.5).timeout 
+			cargar_nueva_pregunta_garra()
+			
 		soltar_y_regresar()
 
 func animar_temblor_y_romper(nodo_esfera: TextureButton):

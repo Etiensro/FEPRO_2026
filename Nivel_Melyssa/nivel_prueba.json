@@ -1,0 +1,32 @@
+[
+  {
+	"pregunta": "¿Fórmula del área del triángulo?",
+	"opciones": ["(b*h)/2", "A+B", "pi*r^2", "m=y2-y1"],
+	"indice_correcto": 0
+  },
+  {
+	"pregunta": "¿Fórmula del área del círculo?",
+	"opciones": ["(b*h)/2", "L*L", "pi*r^2", "m=y2-y1"],
+	"indice_correcto": 2
+  },
+  {
+	"pregunta": "¿Fórmula de la pendiente de una recta?",
+	"opciones": ["(b*h)/2", "y = mx+b", "pi*r^2", "m=(y2-y1)/(x2-x1)"],
+	"indice_correcto": 3
+  },
+  {
+	"pregunta": "¿Teorema de Pitágoras?",
+	"opciones": ["c^2 = a^2 + b^2", "F = m*a", "E = mc^2", "V = d/t"],
+	"indice_correcto": 0
+  },
+  {
+	"pregunta": "¿Fórmula del área de un rectángulo?",
+	"opciones": ["pi*r^2", "Base * Altura", "(Base*Altura)/2", "Lado^3"],
+	"indice_correcto": 1
+  },
+  {
+	"pregunta": "¿Suma de los ángulos internos de un triángulo?",
+	"opciones": ["360 grados", "90 grados", "180 grados", "270 grados"],
+	"indice_correcto": 2
+  }
+]

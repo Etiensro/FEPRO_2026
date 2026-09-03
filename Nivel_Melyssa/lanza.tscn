@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://7salxpjufeaf"]
+
+[ext_resource type="Texture2D" uid="uid://cp0hwf06fwtjv" path="res://Nivel_Melyssa/AssetsVisuales/FlechaDerecha.png" id="1_bsffv"]
+[ext_resource type="Script" uid="uid://dcpf8fvb2co0a" path="res://Nivel_Melyssa/lanza.gd" id="1_fnk1r"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fnk1r"]
+size = Vector2(17, 28.248281)
+
+[node name="Lanza" type="Area2D" unique_id=1123904527]
+script = ExtResource("1_fnk1r")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=33933265]
+position = Vector2(2, -26)
+rotation = -1.0873401
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_bsffv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1125817849]
+position = Vector2(1.5, -58.87586)
+shape = SubResource("RectangleShape2D_fnk1r")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

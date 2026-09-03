@@ -1,0 +1,291 @@
+[gd_scene format=3 uid="uid://bhsibd4bt3w5p"]
+
+[ext_resource type="Texture2D" uid="uid://6ym1ajxymk3o" path="res://Nivel_Melyssa/AssetsVisuales/FondoPrincipal.jpg" id="1_5a1eg"]
+[ext_resource type="Script" uid="uid://ce63fgmrgixv0" path="res://Nivel_Melyssa/fondo_principal.gd" id="2_wfv2b"]
+[ext_resource type="Texture2D" uid="uid://dqi7x1js5kiy4" path="res://Nivel_Melyssa/AssetsVisuales/Esfera reloj.jpg" id="3_le402"]
+[ext_resource type="Texture2D" uid="uid://c02bop6rfrwjy" path="res://Nivel_Melyssa/AssetsVisuales/Esfera2.jpg" id="4_5h4iv"]
+[ext_resource type="FontFile" uid="uid://dmq2h0mgosbix" path="res://Nivel_Melyssa/AssetsVisuales/Comico-Regular.otf" id="4_316aw"]
+[ext_resource type="Texture2D" uid="uid://dbxj8l1b3ptdl" path="res://Nivel_Melyssa/AssetsVisuales/Flecha1.png" id="4_s117w"]
+[ext_resource type="Texture2D" uid="uid://bggpghysyp8gf" path="res://Nivel_Melyssa/AssetsVisuales/Esfera3.jpg" id="5_s117w"]
+[ext_resource type="Texture2D" uid="uid://ceba8d8cb0tai" path="res://Nivel_Melyssa/AssetsVisuales/Esfera4.jpg" id="6_ik48r"]
+[ext_resource type="Texture2D" uid="uid://dhh15gyt8h6wx" path="res://Nivel_Melyssa/AssetsVisuales/CañonBuho.png" id="8_hbnni"]
+[ext_resource type="Script" uid="uid://bp8nsmhbgicbo" path="res://Nivel_Melyssa/canon.gd" id="9_7erbs"]
+[ext_resource type="PackedScene" uid="uid://7salxpjufeaf" path="res://Nivel_Melyssa/lanza.tscn" id="10_38ey4"]
+[ext_resource type="Texture2D" uid="uid://cp0hwf06fwtjv" path="res://Nivel_Melyssa/AssetsVisuales/FlechaDerecha.png" id="11_7erbs"]
+[ext_resource type="AudioStream" uid="uid://p11cchi5cd5u" path="res://Nivel_Melyssa/AssetsVisuales/SonidoAcierto.mp3" id="12_hawd6"]
+[ext_resource type="AudioStream" uid="uid://b3k8rjvsh6nsl" path="res://Nivel_Melyssa/AssetsVisuales/SonidoError.mp3" id="13_cexnq"]
+[ext_resource type="VideoStream" uid="uid://dwlgw24b8cvr3" path="res://Nivel_Melyssa/AssetsVisuales/VideoPuerta.ogv" id="15_5epf7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_esferas"]
+radius = 75.0
+
+[node name="Node2D" type="Node2D" unique_id=1258963214]
+metadata/_edit_vertical_guides_ = [-333.0]
+
+[node name="FondoPrincipal" type="Sprite2D" parent="." unique_id=746479224]
+position = Vector2(576, 348)
+scale = Vector2(0.787088, 0.8201635)
+texture = ExtResource("1_5a1eg")
+script = ExtResource("2_wfv2b")
+
+[node name="Palanca" type="TextureButton" parent="FondoPrincipal" unique_id=410344696]
+anchors_preset = -1
+anchor_left = 0.20300001
+anchor_top = 0.536
+anchor_right = 0.20300001
+anchor_bottom = 0.536
+offset_left = -893.9763
+offset_top = -314.1715
+offset_right = -825.369
+offset_bottom = -209.31435
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="FondoPrincipal/Palanca" unique_id=985736256]
+visible = false
+position = Vector2(-26.680626, -29.262444)
+amount = 9
+direction = Vector2(3, -1)
+spread = 90.0
+gravity = Vector2(0, 500)
+initial_velocity_min = 61.39
+initial_velocity_max = 308.91
+scale_amount_min = 4.0
+scale_amount_max = 8.0
+
+[node name="EsferaReloj" type="TextureButton" parent="FondoPrincipal" unique_id=1068816754]
+self_modulate = Color(1, 1, 1, 0)
+offset_left = -383.6928
+offset_top = -46.332214
+offset_right = -231.23209
+offset_bottom = 103.63789
+
+[node name="Area2D" type="Area2D" parent="FondoPrincipal/EsferaReloj" unique_id=511661944 groups=["esferas_respuestas"]]
+position = Vector2(76, 75)
+metadata/id_esfera = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FondoPrincipal/EsferaReloj/Area2D" unique_id=1263100915]
+shape = SubResource("CircleShape2D_esferas")
+
+[node name="EsferaDos" type="TextureButton" parent="FondoPrincipal" unique_id=1485918962]
+self_modulate = Color(1, 1, 1, 0)
+offset_left = -191.8464
+offset_top = -143.87375
+offset_right = -39.38568
+offset_bottom = 6.0963593
+
+[node name="Area2D" type="Area2D" parent="FondoPrincipal/EsferaDos" unique_id=407587389 groups=["esferas_respuestas"]]
+position = Vector2(76, 75)
+metadata/id_esfera = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FondoPrincipal/EsferaDos/Area2D" unique_id=651761426]
+shape = SubResource("CircleShape2D_esferas")
+
+[node name="EsferaTres" type="TextureButton" parent="FondoPrincipal" unique_id=581614410]
+self_modulate = Color(1, 1, 1, 0)
+offset_left = 107.99301
+offset_top = -137.7774
+offset_right = 260.45374
+offset_bottom = 12.192703
+
+[node name="Area2D" type="Area2D" parent="FondoPrincipal/EsferaTres" unique_id=1878818007 groups=["esferas_respuestas"]]
+position = Vector2(76, 75)
+metadata/id_esfera = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FondoPrincipal/EsferaTres/Area2D" unique_id=148948483]
+shape = SubResource("CircleShape2D_esferas")
+
+[node name="EsferaCuatro" type="TextureButton" parent="FondoPrincipal" unique_id=757959786]
+self_modulate = Color(1, 1, 1, 0)
+offset_left = 284.59335
+offset_top = -42.674416
+offset_right = 437.0541
+offset_bottom = 107.29569
+
+[node name="Area2D" type="Area2D" parent="FondoPrincipal/EsferaCuatro" unique_id=1324818796 groups=["esferas_respuestas"]]
+position = Vector2(76, 75)
+metadata/id_esfera = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FondoPrincipal/EsferaCuatro/Area2D" unique_id=2015262090]
+shape = SubResource("CircleShape2D_esferas")
+
+[node name="ZoomEsfera1" type="TextureRect" parent="FondoPrincipal" unique_id=1667138181]
+unique_name_in_owner = true
+visible = false
+offset_left = -726.72943
+offset_top = -374.3156
+offset_right = 729.27057
+offset_bottom = 359.6844
+mouse_filter = 0
+texture = ExtResource("3_le402")
+stretch_mode = 4
+
+[node name="TextoOpcion1" type="Label" parent="FondoPrincipal/ZoomEsfera1" unique_id=889422645]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 551.39966
+offset_top = 221.90697
+offset_right = 918.576
+offset_bottom = 406.0166
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_316aw")
+theme_override_font_sizes/font_size = 40
+
+[node name="BotonCerrarZoom1" type="TextureButton" parent="FondoPrincipal/ZoomEsfera1" unique_id=1183126240]
+layout_mode = 0
+offset_left = 858.86206
+offset_top = 226.78403
+offset_right = 941.44507
+offset_bottom = 329.20267
+texture_normal = ExtResource("4_s117w")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="ZoomEsfera2" type="TextureRect" parent="FondoPrincipal" unique_id=1746947772]
+unique_name_in_owner = true
+visible = false
+offset_left = -722.91797
+offset_top = -368.2193
+offset_right = 733.08203
+offset_bottom = 367.7807
+texture = ExtResource("4_5h4iv")
+
+[node name="TextoOpcion2" type="Label" parent="FondoPrincipal/ZoomEsfera2" unique_id=186896539]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 607.30194
+offset_top = 317.00998
+offset_right = 866.48517
+offset_bottom = 451.1296
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_316aw")
+theme_override_font_sizes/font_size = 40
+
+[node name="BotonCerrarZoom2" type="TextureButton" parent="FondoPrincipal/ZoomEsfera2" unique_id=2005487765]
+layout_mode = 0
+offset_left = 800.4188
+offset_top = 263.36218
+offset_right = 847.42755
+offset_bottom = 340.17615
+texture_normal = ExtResource("4_s117w")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="ZoomEsfera3" type="TextureRect" parent="FondoPrincipal" unique_id=2145310054]
+unique_name_in_owner = true
+visible = false
+offset_left = -727.99994
+offset_top = -364.56146
+offset_right = 728.00006
+offset_bottom = 371.43854
+texture = ExtResource("5_s117w")
+
+[node name="TextoOpcion3" type="Label" parent="FondoPrincipal/ZoomEsfera3" unique_id=1259312873]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 586.97375
+offset_top = 310.91364
+offset_right = 863.9441
+offset_bottom = 465.76083
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_316aw")
+theme_override_font_sizes/font_size = 40
+
+[node name="BotonCerrarZoom3" type="TextureButton" parent="FondoPrincipal/ZoomEsfera3" unique_id=1839434866]
+layout_mode = 0
+offset_left = 844.8865
+offset_top = 286.52823
+offset_right = 879.1901
+offset_bottom = 335.299
+texture_normal = ExtResource("4_s117w")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="ZoomEsfera4" type="TextureRect" parent="FondoPrincipal" unique_id=1173707355]
+unique_name_in_owner = true
+visible = false
+offset_left = -740.705
+offset_top = -373.09637
+offset_right = 715.295
+offset_bottom = 360.90363
+texture = ExtResource("6_ik48r")
+
+[node name="TextoOpcion4" type="Label" parent="FondoPrincipal/ZoomEsfera4" unique_id=834580935]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 534.88306
+offset_top = 269.45853
+offset_right = 940.17444
+offset_bottom = 484.04993
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_316aw")
+theme_override_font_sizes/font_size = 40
+
+[node name="BotonCerrarZoom4" type="TextureButton" parent="FondoPrincipal/ZoomEsfera4" unique_id=540928370]
+layout_mode = 0
+offset_left = 849.96857
+offset_top = 204.83728
+offset_right = 905.87085
+offset_bottom = 269.45862
+texture_normal = ExtResource("4_s117w")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1942947452]
+position = Vector2(501, 581)
+scale = Vector2(0.3754267, 0.40816334)
+texture = ExtResource("8_hbnni")
+script = ExtResource("9_7erbs")
+escena_lanza = ExtResource("10_38ey4")
+
+[node name="PuntoDisparo" type="Marker2D" parent="Sprite2D" unique_id=694252027]
+position = Vector2(-154.49088, -105.34997)
+rotation = -0.785398
+
+[node name="ContenedorVidas" type="HBoxContainer" parent="." unique_id=401326396]
+offset_left = 45.0
+offset_top = 80.0
+offset_right = 208.0
+offset_bottom = 135.0
+
+[node name="TextureRect" type="TextureRect" parent="ContenedorVidas" unique_id=1948691914]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("11_7erbs")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="TextureRect2" type="TextureRect" parent="ContenedorVidas" unique_id=1928764263]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("11_7erbs")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="TextureRect3" type="TextureRect" parent="ContenedorVidas" unique_id=997594753]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("11_7erbs")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="SonidoAcierto" type="AudioStreamPlayer" parent="." unique_id=1189135705]
+stream = ExtResource("12_hawd6")
+
+[node name="SonidoError" type="AudioStreamPlayer" parent="." unique_id=1535181946]
+stream = ExtResource("13_cexnq")
+
+[node name="VideoPuerta" type="VideoStreamPlayer" parent="." unique_id=519089756]
+visible = false
+offset_right = 1280.0
+offset_bottom = 720.0
+scale = Vector2(0.9, 0.9)
+stream = ExtResource("15_5epf7")
+
+[connection signal="pressed" from="FondoPrincipal/Palanca" to="FondoPrincipal" method="_on_palanca_pressed"]
+[connection signal="pressed" from="FondoPrincipal/EsferaReloj" to="FondoPrincipal" method="_on_esfera_reloj_pressed"]
+[connection signal="pressed" from="FondoPrincipal/EsferaDos" to="FondoPrincipal" method="_on_esfera_dos_pressed"]
+[connection signal="pressed" from="FondoPrincipal/EsferaTres" to="FondoPrincipal" method="_on_esfera_tres_pressed"]
+[connection signal="pressed" from="FondoPrincipal/EsferaCuatro" to="FondoPrincipal" method="_on_esfera_cuatro_pressed"]
+[connection signal="pressed" from="FondoPrincipal/ZoomEsfera1/BotonCerrarZoom1" to="FondoPrincipal" method="_on_boton_cerrar_zoom_1_pressed"]
+[connection signal="pressed" from="FondoPrincipal/ZoomEsfera2/BotonCerrarZoom2" to="FondoPrincipal" method="_on_boton_cerrar_zoom_2_pressed"]
+[connection signal="pressed" from="FondoPrincipal/ZoomEsfera3/BotonCerrarZoom3" to="FondoPrincipal" method="_on_boton_cerrar_zoom_3_pressed"]
+[connection signal="pressed" from="FondoPrincipal/ZoomEsfera4/BotonCerrarZoom4" to="FondoPrincipal" method="_on_boton_cerrar_zoom_4_pressed"]

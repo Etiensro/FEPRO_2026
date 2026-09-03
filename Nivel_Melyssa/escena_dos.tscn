@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://dmvrs8vqclk62"]
+
+[ext_resource type="Script" uid="uid://csycp10a7ocgp" path="res://Nivel_Melyssa/escena_dos.gd" id="1_4np06"]
+[ext_resource type="Texture2D" uid="uid://bbml4gpuf0416" path="res://Nivel_Melyssa/AssetsVisuales/Instrucciones.jpg" id="1_i8gqo"]
+[ext_resource type="FontFile" uid="uid://b06mctbut06uf" path="res://Nivel_Melyssa/AssetsVisuales/Array-Bold.otf" id="3_m743b"]
+[ext_resource type="Texture2D" uid="uid://dbxj8l1b3ptdl" path="res://Nivel_Melyssa/AssetsVisuales/Flecha1.png" id="4_axk7y"]
+
+[node name="EscenaPlaca" type="Node2D" unique_id=846990404]
+script = ExtResource("1_4np06")
+
+[node name="Instrucciones" type="Sprite2D" parent="." unique_id=468055215]
+position = Vector2(661.00006, 320)
+scale = Vector2(0.4527816, 0.44448227)
+texture = ExtResource("1_i8gqo")
+
+[node name="ScrollTexto1" type="ScrollContainer" parent="Instrucciones" unique_id=94036698]
+offset_left = -302.57422
+offset_top = -321.72263
+offset_right = 837.0482
+offset_bottom = 96.74173
+
+[node name="Label" type="Label" parent="Instrucciones/ScrollTexto1" unique_id=293553553]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_m743b")
+theme_override_font_sizes/font_size = 70
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="BotonRegresar" type="TextureButton" parent="Instrucciones" unique_id=1972063941]
+offset_left = 779.6253
+offset_top = 87.74254
+offset_right = 927.5994
+offset_bottom = 179.98466
+texture_normal = ExtResource("4_axk7y")
+ignore_texture_size = true
+stretch_mode = 4
+
+[connection signal="pressed" from="Instrucciones/BotonRegresar" to="." method="_on_boton_regresar_pressed"]

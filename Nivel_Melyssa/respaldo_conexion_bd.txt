@@ -1,0 +1,69 @@
+extends Node2D
+
+func _ready():
+	# Generar una pregunta NUEVA solo si se acabaron los intentos o si es la primera vez
+	if GlobalEsferas.intentos_restantes <= 0 or GlobalEsferas.opciones_cargadas.size() == 0:
+		print("Conectando a la Base de Datos (Firestore)...")
+		$Instrucciones/ScrollTexto1/Label.text = "Cargando datos desde Firestore..."
+		
+		var http = HTTPRequest.new()
+		add_child(http)
+		http.request_completed.connect(_on_firestore_completed)
+		
+		# Hacemos la petición a la colección salas_activas
+		var url = "https://firestore.googleapis.com/v1/projects/lore-fepro/databases/(default)/documents/salas_activas"
+		http.request(url)
+	else:
+		# Siempre mostramos la pregunta que está guardada en el Autoload
+		$Instrucciones/ScrollTexto1/Label.text = GlobalEsferas.pregunta_actual
+
+func _on_firestore_completed(_result, response_code, _headers, body):
+	if response_code == 200:
+		var texto_json = body.get_string_from_utf8()
+		var firestore_data = JSON.parse_string(texto_json)
+		
+		if firestore_data.has("documents") and firestore_data["documents"].size() > 0:
+			var array_preguntas = []
+			
+			# Buscamos en TODOS los documentos (por si el primero es de otro compañero)
+			for doc in firestore_data["documents"]:
+				var fields = doc["fields"]
+				var nivel_datos = {}
+				for k in fields.keys():
+					nivel_datos[k] = GestorTelemetria.unwrap_firestore(fields[k])
+				
+				# Si encontramos un documento que tenga tu "escena_garra", lo usamos
+				if nivel_datos.has("escena_garra"):
+					array_preguntas = nivel_datos["escena_garra"]
+					break # Detenemos la búsqueda
+			
+			if array_preguntas.size() > 0:
+				# Elegir pregunta aleatoria
+				var indice_azar = randi() % array_preguntas.size()
+				var pregunta_elegida = array_preguntas[indice_azar]
+				
+				# Encontrar cuál es el índice correcto
+				var correcta = pregunta_elegida["respuesta_correcta"]
+				var opciones_db = pregunta_elegida["opciones"]
+				var idx_correcto = opciones_db.find(correcta)
+				
+				# Guardamos los datos en el Autoload
+				GlobalEsferas.pregunta_actual = pregunta_elegida["pregunta_texto"]
+				GlobalEsferas.opciones_cargadas = opciones_db
+				GlobalEsferas.indice_correcto = idx_correcto
+				
+				# Reiniciar el puzzle
+				GlobalEsferas.esferas_vistas = [false, false, false, false]
+				GlobalEsferas.intentos_restantes = 3
+				
+				print("--- [ÉXITO] PREGUNTA CARGADA DESDE FIREBASE: ", GlobalEsferas.pregunta_actual)
+				$Instrucciones/ScrollTexto1/Label.text = GlobalEsferas.pregunta_actual
+			else:
+				$Instrucciones/ScrollTexto1/Label.text = "Error: El documento en BD no tiene 'escena_garra'"
+	else:
+		print("--- [ERROR] NO SE PUDO CONECTAR A FIREBASE. CÓDIGO: ", response_code)
+		$Instrucciones/ScrollTexto1/Label.text = "Error de conexión a la Base de Datos."
+			
+func _on_boton_regresar_pressed() -> void:
+	GlobalEsferas.pregunta_vista = true
+	get_tree().change_scene_to_file("res://Nivel_Melyssa/escena_uno.tscn")

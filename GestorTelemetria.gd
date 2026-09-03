@@ -27,9 +27,29 @@ func enviar_reporte_prueba(alumno: String, estado: String):
 	print("Enviando datos a Firebase...")
 	http_request.request(url, headers, HTTPClient.METHOD_POST, json_string)
 
-func _on_request_completed(result, response_code, headers, body):
+func _on_request_completed(_result, response_code, _headers, body):
 	if response_code == 200:
 		print("¡Éxito! El documento se creó en Firestore. Revisa tu navegador.")
 	else:
 		print("Error en la conexión. Código: ", response_code)
 		print("Detalle: ", body.get_string_from_utf8())
+
+# Desempaquetador mágico para entender la estructura loca de Firestore
+func unwrap_firestore(val: Dictionary):
+	if val.has("stringValue"): return val["stringValue"]
+	if val.has("integerValue"): return int(val["integerValue"])
+	if val.has("doubleValue"): return float(val["doubleValue"])
+	if val.has("booleanValue"): return val["booleanValue"]
+	if val.has("arrayValue"):
+		var arr = []
+		if val["arrayValue"].has("values"):
+			for v in val["arrayValue"]["values"]:
+				arr.append(unwrap_firestore(v))
+		return arr
+	if val.has("mapValue"):
+		var map = {}
+		if val["mapValue"].has("fields"):
+			for k in val["mapValue"]["fields"].keys():
+				map[k] = unwrap_firestore(val["mapValue"]["fields"][k])
+		return map
+	return null

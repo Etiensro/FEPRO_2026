@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://bktu35bgph3qm"]
+
+[ext_resource type="Script" uid="uid://dof2jpxt2m35a" path="res://Nivel_Melyssa/intro_esferas.gd" id="1_5r7q7"]
+[ext_resource type="VideoStream" uid="uid://b1hq3b0hjuhke" path="res://Nivel_Melyssa/AssetsVisuales/IntroEsferas.ogv" id="2_j7qux"]
+
+[node name="IntroEsferas" type="Control" unique_id=1576652482]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5r7q7")
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=2070457599]
+layout_mode = 0
+offset_right = 1153.0
+offset_bottom = 644.0
+stream = ExtResource("2_j7qux")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1940404606]
+layout_mode = 0
+offset_right = 1148.0
+offset_bottom = 644.0
+color = Color(0, 0, 0, 1)

@@ -1,0 +1,110 @@
+{
+  "laser_puzzles": [
+	{
+	  "materia": "FÍSICA",
+	  "pregunta": "¿QUÉ COMPONENTE ÓPTICO SE UTILIZA PARA DESVIAR O REFRACTAR EL HAZ DE LUZ?",
+	  "opciones": [
+		{ "texto": "LENTE CONVERGENTE", "correcta": true },
+		{ "texto": "ESPEJO CÓNCAVO", "correcta": false },
+		{ "texto": "FILTRO POLARIZADO", "correcta": false }
+	  ]
+	},
+	{
+	  "materia": "BIOLOGÍA",
+	  "pregunta": "¿QUÉ ORGANELO CELULAR ES EL ENCARGADO DE LA PRODUCCIÓN DE ENERGÍA (ATP)?",
+	  "opciones": [
+		{ "texto": "MITOCONDRIA", "correcta": true },
+		{ "texto": "RIBOSOMA", "correcta": false },
+		{ "texto": "APARATO DE GOLGI", "correcta": false }
+	  ]
+	},
+	{
+	  "materia": "QUÍMICA",
+	  "pregunta": "¿QUÉ TIPO DE ENLACE SE FORMA POR LA TRANSFERENCIA COMPLETA DE ELECTRONES?",
+	  "opciones": [
+		{ "texto": "IÓNICO", "correcta": true },
+		{ "texto": "COVALENTE", "correcta": false },
+		{ "texto": "METÁLICO", "correcta": false }
+	  ]
+	},
+	{
+	  "materia": "HISTORIA",
+	  "pregunta": "¿EN QUÉ PAÍS SE ORIGINÓ LA REVOLUCIÓN INDUSTRIAL A MEDIADOS DEL SIGLO XVIII?",
+	  "opciones": [
+		{ "texto": "GRAN BRETAÑA", "correcta": true },
+		{ "texto": "FRANCIA", "correcta": false },
+		{ "texto": "ALEMANIA", "correcta": false }
+	  ]
+	},
+	{
+	  "materia": "GEOGRAFÍA",
+	  "pregunta": "¿CUÁL ES LA CAPA DE LA ATMÓSFERA MÁS CERCANA A LA SUPERFICIE TERRESTRE?",
+	  "opciones": [
+		{ "texto": "TROPOSFERA", "correcta": true },
+		{ "texto": "ESTRATOSFERA", "correcta": false },
+		{ "texto": "MESOSFERA", "correcta": false }
+	  ]
+	}
+  ],
+
+  "historia_1": {
+	"materia": "HISTORIA",
+	"pregunta": "¿EN QUÉ AÑO OCURRIÓ LA CAÍDA DE TENOCHTITLAN?",
+	"tipo": "numeros",
+	"objetivo": "1521"
+  },
+  "historia_2": {
+	"materia": "HISTORIA",
+	"pregunta": "¿SIGLO EN QUE INICIÓ LA REVOLUCIÓN MEXICANA? (EN NÚMEROS ROMANOS)",
+	"tipo": "letras",
+	"objetivo": "XX"
+  },
+  "espanol_1": {
+	"materia": "ESPAÑOL",
+	"pregunta": "SUFIJO GRIEGO QUE SIGNIFICA 'ESTUDIO O CIENCIA':",
+	"tipo": "letras",
+	"objetivo": "LOGIA"
+  },
+  "espanol_2": {
+	"materia": "ESPAÑOL",
+	"pregunta": "¿CUÁL ES EL VERBO 'SER' EN 3ª PERSONA DEL SINGULAR EN PRESENTE?",
+	"tipo": "letras",
+	"objetivo": "ES"
+  },
+  "matematicas_1": {
+	"materia": "MATEMÁTICAS",
+	"pregunta": "¿CUÁL ES LA RAÍZ CUADRADA DE 144?",
+	"tipo": "numeros",
+	"objetivo": "12"
+  },
+  "matematicas_2": {
+	"materia": "MATEMÁTICAS",
+	"pregunta": "¿CUÁNTOS GRADOS SUMAN LOS ÁNGULOS INTERNOS DE UN TRIÁNGULO?",
+	"tipo": "numeros",
+	"objetivo": "180"
+  },
+  "quimica_1": {
+	"materia": "QUÍMICA",
+	"pregunta": "FÓRMULA QUÍMICA DEL GAS METANO (CARBONO E HIDRÓGENO):",
+	"tipo": "mixto",
+	"objetivo": "CH4"
+  },
+  "quimica_2": {
+	"materia": "QUÍMICA",
+	"pregunta": "SÍMBOLO QUÍMICO DEL ORO EN LA TABLA PERIÓDICA:",
+	"tipo": "letras",
+	"objetivo": "AU"
+  },
+  "ciencias_1": {
+	"materia": "BIOLOGÍA",
+	"pregunta": "¿CUÁNTOS CROMOSOMAS TIENE UNA CÉLULA HUMANA SOMÁTICA?",
+	"tipo": "numeros",
+	"objetivo": "46"
+  },
+  "ciencias_2": {
+	"materia": "BIOLOGÍA",
+	"pregunta": "SIGLAS DEL ÁCIDO DESOXIRRIBONUCLEICO:",
+	"tipo": "letras",
+	"objetivo": "ADN"
+  }
+}

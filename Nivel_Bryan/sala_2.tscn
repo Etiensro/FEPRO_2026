@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://i2bttm8ojsq8"]
+
+[ext_resource type="Script" uid="uid://5mhc5skq3y40" path="res://sala_2.gd" id="1_jin2n"]
+[ext_resource type="Texture2D" uid="uid://bkmaxoyxw3rue" path="res://Imagenes_Back/Sala_2.jpg" id="1_mykcf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l8awi"]
+size = Vector2(377.7779, 537.245)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mykcf"]
+size = Vector2(519.125, 251)
+
+[node name="sala_2" type="Node2D" unique_id=472637842]
+script = ExtResource("1_jin2n")
+
+[node name="Sala2" type="Sprite2D" parent="." unique_id=108537139]
+position = Vector2(960.00006, 540.00006)
+scale = Vector2(0.68181825, 0.70312506)
+texture = ExtResource("1_mykcf")
+
+[node name="AreaLaser" type="Area2D" parent="." unique_id=2014951123]
+position = Vector2(576, 324.5)
+scale = Vector2(0.40909088, 0.42252606)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AreaLaser" unique_id=82629254]
+position = Vector2(1326.6669, 357.37433)
+scale = Vector2(1, 0.9999998)
+shape = SubResource("RectangleShape2D_l8awi")
+
+[node name="ParticulasLazerComp" type="CPUParticles2D" parent="AreaLaser" unique_id=894928041]
+position = Vector2(1324.8889, 332.52386)
+scale = Vector2(1, 1.0000001)
+amount = 20
+emission_shape = 3
+emission_rect_extents = Vector2(180, 300)
+gravity = Vector2(0, -1)
+scale_amount_min = 2.5
+scale_amount_max = 3.0
+color = Color(0.77303344, 0.7689313, 1.1551381e-06, 1)
+
+[node name="AreaRodillos" type="Area2D" parent="." unique_id=1191205727]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AreaRodillos" unique_id=1278325063]
+position = Vector2(629.4375, 576)
+shape = SubResource("RectangleShape2D_mykcf")

@@ -1,0 +1,236 @@
+[gd_scene format=3 uid="uid://beb7xjxrkhhvt"]
+
+[ext_resource type="Script" uid="uid://dum5fdpxtrpt1" path="res://laser_mecanismo.gd" id="1_octvo"]
+[ext_resource type="Texture2D" uid="uid://coeikxd4he1id" path="res://Imagenes_Back/Lacer_stage.jpg" id="1_op5bh"]
+[ext_resource type="Texture2D" uid="uid://dnhoc0go62f1q" path="res://Assets/Flecha.png" id="3_wur17"]
+[ext_resource type="Texture2D" uid="uid://kde7nde6jjih" path="res://Assets/LenteDir_1.png" id="4_jmoiq"]
+[ext_resource type="Script" uid="uid://k3qo1pvtk4ia" path="res://pieza_lente.gd" id="4_whbgb"]
+[ext_resource type="Texture2D" uid="uid://cscarspukgtca" path="res://Assets/LenteDir_2.png" id="6_lcs33"]
+[ext_resource type="Texture2D" uid="uid://bmrtelc1y000r" path="res://Assets/LenteDir_3.png" id="7_n17i7"]
+[ext_resource type="Texture2D" uid="uid://bnoqsmnr8rxvo" path="res://Assets/PedestalHoja.png" id="8_5m7jw"]
+[ext_resource type="Texture2D" uid="uid://bnyuxtlu3okhx" path="res://Assets/Inciso_A.png" id="9_1133u"]
+[ext_resource type="FontFile" uid="uid://r0bngy3y4k6i" path="res://Assets/Comico-Regular.otf" id="9_p06mw"]
+[ext_resource type="Texture2D" uid="uid://b0v4ruhheegbt" path="res://Assets/Inciso_B.png" id="10_5bolv"]
+[ext_resource type="Texture2D" uid="uid://bcqupby060oa" path="res://Assets/Inciso_C.png" id="11_sfst6"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jedrl"]
+radius = 77.05842
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5bolv"]
+atlas = ExtResource("3_wur17")
+region = Rect2(383.59125, 325.31137, 197.31793, 295.49606)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jmoiq"]
+radius = 66.59033
+height = 266.7705
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l8awi"]
+atlas = ExtResource("4_jmoiq")
+region = Rect2(50.5, 33.5, 235, 238)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_05ol8"]
+radius = 74.00676
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lcs33"]
+atlas = ExtResource("6_lcs33")
+region = Rect2(112.5, 72.5, 138, 139)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n17i7"]
+atlas = ExtResource("7_n17i7")
+region = Rect2(79.5, 54.5, 210, 212)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_s3pbl"]
+radius = 29.12044
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jedrl"]
+atlas = ExtResource("8_5m7jw")
+region = Rect2(385.2591, 344.26138, 313.8429, 433.67386)
+
+[node name="LaserMecanismo" type="Node2D" unique_id=283768170]
+script = ExtResource("1_octvo")
+
+[node name="Fondo" type="Sprite2D" parent="." unique_id=1807475933]
+position = Vector2(958.87506, 539.49994)
+scale = Vector2(0.6826171, 0.703776)
+texture = ExtResource("1_op5bh")
+
+[node name="SlotCentral" type="Area2D" parent="." unique_id=1559628795]
+position = Vector2(1127, 440)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SlotCentral" unique_id=1340400605]
+shape = SubResource("CircleShape2D_jedrl")
+
+[node name="ParticulasSlot" type="CPUParticles2D" parent="." unique_id=1926439455]
+position = Vector2(1127, 440)
+scale = Vector2(1, 1.0000001)
+amount = 10
+emission_shape = 1
+emission_sphere_radius = 87.81
+gravity = Vector2(0, -1)
+scale_amount_min = 2.5
+scale_amount_max = 3.0
+color = Color(0.77303344, 0.7689313, 1.1551381e-06, 1)
+
+[node name="Flecha" type="Sprite2D" parent="." unique_id=1865489194]
+position = Vector2(969, 51.999817)
+scale = Vector2(0.34539542, 0.2923861)
+texture = SubResource("AtlasTexture_5bolv")
+
+[node name="Area2D" type="Area2D" parent="Flecha" unique_id=1342113727]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Flecha/Area2D" unique_id=1548123502]
+shape = SubResource("CapsuleShape2D_jmoiq")
+
+[node name="Contenedor_piezas" type="Node2D" parent="." unique_id=1432602673]
+
+[node name="Lente1" type="Area2D" parent="Contenedor_piezas" unique_id=1444208459]
+position = Vector2(959, 871)
+script = ExtResource("4_whbgb")
+
+[node name="Sprite2D" type="Sprite2D" parent="Contenedor_piezas/Lente1" unique_id=1487472163]
+scale = Vector2(0.63829815, 0.6722692)
+texture = SubResource("AtlasTexture_l8awi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Contenedor_piezas/Lente1" unique_id=117129604]
+position = Vector2(2, -2)
+shape = SubResource("CircleShape2D_05ol8")
+disabled = true
+
+[node name="Lente2" type="Area2D" parent="Contenedor_piezas" unique_id=649782949]
+position = Vector2(1147, 875)
+script = ExtResource("4_whbgb")
+
+[node name="Sprite2D" type="Sprite2D" parent="Contenedor_piezas/Lente2" unique_id=1959334203]
+scale = Vector2(1.1594198, 1.215827)
+texture = SubResource("AtlasTexture_lcs33")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Contenedor_piezas/Lente2" unique_id=2127570384]
+shape = SubResource("CircleShape2D_05ol8")
+disabled = true
+
+[node name="Lente3" type="Area2D" parent="Contenedor_piezas" unique_id=1548107089]
+position = Vector2(1341, 879)
+script = ExtResource("4_whbgb")
+
+[node name="Sprite2D" type="Sprite2D" parent="Contenedor_piezas/Lente3" unique_id=757280645]
+scale = Vector2(0.73333335, 0.7405659)
+texture = SubResource("AtlasTexture_n17i7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Contenedor_piezas/Lente3" unique_id=1398576285]
+shape = SubResource("CircleShape2D_05ol8")
+disabled = true
+
+[node name="ParticulasCont" type="CPUParticles2D" parent="Contenedor_piezas" unique_id=2067780854]
+position = Vector2(1148, 868)
+scale = Vector2(1, 1.0000001)
+amount = 15
+emission_shape = 3
+emission_rect_extents = Vector2(300, 130)
+gravity = Vector2(0, -1)
+scale_amount_min = 2.5
+scale_amount_max = 3.0
+color = Color(0.77303344, 0.7689313, 1.1551381e-06, 1)
+
+[node name="LaserInt" type="Line2D" parent="." unique_id=119041228]
+z_index = 5
+width = 6.0
+default_color = Color(0.93333334, 0.14901961, 0.16862746, 0.7411765)
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="LaserOut" type="Line2D" parent="." unique_id=1004790636]
+z_index = 5
+width = 6.0
+default_color = Color(0.93333334, 0.14901961, 0.16862746, 0.7411765)
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="BotonDisparar" type="Area2D" parent="." unique_id=398460631]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BotonDisparar" unique_id=1420832139]
+position = Vector2(1652, 614)
+shape = SubResource("CircleShape2D_s3pbl")
+
+[node name="ParticulasBoton" type="CPUParticles2D" parent="BotonDisparar" unique_id=569388728]
+position = Vector2(1651, 613)
+scale = Vector2(1, 1.0000001)
+emission_shape = 1
+emission_sphere_radius = 35.45
+gravity = Vector2(0, -1)
+scale_amount_min = 2.5
+scale_amount_max = 3.0
+color = Color(0.101960786, 0.67058825, 0.30980393, 1)
+
+[node name="PuntoLasers" type="Node2D" parent="." unique_id=2126795887]
+
+[node name="Emisor" type="Marker2D" parent="PuntoLasers" unique_id=421215409]
+position = Vector2(837, 441)
+
+[node name="ParedIzquierda" type="Marker2D" parent="PuntoLasers" unique_id=1059286702]
+position = Vector2(953, 614)
+
+[node name="ParedAbajo" type="Marker2D" parent="PuntoLasers" unique_id=2033891066]
+position = Vector2(1137, 618)
+
+[node name="ParedDerecha" type="Marker2D" parent="PuntoLasers" unique_id=25504925]
+position = Vector2(1291, 618)
+
+[node name="Hojas" type="Node2D" parent="." unique_id=1533271675]
+
+[node name="Hoja1" type="Sprite2D" parent="Hojas" unique_id=353330499]
+position = Vector2(953.8907, 639.6329)
+scale = Vector2(0.26267976, 0.24310768)
+texture = SubResource("AtlasTexture_jedrl")
+
+[node name="TextoInciso" type="Sprite2D" parent="Hojas/Hoja1" unique_id=371384144]
+position = Vector2(-0.40797615, 56.275597)
+scale = Vector2(0.58324367, 0.6288821)
+texture = ExtResource("9_1133u")
+
+[node name="Hoja2" type="Sprite2D" parent="Hojas" unique_id=1338785844]
+position = Vector2(1127.5, 639.5312)
+scale = Vector2(0.26517567, 0.23801966)
+texture = SubResource("AtlasTexture_jedrl")
+
+[node name="TextoInciso" type="Sprite2D" parent="Hojas/Hoja2" unique_id=133512156]
+position = Vector2(-0.00013637543, 57.77075)
+scale = Vector2(0.68128633, 0.68156)
+texture = ExtResource("10_5bolv")
+
+[node name="Hoja3" type="Sprite2D" parent="Hojas" unique_id=85829871]
+position = Vector2(1290.3595, 639.88275)
+scale = Vector2(0.257887, 0.23964345)
+texture = SubResource("AtlasTexture_jedrl")
+
+[node name="TextoInciso" type="Sprite2D" parent="Hojas/Hoja3" unique_id=1432044203]
+position = Vector2(1.0307045, 54.327118)
+scale = Vector2(0.6703218, 0.64626706)
+texture = ExtResource("11_sfst6")
+
+[node name="Pregunta" type="Label" parent="." unique_id=594530964]
+custom_minimum_size = Vector2(130, 150)
+offset_left = 1499.0
+offset_top = 177.0
+offset_right = 1701.0
+offset_bottom = 461.0
+theme_override_colors/font_color = Color(0.008202022, 0.008202025, 0.008202025, 1)
+theme_override_colors/font_shadow_color = Color(0.20392157, 0.20392157, 0.20392157, 0.6745098)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("9_p06mw")
+theme_override_font_sizes/font_size = 15
+text = "PRUEBA"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Label" type="Label" parent="." unique_id=855452188]
+offset_left = 1510.0
+offset_top = 488.0
+offset_right = 1688.0
+offset_bottom = 561.0
+theme_override_colors/font_color = Color(0.0035191667, 0.0035191681, 0.0035191672, 1)
+theme_override_fonts/font = ExtResource("9_p06mw")
+theme_override_font_sizes/font_size = 15
+text = "Boton verde + Lente direccional = Fuego!!!!"
+autowrap_mode = 2
+metadata/_edit_use_anchors_ = true

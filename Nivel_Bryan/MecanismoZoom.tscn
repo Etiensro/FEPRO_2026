@@ -1,0 +1,104 @@
+[gd_scene format=3 uid="uid://dd7m2xixph5na"]
+
+[ext_resource type="Script" uid="uid://br3blpvnr8yjb" path="res://mecanismo_zoom.gd" id="1_n0mx6"]
+[ext_resource type="Texture2D" uid="uid://cpmxqodyko3n4" path="res://Imagenes_Back/Cil_Stage.jpg" id="1_pmwxe"]
+[ext_resource type="Texture2D" uid="uid://dnhoc0go62f1q" path="res://Assets/Flecha.png" id="2_ut3kv"]
+[ext_resource type="FontFile" uid="uid://b2ll57p6wj5wg" path="res://Assets/Array-Bold.otf" id="4_rbrts"]
+[ext_resource type="Texture2D" uid="uid://eglwdsiro1fq" path="res://Assets/Boton_Up.png" id="5_kpokx"]
+[ext_resource type="Texture2D" uid="uid://6qgpkcx1vv5m" path="res://Assets/Boton_Down.png" id="6_256xh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pikch"]
+atlas = ExtResource("2_ut3kv")
+region = Rect2(377.90375, 313.3428, 207.49951, 318.51474)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_s3pbl"]
+radius = 57.90454
+height = 266.7705
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rbrts"]
+atlas = ExtResource("5_kpokx")
+region = Rect2(240.02917, 300.12494, 516.155, 518.7487)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kpokx"]
+atlas = ExtResource("6_256xh")
+region = Rect2(267.6563, 268.95355, 500.59247, 518.7487)
+
+[node name="MecanismoZoom" type="Node2D" unique_id=1419107501]
+script = ExtResource("1_n0mx6")
+
+[node name="CilStage" type="Sprite2D" parent="." unique_id=73442446]
+position = Vector2(2, 0)
+scale = Vector2(0.6940029, 0.70312494)
+texture = ExtResource("1_pmwxe")
+centered = false
+metadata/_edit_group_ = true
+
+[node name="Flecha" type="Sprite2D" parent="." unique_id=864135688]
+position = Vector2(1031.0001, 995)
+rotation = -3.1415925
+scale = Vector2(0.34539542, 0.2923861)
+texture = SubResource("AtlasTexture_pikch")
+
+[node name="Area2D" type="Area2D" parent="Flecha" unique_id=2140824017]
+position = Vector2(8.685873, -6.840272)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Flecha/Area2D" unique_id=277524056]
+position = Vector2(-2.8953362, 10.260338)
+shape = SubResource("CapsuleShape2D_s3pbl")
+
+[node name="ContCilindros" type="HBoxContainer" parent="." unique_id=829840594]
+offset_left = 417.0
+offset_top = 435.0
+offset_right = 1652.0
+offset_bottom = 854.0
+theme_override_constants/separation = -289
+alignment = 1
+
+[node name="LabelPregunta" type="Label" parent="." unique_id=1268771019]
+custom_minimum_size = Vector2(305, 60)
+offset_left = 614.0
+offset_top = 93.0
+offset_right = 1383.0
+offset_bottom = 340.0
+theme_override_colors/font_color = Color(0.83137256, 0.6392157, 0.34901962, 1)
+theme_override_colors/font_shadow_color = Color(0.39215687, 0.22352941, 0.09019608, 0.6431373)
+theme_override_colors/font_outline_color = Color(0.26263314, 0.1860097, 0.0654337, 1)
+theme_override_fonts/font = ExtResource("4_rbrts")
+theme_override_font_sizes/font_size = 39
+text = "Prueba"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="TextParticula" type="CPUParticles2D" parent="." unique_id=1446610584]
+position = Vector2(1646, 214)
+scale = Vector2(1, 1.0000002)
+amount = 20
+emission_shape = 3
+emission_rect_extents = Vector2(200, 110)
+gravity = Vector2(0, -1)
+scale_amount_min = 2.5
+scale_amount_max = 3.0
+color = Color(0.77303344, 0.7689313, 1.1551381e-06, 1)
+
+[node name="BtnComprobador" type="TextureButton" parent="." unique_id=1773414690]
+custom_minimum_size = Vector2(124, 130)
+offset_left = 377.0
+offset_top = 125.0
+offset_right = 574.0
+offset_bottom = 330.0
+texture_normal = SubResource("AtlasTexture_rbrts")
+texture_pressed = SubResource("AtlasTexture_kpokx")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ButtonParticula" type="CPUParticles2D" parent="." unique_id=1055613234]
+position = Vector2(475, 222)
+scale = Vector2(1, 1.0000001)
+amount = 20
+emission_shape = 1
+emission_sphere_radius = 87.81
+gravity = Vector2(0, -1)
+scale_amount_min = 2.5
+scale_amount_max = 3.0
+color = Color(0.77303344, 0.7689313, 1.1551381e-06, 1)

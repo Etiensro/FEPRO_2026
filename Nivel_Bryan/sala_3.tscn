@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://esxge852drh8"]
+
+[ext_resource type="Script" uid="uid://puk236br63t3" path="res://sala_3.gd" id="1_g2fdt"]
+[ext_resource type="Texture2D" uid="uid://bvytvginde8p3" path="res://Imagenes_Back/Sala_3.jpg" id="2_1lu8b"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tpvvh"]
+size = Vector2(368.00006, 579.84595)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_quka8"]
+size = Vector2(531.25, 276)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l8awi"]
+size = Vector2(326, 535.5)
+
+[sub_resource type="GDScript" id="GDScript_vpl6c"]
+script/source = "extends CollisionShape2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[node name="sala_3" type="Node2D" unique_id=1820506674]
+script = ExtResource("1_g2fdt")
+
+[node name="Sala3" type="Sprite2D" parent="." unique_id=679575170]
+position = Vector2(960.5, 539.5)
+scale = Vector2(0.68217325, 0.70638025)
+texture = ExtResource("2_1lu8b")
+
+[node name="AreaLaser" type="Area2D" parent="." unique_id=881883062]
+position = Vector2(576, 324.5)
+scale = Vector2(0.40909088, 0.42252606)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AreaLaser" unique_id=807817580]
+position = Vector2(1304.6669, 347.90753)
+scale = Vector2(1, 0.9999998)
+shape = SubResource("RectangleShape2D_tpvvh")
+
+[node name="AreaRodillos" type="Area2D" parent="." unique_id=265023913]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AreaRodillos" unique_id=1355129775]
+position = Vector2(624.375, 566)
+shape = SubResource("RectangleShape2D_quka8")
+
+[node name="Salida" type="Area2D" parent="." unique_id=1716272435]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Salida" unique_id=673038327]
+position = Vector2(1483, 662.25)
+shape = SubResource("RectangleShape2D_l8awi")
+script = SubResource("GDScript_vpl6c")

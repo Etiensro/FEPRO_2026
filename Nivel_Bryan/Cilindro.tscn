@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://cem4k2xp31quj"]
+
+[ext_resource type="Texture2D" uid="uid://rl4j08kuvqby" path="res://Assets/Cil_ind.png" id="1_wy181"]
+[ext_resource type="Script" uid="uid://cmkatc8gcnqlc" path="res://cilindro.gd" id="2_ec8i2"]
+[ext_resource type="FontFile" uid="uid://b2ll57p6wj5wg" path="res://Assets/Array-Bold.otf" id="3_jpvj8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rbrts"]
+atlas = ExtResource("1_wy181")
+region = Rect2(392.82758, 250.16406, 318.32306, 589.9608)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_jpvj8"]
+
+[node name="Ciliindro" type="TextureRect" unique_id=435529700]
+clip_children = 2
+clip_contents = true
+offset_left = 9.0
+offset_top = 163.0
+offset_right = 362.0
+offset_bottom = 648.0
+mouse_filter = 0
+texture = SubResource("AtlasTexture_rbrts")
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("2_ec8i2")
+
+[node name="LabelValor" type="Label" parent="." unique_id=636715385]
+material = SubResource("CanvasItemMaterial_jpvj8")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.02266289
+anchor_top = -0.0041237115
+anchor_right = 1.0226632
+anchor_bottom = 0.9958763
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.83137256, 0.6392157, 0.34901962, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.38431373)
+theme_override_colors/font_outline_color = Color(0.630391, 0.46907973, 0.21815217, 1)
+theme_override_fonts/font = ExtResource("3_jpvj8")
+theme_override_font_sizes/font_size = 100
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LabelAux" type="Label" parent="." unique_id=1244340950]
+visible = false
+material = SubResource("CanvasItemMaterial_jpvj8")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.02266289
+anchor_top = -0.0041237115
+anchor_right = 1.0226632
+anchor_bottom = 0.9958763
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.83137256, 0.6392157, 0.34901962, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.38431373)
+theme_override_colors/font_outline_color = Color(0.630391, 0.46907973, 0.21815217, 1)
+theme_override_fonts/font = ExtResource("3_jpvj8")
+theme_override_font_sizes/font_size = 100
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true

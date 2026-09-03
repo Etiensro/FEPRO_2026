@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://c0pawhre6vwwd"]
+
+[ext_resource type="Script" uid="uid://v4jkx2qrhtqr" path="res://sala_carton.gd" id="1_5yw8b"]
+
+[node name="SalaCarton" type="Control" unique_id=34784362]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5yw8b")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1228076267]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="." unique_id=1372570090]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="LineEdit" type="LineEdit" parent="." unique_id=1769328674]
+layout_mode = 0
+offset_right = 68.5
+offset_bottom = 31.0
+
+[node name="Button" type="Button" parent="." unique_id=1343995860]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="PeticionFirebase" type="HTTPRequest" parent="." unique_id=496064225]
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

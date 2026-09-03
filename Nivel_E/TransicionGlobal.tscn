@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://ck74g1g6e4fdm"]
+
+[ext_resource type="Script" uid="uid://d31utqg8vigvt" path="res://Nivel_E/Transicion_Global.gd" id="1_ldncw"]
+
+[node name="CanvasLayer" type="CanvasLayer" unique_id=859441752]
+layer = 100
+script = ExtResource("1_ldncw")
+
+[node name="FundidoNegro" type="ColorRect" parent="." unique_id=178728128]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)

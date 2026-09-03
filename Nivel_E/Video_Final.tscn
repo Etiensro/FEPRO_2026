@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://h7gflll4bwjw"]
+
+[ext_resource type="VideoStream" uid="uid://dhcnklhm63dpi" path="res://Nivel_E/Imagenes_Back/Video_Final_gwr_video_mvp.ogv" id="1_bsntp"]
+[ext_resource type="Script" uid="uid://dyhnjtegjrwxw" path="res://Nivel_E/video_final.gd" id="2_ef2hv"]
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" unique_id=2097912790]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stream = ExtResource("1_bsntp")
+autoplay = true
+expand = true
+script = ExtResource("2_ef2hv")
+
+[connection signal="finished" from="." to="." method="_on_finished"]

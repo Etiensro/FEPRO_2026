@@ -18,6 +18,15 @@ config/icon="res://icon.svg"
 [autoload]
 
 GestorTelemetria="*uid://dxn0jv7wuf1vt"
+GestorEstadoNivelE="*uid://bxa2v73jbqwlg"
+TransicionGlobal="*uid://ck74g1g6e4fdm"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=2
+window/stretch/mode="canvas_items"
 
 [physics]
 

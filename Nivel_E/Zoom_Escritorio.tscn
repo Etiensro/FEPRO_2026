@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://bc5k28i4nsb2q"]
+
+[ext_resource type="Script" uid="uid://tvmlhchqr2kt" path="res://Nivel_E/Zoom_Escritorio.gd" id="1_esorl"]
+[ext_resource type="Texture2D" uid="uid://brgewvq65od4a" path="res://Nivel_E/Imagenes_Back/Sala_Escritorio_Sin_Puerta_Bote.jpeg" id="2_q15si"]
+[ext_resource type="Texture2D" uid="uid://b152b4wsjcjew" path="res://Nivel_E/Assets/Bote Basura.png" id="3_5x472"]
+[ext_resource type="Texture2D" uid="uid://bmlyjpek1pgb7" path="res://Nivel_E/Assets/Puerta_cerrada.png" id="4_5x472"]
+[ext_resource type="Texture2D" uid="uid://cs3f4et4f4x5o" path="res://Nivel_E/Assets/Flecha.png" id="4_a1c8k"]
+[ext_resource type="Texture2D" uid="uid://bd3j2ys3via78" path="res://Nivel_E/Assets/Engranaje_Mejorado.png" id="4_hjf6m"]
+[ext_resource type="Texture2D" uid="uid://cwxbvqgd3hj2i" path="res://Nivel_E/Assets/OjosRojos.png" id="7_hjf6m"]
+
+[node name="Node2D" type="Node2D" unique_id=129667613]
+script = ExtResource("1_esorl")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2026922507]
+position = Vector2(960, 540)
+scale = Vector2(0.7515624, 0.75577325)
+texture = ExtResource("2_q15si")
+
+[node name="BoteBasura" type="TextureButton" parent="." unique_id=2091429048]
+offset_left = 380.0
+offset_top = 757.0
+offset_right = 584.0
+offset_bottom = 1027.0
+pivot_offset = Vector2(40, 230)
+texture_normal = ExtResource("3_5x472")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="EngranajePuerta" type="TextureButton" parent="." unique_id=846038900]
+visible = false
+offset_left = 643.0
+offset_top = 824.0
+offset_right = 757.0
+offset_bottom = 950.0
+texture_normal = ExtResource("4_hjf6m")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="PuertaEscritorio" type="TextureButton" parent="." unique_id=274339947]
+offset_left = 625.0
+offset_top = 650.0
+offset_right = 818.0
+offset_bottom = 984.0
+texture_normal = ExtResource("4_5x472")
+ignore_texture_size = true
+stretch_mode = 5
+flip_h = true
+
+[node name="EngranajeBote" type="TextureButton" parent="." unique_id=813326585]
+visible = false
+offset_left = 164.0
+offset_top = 905.0
+offset_right = 272.0
+offset_bottom = 1018.0
+texture_normal = ExtResource("4_hjf6m")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="BotonVolver" type="TextureButton" parent="." unique_id=1463898813]
+offset_left = 1633.0
+offset_top = 752.0
+offset_right = 1781.0
+offset_bottom = 941.0
+texture_normal = ExtResource("4_a1c8k")
+ignore_texture_size = true
+stretch_mode = 4
+flip_v = true
+
+[node name="BotonBuho" type="TextureButton" parent="." unique_id=1645854799]
+offset_left = 667.0
+offset_top = 298.0
+offset_right = 766.0
+offset_bottom = 460.0
+
+[node name="OjosRojos" type="Sprite2D" parent="BotonBuho" unique_id=1448878158]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(57.000023, 68.999985)
+scale = Vector2(0.6787004, 0.6589147)
+texture = ExtResource("7_hjf6m")
+
+[connection signal="pressed" from="BoteBasura" to="." method="_on_bote_basura_pressed"]
+[connection signal="pressed" from="EngranajePuerta" to="." method="_on_engranaje_puerta_pressed"]
+[connection signal="pressed" from="PuertaEscritorio" to="." method="_on_puerta_escritorio_pressed"]
+[connection signal="pressed" from="EngranajeBote" to="." method="_on_engranaje_bote_pressed"]
+[connection signal="pressed" from="BotonVolver" to="." method="_on_boton_volver_pressed"]
+[connection signal="pressed" from="BotonBuho" to="." method="_on_boton_buho_pressed"]

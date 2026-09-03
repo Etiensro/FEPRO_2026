@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://cp2eqw2s0mjtd"]
+
+[ext_resource type="Script" uid="uid://cea0t6gvd657v" path="res://Nivel_E/Zoom_Computadora.gd" id="1_hgken"]
+[ext_resource type="Texture2D" uid="uid://d2hren0io7g7y" path="res://Nivel_E/Imagenes_Back/Sala_Computadora (Sin engranajes).jpg" id="1_jofbw"]
+[ext_resource type="Texture2D" uid="uid://bd3j2ys3via78" path="res://Nivel_E/Assets/Engranaje_Mejorado.png" id="3_f15kb"]
+[ext_resource type="Texture2D" uid="uid://cs3f4et4f4x5o" path="res://Nivel_E/Assets/Flecha.png" id="4_7b6ms"]
+
+[node name="Node2D" type="Node2D" unique_id=1504232553]
+script = ExtResource("1_hgken")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=293044219]
+position = Vector2(962.00006, 593.49994)
+scale = Vector2(1.5118297, 1.3712645)
+texture = ExtResource("1_jofbw")
+
+[node name="ZonaTuercas" type="TextureButton" parent="." unique_id=1813901266]
+offset_left = 251.0
+offset_top = 38.0
+offset_right = 1707.0
+offset_bottom = 981.0
+
+[node name="Tuerca1" type="Sprite2D" parent="." unique_id=543421676]
+position = Vector2(1468.0001, 629.00006)
+scale = Vector2(0.17540324, 0.17946929)
+texture = ExtResource("3_f15kb")
+
+[node name="Tuerca2" type="Sprite2D" parent="." unique_id=1906397960]
+position = Vector2(1435, 327)
+scale = Vector2(0.1521416, 0.15491854)
+texture = ExtResource("3_f15kb")
+
+[node name="BotonVolver" type="TextureButton" parent="." unique_id=272409639]
+offset_left = 1738.0
+offset_top = 679.0
+offset_right = 1938.0
+offset_bottom = 930.0
+texture_normal = ExtResource("4_7b6ms")
+ignore_texture_size = true
+stretch_mode = 5
+flip_v = true
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=30709998]
+position = Vector2(962, 538)
+
+[connection signal="pressed" from="ZonaTuercas" to="." method="_on_zona_tuercas_pressed"]
+[connection signal="pressed" from="BotonVolver" to="." method="_on_boton_volver_pressed"]

@@ -1,0 +1,109 @@
+[gd_scene format=3 uid="uid://dsxew8sd1wk4c"]
+
+[ext_resource type="Texture2D" uid="uid://dqb655bik3rpb" path="res://Nivel_E/Imagenes_Back/Zoom_Monitor.jpeg" id="1_6kjdw"]
+[ext_resource type="Script" uid="uid://m5mshrxub34w" path="res://Nivel_E/Acertijo_Monitor.gd" id="1_fj2l6"]
+[ext_resource type="FontFile" uid="uid://b4aucvwhv0wlf" path="res://Nivel_E/Assets/Array-Bold.otf" id="3_6dbq5"]
+[ext_resource type="Texture2D" uid="uid://cs3f4et4f4x5o" path="res://Nivel_E/Assets/Flecha.png" id="3_x5bt8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qknrv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6dbq5"]
+
+[node name="Node2D" type="Node2D" unique_id=1849633218]
+script = ExtResource("1_fj2l6")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1847205092]
+position = Vector2(948, 542)
+scale = Vector2(1.3887304, 1.3984771)
+texture = ExtResource("1_6kjdw")
+
+[node name="Interfaz" type="Control" parent="." unique_id=816296422]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 391.0
+offset_top = 38.0
+offset_right = 1587.0
+offset_bottom = 915.0
+
+[node name="BarraCarga" type="ProgressBar" parent="Interfaz" unique_id=1735425558]
+layout_mode = 0
+offset_left = 287.0
+offset_top = 487.0
+offset_right = 921.0
+offset_bottom = 535.0
+
+[node name="VisorRespuesta" type="Label" parent="Interfaz" unique_id=1260297317]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 633.0
+offset_right = 1084.0
+offset_bottom = 791.0
+theme_override_fonts/font = ExtResource("3_6dbq5")
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+
+[node name="CapturaTeclado" type="LineEdit" parent="Interfaz" unique_id=373349958]
+layout_mode = 0
+offset_left = 107.999985
+offset_top = 621.0
+offset_right = 1064.0
+offset_bottom = 766.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.8745098, 0.8745098, 0.8745098, 0)
+theme_override_colors/caret_color = Color(0.9490196, 0.9490196, 0.9490196, 0)
+theme_override_fonts/font = ExtResource("3_6dbq5")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qknrv")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_6dbq5")
+alignment = 1
+
+[node name="BotonConfirmar" type="Button" parent="Interfaz" unique_id=461510095]
+layout_mode = 0
+offset_left = 513.0
+offset_top = 733.0
+offset_right = 676.0
+offset_bottom = 841.0
+theme_override_fonts/font = ExtResource("3_6dbq5")
+theme_override_font_sizes/font_size = 27
+text = "[Ejecutar]"
+flat = true
+expand_icon = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Interfaz" unique_id=906021706]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 67.0
+offset_right = 1130.0
+offset_bottom = 647.0
+
+[node name="TextoPantalla" type="Label" parent="Interfaz/ScrollContainer" unique_id=1504097432]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_6dbq5")
+theme_override_font_sizes/font_size = 43
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="TextureButton" type="TextureButton" parent="." unique_id=1655077184]
+offset_left = 914.0
+offset_top = 904.0
+offset_right = 1069.0
+offset_bottom = 1073.0
+texture_normal = ExtResource("3_x5bt8")
+ignore_texture_size = true
+stretch_mode = 5
+flip_v = true
+
+[node name="Timer" type="Timer" parent="." unique_id=1788376617]
+wait_time = 0.7
+autostart = true
+
+[connection signal="gui_input" from="Interfaz/CapturaTeclado" to="." method="_on_captura_teclado_gui_input"]
+[connection signal="text_changed" from="Interfaz/CapturaTeclado" to="." method="_on_captura_teclado_text_changed"]
+[connection signal="pressed" from="Interfaz/BotonConfirmar" to="." method="_on_boton_confirmar_pressed"]
+[connection signal="pressed" from="TextureButton" to="." method="_on_texture_button_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

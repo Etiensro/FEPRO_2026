@@ -1,0 +1,164 @@
+[gd_scene format=3 uid="uid://xj1jds0iwcdx"]
+
+[ext_resource type="Script" uid="uid://lio6lxmni5tt" path="res://Nivel_E/zoom_garra.gd" id="1_7dvmp"]
+[ext_resource type="Texture2D" uid="uid://dx2v5utfgxulp" path="res://Nivel_E/Imagenes_Back/Sala_Pozo.jpg" id="2_sf0sw"]
+[ext_resource type="FontFile" uid="uid://b4aucvwhv0wlf" path="res://Nivel_E/Assets/Array-Bold.otf" id="3_4nxwc"]
+[ext_resource type="Texture2D" uid="uid://bw30obsdpkaqf" path="res://Nivel_E/Assets/Eslabon.png" id="4_sf0sw"]
+[ext_resource type="Texture2D" uid="uid://ruba2ul4aoi6" path="res://Nivel_E/Assets/Garra Abierta.png" id="5_l0sko"]
+[ext_resource type="Texture2D" uid="uid://b23fngn7kk4p6" path="res://Nivel_E/Assets/Esfera.png" id="6_sf0sw"]
+[ext_resource type="Texture2D" uid="uid://cs3f4et4f4x5o" path="res://Nivel_E/Assets/Flecha.png" id="7_4nxwc"]
+
+[node name="Node2D" type="Node2D" unique_id=483360358]
+script = ExtResource("1_7dvmp")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1681273059]
+position = Vector2(960.00006, 541)
+scale = Vector2(0.69789404, 0.703125)
+texture = ExtResource("2_sf0sw")
+
+[node name="PlacaPregunta" type="Label" parent="." unique_id=1555290815]
+offset_left = 687.0
+offset_top = 375.0
+offset_right = 1247.0
+offset_bottom = 720.0
+theme_override_colors/font_color = Color(0.9305891, 0.9265688, 0.918083, 1)
+theme_override_fonts/font = ExtResource("3_4nxwc")
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="CadenaInfinita" type="TextureRect" parent="." unique_id=458437212]
+offset_left = 904.0
+offset_top = -85.0
+offset_right = 990.0
+offset_bottom = 25.0
+texture = ExtResource("4_sf0sw")
+stretch_mode = 1
+
+[node name="RepisaOpciones" type="HBoxContainer" parent="." unique_id=1491043577]
+offset_left = 562.0
+offset_top = 786.0
+offset_right = 1362.0
+offset_bottom = 997.0
+alignment = 1
+
+[node name="EsferaA" type="TextureButton" parent="RepisaOpciones" unique_id=1994589570]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("6_sf0sw")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="RepisaOpciones/EsferaA" unique_id=1920244539]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.75686276, 0.36078432, 1)
+theme_override_fonts/font = ExtResource("3_4nxwc")
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="EsferaB" type="TextureButton" parent="RepisaOpciones" unique_id=800819037]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("6_sf0sw")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="RepisaOpciones/EsferaB" unique_id=2059353541]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.75686276, 0.36078432, 1)
+theme_override_fonts/font = ExtResource("3_4nxwc")
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="EsferaC" type="TextureButton" parent="RepisaOpciones" unique_id=548357962]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("6_sf0sw")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="RepisaOpciones/EsferaC" unique_id=1868047550]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.75686276, 0.36078432, 1)
+theme_override_fonts/font = ExtResource("3_4nxwc")
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="EsferaD" type="TextureButton" parent="RepisaOpciones" unique_id=770788784]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("6_sf0sw")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="RepisaOpciones/EsferaD" unique_id=220251012]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.75686276, 0.36078432, 1)
+theme_override_fonts/font = ExtResource("3_4nxwc")
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="GarraMecanica" type="Sprite2D" parent="." unique_id=1591511617]
+position = Vector2(946, 24)
+scale = Vector2(0.8087071, 0.82267886)
+texture = ExtResource("5_l0sko")
+offset = Vector2(-22, 210)
+
+[node name="FiltroOscuridad" type="CanvasModulate" parent="." unique_id=1705717625]
+visible = false
+color = Color(0.12991673, 0.112097494, 0.10356239, 1)
+
+[node name="CapaUI" type="CanvasLayer" parent="." unique_id=1839226988]
+
+[node name="BotonSalir" type="TextureButton" parent="CapaUI" unique_id=2044740795]
+offset_left = 925.0
+offset_top = 124.0
+offset_right = 1068.0
+offset_bottom = 271.0
+texture_normal = ExtResource("7_4nxwc")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="FiltroBotonSalir" type="CanvasModulate" parent="CapaUI" unique_id=170653220]
+color = Color(0.35906905, 0.35906908, 0.35906902, 1)
+
+[connection signal="pressed" from="RepisaOpciones/EsferaA" to="." method="_on_esfera_a_pressed"]
+[connection signal="pressed" from="RepisaOpciones/EsferaB" to="." method="_on_esfera_b_pressed"]
+[connection signal="pressed" from="RepisaOpciones/EsferaC" to="." method="_on_esfera_c_pressed"]
+[connection signal="pressed" from="RepisaOpciones/EsferaD" to="." method="_on_esfera_d_pressed"]
+[connection signal="pressed" from="CapaUI/BotonSalir" to="." method="_on_boton_salir_pressed"]

@@ -15,8 +15,19 @@ script = ExtResource("1_ig7tw")
 layout_mode = 0
 offset_left = 237.0
 offset_top = 67.0
-offset_right = 977.0
-offset_bottom = 576.0
+offset_right = 590.0
+offset_bottom = 310.0
 text = "Probar Conexion Firebase"
 
+[node name="boton descargar" type="Button" parent="." unique_id=1601226037]
+layout_mode = 0
+offset_left = 629.0
+offset_top = 335.0
+offset_right = 1065.0
+offset_bottom = 571.0
+text = "Descargar Acertijos"
+
+[node name="PeticionDescarga" type="HTTPRequest" parent="." unique_id=104821933]
+
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="boton descargar" to="." method="_on_boton_descargar_pressed"]

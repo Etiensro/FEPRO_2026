@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://8x5055dpn3ya"]
+
+[ext_resource type="Script" uid="uid://d2ottropnp5xc" path="res://Nivel_E/Hub_Principal.gd" id="1_6s6p2"]
+[ext_resource type="Texture2D" uid="uid://cy8b221bunvna" path="res://Nivel_E/Imagenes_Back/Sala_Main_Sin__Ningun_Elemento.jpg" id="2_we10o"]
+[ext_resource type="Texture2D" uid="uid://clon4o4nf3218" path="res://Nivel_E/Assets/Puerta.png" id="3_8cw53"]
+[ext_resource type="Texture2D" uid="uid://b152b4wsjcjew" path="res://Nivel_E/Assets/Bote Basura.png" id="3_bc1iq"]
+[ext_resource type="Texture2D" uid="uid://5hvh4e27g0dp" path="res://Nivel_E/Assets/Puerta Abierta.png" id="4_rjs6i"]
+[ext_resource type="Texture2D" uid="uid://bmlyjpek1pgb7" path="res://Nivel_E/Assets/Puerta_cerrada.png" id="5_rjs6i"]
+[ext_resource type="Texture2D" uid="uid://ruba2ul4aoi6" path="res://Nivel_E/Assets/Garra Abierta.png" id="6_j6srf"]
+[ext_resource type="Texture2D" uid="uid://bw30obsdpkaqf" path="res://Nivel_E/Assets/Eslabon.png" id="7_we10o"]
+[ext_resource type="Texture2D" uid="uid://bxel8u2dyo1d6" path="res://Nivel_E/Assets/Garra Cerrada Con Bola.png" id="9_dnhe2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uxr8u"]
+size = Vector2(596, 788)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rjs6i"]
+size = Vector2(498, 680)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ote7v"]
+size = Vector2(361.91846, 710.0697)
+
+[node name="Node2D" type="Node2D" unique_id=404805262]
+script = ExtResource("1_6s6p2")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2106547452]
+position = Vector2(955.5, 539.50006)
+scale = Vector2(1.2056249, 1.2127658)
+texture = ExtResource("2_we10o")
+
+[node name="ZonaEscritorio" type="Area2D" parent="." unique_id=657957165]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ZonaEscritorio" unique_id=1164461666]
+position = Vector2(300, 603)
+shape = SubResource("RectangleShape2D_uxr8u")
+
+[node name="BoteNormal" type="Sprite2D" parent="." unique_id=933652330]
+position = Vector2(146, 871)
+scale = Vector2(0.66206896, 0.71485424)
+texture = ExtResource("3_bc1iq")
+
+[node name="BoteTirado" type="Sprite2D" parent="." unique_id=433843590]
+visible = false
+position = Vector2(93.000015, 934)
+rotation = -1.7697638
+scale = Vector2(0.53379864, 0.56059164)
+texture = ExtResource("3_bc1iq")
+
+[node name="PuertaAbierta" type="Sprite2D" parent="." unique_id=1057863847]
+visible = false
+position = Vector2(462.50003, 777.5)
+scale = Vector2(0.57772017, 0.4071207)
+texture = ExtResource("4_rjs6i")
+
+[node name="PuertaCerrada" type="Polygon2D" parent="." unique_id=1311940259]
+position = Vector2(512.12476, 644.0459)
+scale = Vector2(-0.9940245, 0.9971323)
+texture = ExtResource("5_rjs6i")
+polygon = PackedVector2Array(145.9972, 11.988464, 243.58029, 34.051758, 240.59406, 278, 142.97916, 242.64996)
+uv = PackedVector2Array(17.90802, 12.570999, 256.90802, 17.571, 257.9798, 431.0573, 12.010925, 433.98547)
+
+[node name="ZonaComputadora" type="Area2D" parent="." unique_id=751539733]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ZonaComputadora" unique_id=222186216]
+position = Vector2(1679, 743)
+shape = SubResource("RectangleShape2D_rjs6i")
+
+[node name="ZonaPuerta" type="Area2D" parent="." unique_id=2062654151]
+position = Vector2(934.5, 303.00003)
+scale = Vector2(0.9366753, 0.94216126)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ZonaPuerta" unique_id=2015312847]
+position = Vector2(341.63385, 73.76639)
+scale = Vector2(0.9999997, 0.9999994)
+shape = SubResource("RectangleShape2D_ote7v")
+
+[node name="ZonaGarra" type="Area2D" parent="." unique_id=1662006804]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ZonaGarra" unique_id=976841432]
+polygon = PackedVector2Array(926, 6, 851, 272, 780, 367, 770, 442, 855, 540, 928, 550, 925, 817, 621, 884, 628, 950, 823, 1007, 1232, 986, 1335, 928, 1270, 855, 992, 820, 991, 555, 1074, 477, 1083, 410, 1077, 358, 1052, 299, 980, -4, 913, 5)
+
+[node name="Cadena" type="TextureRect" parent="." unique_id=2010355919]
+offset_left = 914.0
+offset_top = -110.0
+offset_right = 1000.0
+texture = ExtResource("7_we10o")
+stretch_mode = 1
+
+[node name="PuertaCerradaMain" type="Sprite2D" parent="." unique_id=697367499]
+position = Vector2(1239.5, 473)
+scale = Vector2(0.95955044, 0.9678571)
+texture = ExtResource("3_8cw53")
+
+[node name="PuertaAbiertaMain" type="Sprite2D" parent="." unique_id=534665309]
+visible = false
+position = Vector2(1252, 485.49997)
+scale = Vector2(0.85492235, 0.70123833)
+texture = ExtResource("4_rjs6i")
+
+[node name="Garra" type="Sprite2D" parent="." unique_id=1481018272]
+position = Vector2(936, 199.00005)
+scale = Vector2(0.9366753, 0.94216126)
+texture = ExtResource("6_j6srf")
+
+[node name="GarraCerrada" type="Sprite2D" parent="." unique_id=803996736]
+visible = false
+position = Vector2(943.99994, 292)
+scale = Vector2(1.1230769, 1)
+texture = ExtResource("9_dnhe2")
+
+[connection signal="input_event" from="ZonaEscritorio" to="." method="_on_zona_escritorio_input_event"]
+[connection signal="input_event" from="ZonaComputadora" to="." method="_on_zona_computadora_input_event"]
+[connection signal="input_event" from="ZonaPuerta" to="." method="_on_zona_puerta_input_event"]
+[connection signal="input_event" from="ZonaGarra" to="." method="_on_zona_garra_input_event"]

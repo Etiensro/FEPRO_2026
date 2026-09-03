@@ -44,4 +44,8 @@ func _finalizar() -> void:
 	print("Salas pendientes restantes: ", GestorRutaJuego.salas_pendientes)
 	print("Destino seleccionado: ", escena_destino)
 	
-	get_tree().change_scene_to_file(escena_destino)
+	if escena_destino != "":
+		get_tree().change_scene_to_file(escena_destino)
+	else:
+		print("¡Juego terminado! Regresando al menú principal...")
+		get_tree().change_scene_to_file("res://Menu_lvl/Menu.tscn")

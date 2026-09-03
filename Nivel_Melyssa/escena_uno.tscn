@@ -23,8 +23,8 @@ radius = 75.0
 metadata/_edit_vertical_guides_ = [-333.0]
 
 [node name="FondoPrincipal" type="Sprite2D" parent="." unique_id=746479224]
-position = Vector2(1036.3749, 538.99994)
-scale = Vector2(1.4184408, 1.4686648)
+position = Vector2(962.37494, 541)
+scale = Vector2(1.3167925, 1.4741144)
 texture = ExtResource("1_5a1eg")
 script = ExtResource("2_wfv2b")
 
@@ -34,17 +34,16 @@ anchor_left = 0.20300001
 anchor_top = 0.536
 anchor_right = 0.20300001
 anchor_bottom = 0.536
-offset_left = -893.9763
-offset_top = -314.1715
-offset_right = -825.369
-offset_bottom = -209.31435
+offset_left = -926.17224
+offset_top = -438.19666
+offset_right = -720.36914
+offset_bottom = -209.31433
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="FondoPrincipal/Palanca" unique_id=985736256]
-visible = false
-position = Vector2(-26.680626, -29.262444)
-amount = 9
+position = Vector2(88.85227, 159.41779)
+amount = 3
 direction = Vector2(3, -1)
-spread = 90.0
+spread = 180.0
 gravity = Vector2(0, 500)
 initial_velocity_min = 61.39
 initial_velocity_max = 308.91
@@ -122,24 +121,26 @@ stretch_mode = 4
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 551.39966
-offset_top = 221.90697
-offset_right = 859.70996
-offset_bottom = 408.3602
+offset_top = 233.21394
+offset_right = 933.00726
+offset_bottom = 406.19922
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_316aw")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 2
 autowrap_trim_flags = 64
 
 [node name="BotonCerrarZoom1" type="TextureButton" parent="FondoPrincipal/ZoomEsfera1" unique_id=1183126240]
 layout_mode = 0
-offset_left = 858.86206
-offset_top = 226.78403
-offset_right = 941.44507
-offset_bottom = 329.20267
+offset_left = 1135.0133
+offset_top = 523.55774
+offset_right = 1299.8076
+offset_bottom = 693.151
 texture_normal = ExtResource("4_s117w")
 ignore_texture_size = true
-stretch_mode = 4
+stretch_mode = 5
 
 [node name="ZoomEsfera2" type="TextureRect" parent="FondoPrincipal" unique_id=1746947772]
 unique_name_in_owner = true
@@ -153,24 +154,26 @@ texture = ExtResource("4_5h4iv")
 [node name="TextoOpcion2" type="Label" parent="FondoPrincipal/ZoomEsfera2" unique_id=186896539]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 607.30194
-offset_top = 317.00998
+offset_left = 597.32874
+offset_top = 294.95496
 offset_right = 866.48517
 offset_bottom = 451.1296
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_316aw")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="BotonCerrarZoom2" type="TextureButton" parent="FondoPrincipal/ZoomEsfera2" unique_id=2005487765]
 layout_mode = 0
-offset_left = 800.4188
-offset_top = 263.36218
-offset_right = 847.42755
-offset_bottom = 340.17615
+offset_left = 1157.0221
+offset_top = 507.28586
+offset_right = 1344.5991
+offset_bottom = 675.52246
 texture_normal = ExtResource("4_s117w")
 ignore_texture_size = true
-stretch_mode = 4
+stretch_mode = 5
 
 [node name="ZoomEsfera3" type="TextureRect" parent="FondoPrincipal" unique_id=2145310054]
 unique_name_in_owner = true
@@ -185,23 +188,25 @@ texture = ExtResource("5_s117w")
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 586.97375
-offset_top = 310.91364
-offset_right = 845.4706
+offset_top = 284.51343
+offset_right = 874.28357
 offset_bottom = 465.76083
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_316aw")
 theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="BotonCerrarZoom3" type="TextureButton" parent="FondoPrincipal/ZoomEsfera3" unique_id=1839434866]
 layout_mode = 0
-offset_left = 844.8865
-offset_top = 286.52823
-offset_right = 879.1901
-offset_bottom = 335.299
+offset_left = 1156.7882
+offset_top = 556.54114
+offset_right = 1356.5159
+offset_bottom = 686.1104
 texture_normal = ExtResource("4_s117w")
 ignore_texture_size = true
-stretch_mode = 4
+stretch_mode = 5
 
 [node name="ZoomEsfera4" type="TextureRect" parent="FondoPrincipal" unique_id=1173707355]
 unique_name_in_owner = true
@@ -216,23 +221,25 @@ texture = ExtResource("6_ik48r")
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 534.88306
-offset_top = 269.45853
+offset_top = 224.5326
 offset_right = 940.17444
-offset_bottom = 484.04993
+offset_bottom = 496.56036
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_316aw")
 theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="BotonCerrarZoom4" type="TextureButton" parent="FondoPrincipal/ZoomEsfera4" unique_id=540928370]
 layout_mode = 0
-offset_left = 846.8956
-offset_top = 204.83728
-offset_right = 905.87085
-offset_bottom = 271.6437
+offset_left = 1211.2615
+offset_top = 573.89496
+offset_right = 1395.8007
+offset_bottom = 700.0724
 texture_normal = ExtResource("4_s117w")
 ignore_texture_size = true
-stretch_mode = 4
+stretch_mode = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1942947452]
 position = Vector2(1065.375, 966)

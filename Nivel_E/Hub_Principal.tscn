@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bmlyjpek1pgb7" path="res://Nivel_E/Assets/Puerta_cerrada.png" id="5_rjs6i"]
 [ext_resource type="Texture2D" uid="uid://ruba2ul4aoi6" path="res://Nivel_E/Assets/Garra Abierta.png" id="6_j6srf"]
 [ext_resource type="Texture2D" uid="uid://bw30obsdpkaqf" path="res://Nivel_E/Assets/Eslabon.png" id="7_we10o"]
+[ext_resource type="Texture2D" uid="uid://d0is27le0dvha" path="res://Nivel_E/Assets/Puerta Main Abierta.png" id="8_6mtil"]
 [ext_resource type="Texture2D" uid="uid://bxel8u2dyo1d6" path="res://Nivel_E/Assets/Garra Cerrada Con Bola.png" id="9_dnhe2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uxr8u"]
@@ -92,9 +93,9 @@ texture = ExtResource("3_8cw53")
 
 [node name="PuertaAbiertaMain" type="Sprite2D" parent="." unique_id=534665309]
 visible = false
-position = Vector2(1252, 485.49997)
-scale = Vector2(0.85492235, 0.70123833)
-texture = ExtResource("4_rjs6i")
+position = Vector2(1237, 469)
+scale = Vector2(0.9438203, 0.94474155)
+texture = ExtResource("8_6mtil")
 
 [node name="Garra" type="Sprite2D" parent="." unique_id=1481018272]
 position = Vector2(936, 199.00005)

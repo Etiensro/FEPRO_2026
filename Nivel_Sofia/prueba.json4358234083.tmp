@@ -1,9 +1,0 @@
-{
-	"pregunta": "¿Qué estructura de datos usa el principio LIFO?",
-	"opciones": {
-		"izquierda": "Cola",
-		"frente": "Pila",
-		"derecha": "Árbol"
-	},
-	"correcta": "frente"
-}

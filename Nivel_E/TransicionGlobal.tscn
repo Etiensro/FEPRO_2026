@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ck74g1g6e4fdm"]
 
 [ext_resource type="Script" uid="uid://d31utqg8vigvt" path="res://Nivel_E/Transicion_Global.gd" id="1_ldncw"]
+[ext_resource type="FontFile" uid="uid://b4aucvwhv0wlf" path="res://Nivel_E/Assets/Array-Bold.otf" id="2_7t7ds"]
 
 [node name="CanvasLayer" type="CanvasLayer" unique_id=859441752]
 layer = 100
@@ -14,3 +15,21 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0)
+
+[node name="PanelSubtitulos" type="PanelContainer" parent="." unique_id=1758835861]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -232.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="LabelSubtitulos" type="Label" parent="PanelSubtitulos" unique_id=214000899]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_7t7ds")
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

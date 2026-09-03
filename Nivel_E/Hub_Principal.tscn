@@ -12,10 +12,10 @@
 [ext_resource type="Texture2D" uid="uid://bxel8u2dyo1d6" path="res://Nivel_E/Assets/Garra Cerrada Con Bola.png" id="9_dnhe2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uxr8u"]
-size = Vector2(596, 788)
+size = Vector2(608, 983)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rjs6i"]
-size = Vector2(498, 680)
+size = Vector2(498, 1044)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ote7v"]
 size = Vector2(361.91846, 710.0697)
@@ -31,7 +31,7 @@ texture = ExtResource("2_we10o")
 [node name="ZonaEscritorio" type="Area2D" parent="." unique_id=657957165]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ZonaEscritorio" unique_id=1164461666]
-position = Vector2(300, 603)
+position = Vector2(306, 505.5)
 shape = SubResource("RectangleShape2D_uxr8u")
 
 [node name="BoteNormal" type="Sprite2D" parent="." unique_id=933652330]
@@ -62,7 +62,7 @@ uv = PackedVector2Array(17.90802, 12.570999, 256.90802, 17.571, 257.9798, 431.05
 [node name="ZonaComputadora" type="Area2D" parent="." unique_id=751539733]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ZonaComputadora" unique_id=222186216]
-position = Vector2(1679, 743)
+position = Vector2(1679, 561)
 shape = SubResource("RectangleShape2D_rjs6i")
 
 [node name="ZonaPuerta" type="Area2D" parent="." unique_id=2062654151]
@@ -77,7 +77,7 @@ shape = SubResource("RectangleShape2D_ote7v")
 [node name="ZonaGarra" type="Area2D" parent="." unique_id=1662006804]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="ZonaGarra" unique_id=976841432]
-polygon = PackedVector2Array(926, 6, 851, 272, 780, 367, 770, 442, 855, 540, 928, 550, 925, 817, 621, 884, 628, 950, 823, 1007, 1232, 986, 1335, 928, 1270, 855, 992, 820, 991, 555, 1074, 477, 1083, 410, 1077, 358, 1052, 299, 980, -4, 913, 5)
+polygon = PackedVector2Array(926, 6, 830, 212, 760, 267, 770, 442, 855, 540, 928, 550, 925, 817, 621, 884, 628, 950, 823, 1007, 1232, 986, 1335, 928, 1270, 855, 992, 820, 991, 555, 1074, 477, 1083, 410, 1077, 358, 1078, 250, 980, -4, 913, 5)
 
 [node name="Cadena" type="TextureRect" parent="." unique_id=2010355919]
 offset_left = 914.0

@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cem4k2xp31quj"]
 
-[ext_resource type="Texture2D" uid="uid://rl4j08kuvqby" path="res://Assets/Cil_ind.png" id="1_wy181"]
-[ext_resource type="Script" uid="uid://cmkatc8gcnqlc" path="res://cilindro.gd" id="2_ec8i2"]
-[ext_resource type="FontFile" uid="uid://b2ll57p6wj5wg" path="res://Assets/Array-Bold.otf" id="3_jpvj8"]
+[ext_resource type="Texture2D" uid="uid://rl4j08kuvqby" path="res://Nivel_Bryan/Assets/Cil_ind.png" id="1_wy181"]
+[ext_resource type="Script" uid="uid://cmkatc8gcnqlc" path="res://Nivel_Bryan/cilindro.gd" id="2_ec8i2"]
+[ext_resource type="FontFile" uid="uid://b2ll57p6wj5wg" path="res://Nivel_Bryan/Assets/Array-Bold.otf" id="3_jpvj8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rbrts"]
 atlas = ExtResource("1_wy181")

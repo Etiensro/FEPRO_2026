@@ -110,16 +110,16 @@ func _girar_cilindro(direccion: int) -> void:
 		var tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 		
 		# 2. Desplazar saliente
-		tween.tween_property(label_valor, "position:y", fin_y_actual, 0.18)
-		tween.tween_property(label_valor, "modulate:a", 0.0, 0.18)
+		tween.tween_property(label_valor, "position:y", fin_y_actual, 0.06)
+		tween.tween_property(label_valor, "modulate:a", 0.0, 0.06)
 		
 		# 3. Introducir entrante al centro
-		tween.tween_property(label_auxiliar, "position:y", 0.0, 0.18)
-		tween.tween_property(label_auxiliar, "modulate:a", 1.0, 0.18)
+		tween.tween_property(label_auxiliar, "position:y", 0.0, 0.06)
+		tween.tween_property(label_auxiliar, "modulate:a", 1.0, 0.06)
 		
 		# Micro-efecto de compresión
-		tween.tween_property(self, "scale", Vector2(1.04, 0.96), 0.09)
-		tween.chain().tween_property(self, "scale", Vector2(1.0, 1.0), 0.09)
+		tween.tween_property(self, "scale", Vector2(1.04, 0.96), 0.03)
+		tween.chain().tween_property(self, "scale", Vector2(1.0, 1.0), 0.03)
 		
 		# 4. Al finalizar: fijar valor en label_valor y ocultar auxiliar por completo
 		tween.chain().tween_callback(func():

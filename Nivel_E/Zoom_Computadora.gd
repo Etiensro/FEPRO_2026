@@ -5,6 +5,12 @@ func _ready() -> void:
 	$Tuerca1.hide()
 	$Tuerca2.hide()
 	
+	# --- Lógica de subtítulos al entrar ---
+	if GestorEstadoNivelE.engranajes_recolectados >= 2:
+		TransicionGlobal.mostrar_subtitulo("Esos engranajes podrían funcionar aquí.", 3.0)
+	else:
+		TransicionGlobal.mostrar_subtitulo("Debería encontrar la manera de que funcione.", 3.0)
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -14,15 +20,22 @@ func _process(delta: float) -> void:
 		$Tuerca2.rotation -= 1.0 * delta # Cambia el 3.0 para hacerlos girar más rápido o lento
 
 func _on_zona_tuercas_pressed():
-	# Verifica si el jugador ya recolectó las 2 tuercas del escritorio
+	# 1. Si ya tiene los 2 (o más)
 	if GestorEstadoNivelE.engranajes_recolectados >= 2:
 		$ZonaTuercas.disabled = true
 		$Tuerca1.show()
 		$Tuerca2.show()
-		print("Mecanismo ensamblado. Iniciando secuencia...")
+		
+		TransicionGlobal.mostrar_subtitulo("Mecanismo ensamblado...", 2.0)
 		iniciar_secuencia_encendido()
+		
+	# 2. Si tiene exactamente 1
+	elif GestorEstadoNivelE.engranajes_recolectados == 1:
+		TransicionGlobal.mostrar_subtitulo("Debería buscar un engranaje más.", 3.0)
+		
+	# 3. Si tiene 0
 	else:
-		print("Faltan piezas para que el mecanismo funcione.")
+		TransicionGlobal.mostrar_subtitulo("Faltan piezas para que el mecanismo funcione.", 3.0)
 
 func iniciar_secuencia_encendido():
 	var tween = create_tween()
@@ -39,4 +52,5 @@ func ejecutar_fundido_global():
 	TransicionGlobal.cambiar_escena("res://Nivel_E/Acertijo_Monitor.tscn")
 
 func _on_boton_volver_pressed() -> void:
+	TransicionGlobal.ocultar_subtitulo()
 	TransicionGlobal.cambiar_escena("res://Nivel_E/Hub_Principal.tscn")

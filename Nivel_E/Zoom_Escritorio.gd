@@ -1,13 +1,14 @@
 extends Node2D
 
 func _ready():
-	# 1. Checar estado del Bote de Basura
+	configurar_estado_visual()
+	gestionar_pistas_narrativas()
+
+func configurar_estado_visual():
+	# 1. Bote de Basura
 	if GestorEstadoNivelE.bote_tirado:
 		$BoteBasura.disabled = true
-		# Aplicamos la rotación y posición final de tu animación para que ya aparezca tirado
 		$BoteBasura.rotation_degrees = -90.0
-		
-		# ¿Ya recogimos la tuerca de aquí?
 		if not GestorEstadoNivelE.engranaje_bote_recogido:
 			$EngranajeBote.show()
 		else:
@@ -15,18 +16,29 @@ func _ready():
 	else:
 		$EngranajeBote.hide()
 
-	# 2. Checar estado de la Puerta del Escritorio
+	# 2. Puerta del Escritorio
 	if GestorEstadoNivelE.puerta_abierta:
 		$PuertaEscritorio.disabled = true
 		$PuertaEscritorio.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		$PuertaEscritorio.texture_normal = preload("res://Nivel_E/Assets/Puerta Abierta.png") # Descomenta si usas imagen
-		
+		$PuertaEscritorio.texture_normal = preload("res://Nivel_E/Assets/Puerta Abierta.png") 
 		if not GestorEstadoNivelE.engranaje_puerta_recogido:
 			$EngranajePuerta.show()
 		else:
 			$EngranajePuerta.hide()
 	else:
 		$EngranajePuerta.hide()
+
+func gestionar_pistas_narrativas():
+	# Pista inmediata si la puerta no está abierta (Dura 3 segundos)
+	if not GestorEstadoNivelE.puerta_abierta:
+		TransicionGlobal.mostrar_subtitulo("Quizás haya algo en este mueble...", 3.0)
+	
+	# Esperamos 5 segundos sin detener la configuración del nivel
+	await get_tree().create_timer(7.0).timeout
+	
+	# is_inside_tree() evita errores si el jugador salió de la escena antes de los 5 segundos
+	if is_inside_tree() and not GestorEstadoNivelE.bote_tirado:
+		TransicionGlobal.mostrar_subtitulo("Ese bote se ve sospechoso...", 3.0)
 
 func _on_bote_basura_pressed():
 	GestorEstadoNivelE.bote_tirado = true

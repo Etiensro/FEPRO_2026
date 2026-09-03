@@ -157,9 +157,18 @@ func _on_captura_teclado_text_changed(new_text: String) -> void:
 
 
 func _on_captura_teclado_gui_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		# Bloqueamos las flechas direccionales y los botones de salto
-		if event.keycode in [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, KEY_HOME, KEY_END]:
+	# Asegurarnos de que sea una tecla y que esté siendo presionada (no soltada)
+	if event is InputEventKey and event.pressed:
+		
+		# 1. Si presiona Enter (teclado principal) o el Enter del teclado numérico
+		if event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER:
+			# Evitar que se envíe con el campo vacío
+			if $Interfaz/CapturaTeclado.text.strip_edges().length() > 0:
+				_on_boton_confirmar_pressed()
+				get_viewport().set_input_as_handled()
+				
+		# 2. Bloqueamos las flechas direccionales y los botones de salto
+		elif event.keycode in [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, KEY_HOME, KEY_END]:
 			get_viewport().set_input_as_handled()
 
 

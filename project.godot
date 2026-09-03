@@ -20,8 +20,12 @@ config/icon="res://icon.svg"
 GestorTelemetria="*uid://dxn0jv7wuf1vt"
 GestorEstadoNivelE="*uid://bxa2v73jbqwlg"
 TransicionGlobal="*uid://ck74g1g6e4fdm"
+Updated upstream
 GestorEstadoNivelBryan="*uid://bjyymdhudqdap"
 GlobalEsferas="*uid://kd0biviabes7"
+
+Global="*uid://lbpfouq3osdf"
+Stashed changes
 
 [display]
 

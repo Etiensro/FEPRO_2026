@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://dd7m2xixph5na"]
 
-[ext_resource type="Script" uid="uid://br3blpvnr8yjb" path="res://mecanismo_zoom.gd" id="1_n0mx6"]
-[ext_resource type="Texture2D" uid="uid://cpmxqodyko3n4" path="res://Imagenes_Back/Cil_Stage.jpg" id="1_pmwxe"]
-[ext_resource type="Texture2D" uid="uid://dnhoc0go62f1q" path="res://Assets/Flecha.png" id="2_ut3kv"]
-[ext_resource type="FontFile" uid="uid://b2ll57p6wj5wg" path="res://Assets/Array-Bold.otf" id="4_rbrts"]
-[ext_resource type="Texture2D" uid="uid://eglwdsiro1fq" path="res://Assets/Boton_Up.png" id="5_kpokx"]
-[ext_resource type="Texture2D" uid="uid://6qgpkcx1vv5m" path="res://Assets/Boton_Down.png" id="6_256xh"]
+[ext_resource type="Script" uid="uid://br3blpvnr8yjb" path="res://Nivel_Bryan/mecanismo_zoom.gd" id="1_n0mx6"]
+[ext_resource type="Texture2D" uid="uid://cpmxqodyko3n4" path="res://Nivel_Bryan/Imagenes_Back/Cil_Stage.jpg" id="1_pmwxe"]
+[ext_resource type="Texture2D" uid="uid://dnhoc0go62f1q" path="res://Nivel_Bryan/Assets/Flecha.png" id="2_ut3kv"]
+[ext_resource type="FontFile" uid="uid://b2ll57p6wj5wg" path="res://Nivel_Bryan/Assets/Array-Bold.otf" id="4_rbrts"]
+[ext_resource type="Texture2D" uid="uid://eglwdsiro1fq" path="res://Nivel_Bryan/Assets/Boton_Up.png" id="5_kpokx"]
+[ext_resource type="Texture2D" uid="uid://6qgpkcx1vv5m" path="res://Nivel_Bryan/Assets/Boton_Down.png" id="6_256xh"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pikch"]
 atlas = ExtResource("2_ut3kv")

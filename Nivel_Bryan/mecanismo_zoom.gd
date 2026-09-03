@@ -2,7 +2,7 @@ extends Node2D
 
 const ESCENA_RODILLO = preload("res://Nivel_Bryan/Cilindro.tscn")
 
-# --- LOS 4 ATLAS RECORTADOS EXACTOS ---
+# --- TEXTURAS BOTÓN COMPROBAR ---
 const TEX_BTN_NORMAL = preload("res://Nivel_Bryan/Assets/Boton_Up_Atlas.tres")
 const TEX_BTN_DOWN   = preload("res://Nivel_Bryan/Assets/Boton_Down_Atlas.tres")
 const TEX_BTN_ERROR  = preload("res://Nivel_Bryan/Assets/Boton_Rojo_Atlas.tres")
@@ -21,6 +21,10 @@ var clave_correcta: String = ""
 var datos_acertijos: Dictionary = {}
 var bloqueado: bool = false
 
+# Telemetría pedagógica
+var intentos_cilindros: int = 0
+var errores_cilindros: Array = []
+
 func _ready() -> void:
 	if has_node("Flecha/Area2D"):
 		$Flecha/Area2D.input_event.connect(_on_flecha_volver)
@@ -36,70 +40,45 @@ func _ready() -> void:
 		if not btn_comprobar.pressed.is_connected(_on_btn_comprobar_pressed):
 			btn_comprobar.pressed.connect(_on_btn_comprobar_pressed)
 	
-	cargar_json("res://Nivel_Bryan/acertijos.json")
-	
 	if GestorEstadoNivelBryan.cilindros_resuelto:
 		_restaurar_estado_resuelto()
 	else:
-		if GestorEstadoNivelBryan.cilindros_id_actual != "" and datos_acertijos.has(GestorEstadoNivelBryan.cilindros_id_actual):
-			cargar_acertijo_desde_json(GestorEstadoNivelBryan.cilindros_id_actual)
+		# Pedir a Firestore tema_1 o tema_2 al azar
+		if get_tree().root.has_node("GestorTelemetria"):
+			GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
+			var clave_elegida = "tema_1" if randf() > 0.5 else "tema_2"
+			GestorEstadoNivelBryan.cilindros_id_actual = clave_elegida
+			GestorTelemetria.descargar_preguntas(clave_elegida)
 		else:
-			cargar_acertijo_aleatorio()
+			_fallback_local()
 
-func _restaurar_estado_resuelto() -> void:
-	bloqueado = true
+# Procesa el mapa devuelto por Firestore
+func _on_preguntas_listas(datos_recibidos) -> void:
+	var info_acertijo: Dictionary = {}
 	
-	if btn_comprobar:
-		btn_comprobar.texture_normal = TEX_BTN_EXITO
-		btn_comprobar.texture_hover = TEX_BTN_EXITO
-		btn_comprobar.texture_pressed = TEX_BTN_EXITO
-		btn_comprobar.disabled = true
+	if datos_recibidos is Dictionary and not datos_recibidos.is_empty():
+		info_acertijo = datos_recibidos
+	elif datos_recibidos is Array and datos_recibidos.size() > 0:
+		info_acertijo = datos_recibidos[0]
 		
-	if label_pregunta:
-		label_pregunta.text = GestorEstadoNivelBryan.cilindros_pregunta_guardada if GestorEstadoNivelBryan.cilindros_pregunta_guardada != "" else "¡CORRECTO! MECANISMO DESBLOQUEADO"
-	
-	for hijo in contenedor.get_children():
-		hijo.free()
-	lista_rodillos.clear()
-	
-	var letras = GestorEstadoNivelBryan.cilindros_valores_guardados
-	var num_letras = letras.size()
-	
-	var tiene_letras = false
-	for c in letras:
-		if str(c).to_upper() in ALFABETO and not str(c) in NUMEROS:
-			tiene_letras = true
-			break
-	var conjunto = ALFABETO if tiene_letras else NUMEROS
-
-	contenedor.alignment = BoxContainer.ALIGNMENT_CENTER
-	if num_letras >= 5:
-		contenedor.add_theme_constant_override("separation", 2)
-	elif num_letras == 4:
-		contenedor.add_theme_constant_override("separation", 8)
-	elif num_letras == 3:
-		contenedor.add_theme_constant_override("separation", 16)
+	if not info_acertijo.is_empty() and info_acertijo.has("objetivo"):
+		GestorEstadoNivelBryan.cilindros_pregunta_guardada = str(info_acertijo.get("pregunta", ""))
+		GestorEstadoNivelBryan.cilindros_tipo_guardado = str(info_acertijo.get("tipo", "numeros"))
+		
+		if label_pregunta:
+			label_pregunta.text = GestorEstadoNivelBryan.cilindros_pregunta_guardada
+		
+		var objetivo = str(info_acertijo.get("objetivo", "")).to_upper().strip_edges()
+		generar_cilindros_multiples(objetivo, GestorEstadoNivelBryan.cilindros_tipo_guardado)
 	else:
-		contenedor.add_theme_constant_override("separation", 24)
+		_fallback_local()
 
-	for char_val in letras:
-		var nuevo_rodillo = ESCENA_RODILLO.instantiate()
-		contenedor.add_child(nuevo_rodillo)
-		
-		if num_letras >= 5:
-			nuevo_rodillo.scale = Vector2(0.85, 0.85)
-		else:
-			nuevo_rodillo.scale = Vector2(1.0, 1.0)
-			
-		if nuevo_rodillo.has_method("configurar"):
-			nuevo_rodillo.configurar(conjunto, str(char_val))
-			
-		if nuevo_rodillo.has_node("BtnArriba"):
-			nuevo_rodillo.get_node("BtnArriba").disabled = true
-		if nuevo_rodillo.has_node("BtnAbajo"):
-			nuevo_rodillo.get_node("BtnAbajo").disabled = true
-			
-		lista_rodillos.append(nuevo_rodillo)
+func _fallback_local() -> void:
+	cargar_json("res://Nivel_Bryan/acertijos.json")
+	if GestorEstadoNivelBryan.cilindros_id_actual != "" and datos_acertijos.has(GestorEstadoNivelBryan.cilindros_id_actual):
+		cargar_acertijo_desde_json(GestorEstadoNivelBryan.cilindros_id_actual)
+	else:
+		cargar_acertijo_aleatorio()
 
 func cargar_json(ruta_archivo: String) -> void:
 	if not FileAccess.file_exists(ruta_archivo):
@@ -109,8 +88,7 @@ func cargar_json(ruta_archivo: String) -> void:
 	archivo.close()
 	
 	var json = JSON.new()
-	var error = json.parse(contenido)
-	if error == OK and json.data is Dictionary:
+	if json.parse(contenido) == OK and json.data is Dictionary:
 		datos_acertijos = json.data
 
 func cargar_acertijo_aleatorio() -> void:
@@ -122,8 +100,7 @@ func cargar_acertijo_aleatorio() -> void:
 	if claves_validas.is_empty():
 		return
 		
-	var indice_aleatorio: int = randi() % claves_validas.size()
-	var id_seleccionado: String = claves_validas[indice_aleatorio]
+	var id_seleccionado: String = claves_validas[randi() % claves_validas.size()]
 	cargar_acertijo_desde_json(id_seleccionado)
 
 func cargar_acertijo_desde_json(id_acertijo: String) -> void:
@@ -182,10 +159,66 @@ func generar_cilindros_multiples(objetivo: String, tipo: String) -> void:
 			nuevo_rodillo.configurar(conjunto, valor_inicial)
 		lista_rodillos.append(nuevo_rodillo)
 
+func _restaurar_estado_resuelto() -> void:
+	bloqueado = true
+	
+	if btn_comprobar:
+		btn_comprobar.texture_normal = TEX_BTN_EXITO
+		btn_comprobar.texture_hover = TEX_BTN_EXITO
+		btn_comprobar.texture_pressed = TEX_BTN_EXITO
+		btn_comprobar.disabled = true
+		
+	if label_pregunta:
+		label_pregunta.text = GestorEstadoNivelBryan.cilindros_pregunta_guardada if GestorEstadoNivelBryan.cilindros_pregunta_guardada != "" else "¡CORRECTO! MECANISMO DESBLOQUEADO"
+	
+	for hijo in contenedor.get_children():
+		hijo.free()
+	lista_rodillos.clear()
+	
+	var letras = GestorEstadoNivelBryan.cilindros_valores_guardados
+	var num_letras = letras.size()
+	
+	var tiene_letras = false
+	for c in letras:
+		if str(c).to_upper() in ALFABETO and not str(c) in NUMEROS:
+			tiene_letras = true
+			break
+	var conjunto = ALFABETO if tiene_letras else NUMEROS
+
+	contenedor.alignment = BoxContainer.ALIGNMENT_CENTER
+	if num_letras >= 5:
+		contenedor.add_theme_constant_override("separation", 2)
+	elif num_letras == 4:
+		contenedor.add_theme_constant_override("separation", 8)
+	elif num_letras == 3:
+		contenedor.add_theme_constant_override("separation", 16)
+	else:
+		contenedor.add_theme_constant_override("separation", 24)
+
+	for char_val in letras:
+		var nuevo_rodillo = ESCENA_RODILLO.instantiate()
+		contenedor.add_child(nuevo_rodillo)
+		
+		if num_letras >= 5:
+			nuevo_rodillo.scale = Vector2(0.85, 0.85)
+		else:
+			nuevo_rodillo.scale = Vector2(1.0, 1.0)
+			
+		if nuevo_rodillo.has_method("configurar"):
+			nuevo_rodillo.configurar(conjunto, str(char_val))
+			
+		if nuevo_rodillo.has_node("BtnArriba"):
+			nuevo_rodillo.get_node("BtnArriba").disabled = true
+		if nuevo_rodillo.has_node("BtnAbajo"):
+			nuevo_rodillo.get_node("BtnAbajo").disabled = true
+			
+		lista_rodillos.append(nuevo_rodillo)
+
 func _on_btn_comprobar_pressed() -> void:
 	if bloqueado or GestorEstadoNivelBryan.cilindros_resuelto:
 		return
 	
+	intentos_cilindros += 1
 	var respuesta_jugador: String = ""
 	for rodillo in lista_rodillos:
 		if is_instance_valid(rodillo) and rodillo.has_method("obtener_valor"):
@@ -194,6 +227,7 @@ func _on_btn_comprobar_pressed() -> void:
 	if respuesta_jugador == clave_correcta:
 		_efecto_acierto()
 	else:
+		errores_cilindros.append(respuesta_jugador)
 		_efecto_error()
 
 func _efecto_acierto() -> void:
@@ -212,6 +246,15 @@ func _efecto_acierto() -> void:
 	
 	if label_pregunta:
 		label_pregunta.text = "¡CORRECTO! MECANISMO DESBLOQUEADO"
+	
+	if get_tree().root.has_node("GestorTelemetria"):
+		GestorTelemetria.enviar_reporte_final(
+			"jugador_bryan",
+			"victoria",
+			intentos_cilindros,
+			[clave_correcta],
+			errores_cilindros
+		)
 	
 	var tween = create_tween()
 	tween.tween_interval(1.2)

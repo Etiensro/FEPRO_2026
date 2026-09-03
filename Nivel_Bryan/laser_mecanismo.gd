@@ -39,6 +39,11 @@ var bloqueado: bool = false
 var slots_fijos: Array[Vector2] = []
 var hoja_ganadora: Sprite2D = null
 
+# Telemetría pedagógica
+var intentos_totales: int = 0
+var errores_cometidos: Array = []
+var aciertos_logrados: Array = []
+
 const RADIO_LENTE: float = 68.0
 const LETRAS: Array[String] = ["A)", "B)", "C)"]
 
@@ -52,7 +57,12 @@ func _ready() -> void:
 		_restaurar_estado_resuelto()
 	else:
 		if GestorEstadoNivelBryan.laser_datos_activos.is_empty():
-			_cargar_trivia_laser_json()
+			# PASO 1: Pedir preguntas al GestorTelemetria global
+			if get_tree().root.has_node("GestorTelemetria"):
+				GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
+				GestorTelemetria.descargar_preguntas("laser_puzzles")
+			else:
+				_fallback_local_laser()
 		else:
 			_aplicar_datos_trivia(GestorEstadoNivelBryan.laser_datos_activos, false)
 			
@@ -65,6 +75,41 @@ func _ready() -> void:
 		area_flecha.input_event.connect(_on_flecha_input)
 		area_flecha.mouse_entered.connect(func(): Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND))
 		area_flecha.mouse_exited.connect(func(): Input.set_default_cursor_shape(Input.CURSOR_ARROW))
+
+# PASO 2: Procesar las preguntas recibidas del Autoload
+func _on_preguntas_listas(datos_recibidos) -> void:
+	if datos_recibidos is Array and datos_recibidos.size() > 0:
+		var puzzle_elegido = datos_recibidos[randi() % datos_recibidos.size()]
+		GestorEstadoNivelBryan.laser_datos_activos = puzzle_elegido
+		_aplicar_datos_trivia(puzzle_elegido, true)
+	elif datos_recibidos is Dictionary and not datos_recibidos.is_empty():
+		GestorEstadoNivelBryan.laser_datos_activos = datos_recibidos
+		_aplicar_datos_trivia(datos_recibidos, true)
+	else:
+		_fallback_local_laser()
+
+func _fallback_local_laser() -> void:
+	var path = "res://Nivel_Bryan/acertijos.json"
+	if FileAccess.file_exists(path):
+		var file = FileAccess.open(path, FileAccess.READ)
+		var json = JSON.new()
+		if json.parse(file.get_as_text()) == OK and json.data is Dictionary:
+			if json.data.has("laser_puzzles") and not json.data["laser_puzzles"].is_empty():
+				var data = json.data["laser_puzzles"][randi() % json.data["laser_puzzles"].size()]
+				GestorEstadoNivelBryan.laser_datos_activos = data
+				_aplicar_datos_trivia(data, true)
+				return
+				
+	var fallback_data = {
+		"pregunta": "¿QUÉ COMPONENTE ÓPTICO SE UTILIZA PARA DESVIAR O REFRACTAR EL HAZ DE LUZ?",
+		"opciones": [
+			{ "texto": "LENTE CONVERGENTE", "correcta": true },
+			{ "texto": "ESPEJO CÓNCAVO", "correcta": false },
+			{ "texto": "FILTRO POLARIZADO", "correcta": false }
+		]
+	}
+	GestorEstadoNivelBryan.laser_datos_activos = fallback_data
+	_aplicar_datos_trivia(fallback_data, true)
 
 func _restaurar_estado_resuelto() -> void:
 	bloqueado = true
@@ -97,54 +142,6 @@ func _restaurar_estado_resuelto() -> void:
 	if label_pregunta and GestorEstadoNivelBryan.laser_pregunta_guardada != "":
 		label_pregunta.text = GestorEstadoNivelBryan.laser_pregunta_guardada
 
-func _cargar_trivia_laser_json() -> void:
-	var path = "res://Nivel_Bryan/acertijos.json"
-	if not FileAccess.file_exists(path):
-		_fallback_pregunta_local()
-		return
-		
-	var file = FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		_fallback_pregunta_local()
-		return
-		
-	var json_str = file.get_as_text()
-	file.close()
-	
-	var json = JSON.new()
-	var error = json.parse(json_str)
-	if error != OK or not (json.data is Dictionary):
-		_fallback_pregunta_local()
-		return
-	
-	var data: Dictionary = {}
-	
-	if json.data.has("laser_puzzles") and json.data["laser_puzzles"] is Array:
-		var lista: Array = json.data["laser_puzzles"]
-		if not lista.is_empty():
-			data = lista[randi() % lista.size()]
-	elif json.data.has("laser_puzzle") and json.data["laser_puzzle"] is Dictionary:
-		data = json.data["laser_puzzle"]
-	
-	if data.is_empty():
-		_fallback_pregunta_local()
-		return
-	
-	GestorEstadoNivelBryan.laser_datos_activos = data
-	_aplicar_datos_trivia(data, true)
-
-func _fallback_pregunta_local() -> void:
-	var fallback_data = {
-		"pregunta": "¿QUÉ COMPONENTE ÓPTICO SE UTILIZA PARA DESVIAR O REFRACTAR EL HAZ DE LUZ?",
-		"opciones": [
-			{ "texto": "LENTE CONVERGENTE", "correcta": true },
-			{ "texto": "ESPEJO CÓNCAVO", "correcta": false },
-			{ "texto": "FILTRO POLARIZADO", "correcta": false }
-		]
-	}
-	GestorEstadoNivelBryan.laser_datos_activos = fallback_data
-	_aplicar_datos_trivia(fallback_data, true)
-
 func _aplicar_datos_trivia(data: Dictionary, mezclar: bool = true) -> void:
 	var pregunta: String = str(data.get("pregunta", "¿QUÉ COMPONENTE SE UTILIZA?"))
 	var opciones: Array = data.get("opciones", []).duplicate()
@@ -173,6 +170,7 @@ func _aplicar_datos_trivia(data: Dictionary, mezclar: bool = true) -> void:
 				sprites_incisos[i].modulate.a = 1.0
 				sprites_incisos[i].visible = true
 			
+			pedestales[i].set_meta("texto_opcion", texto_opcion)
 			GestorEstadoNivelBryan.laser_incisos_guardados.append(i)
 			
 			if opciones[i].get("correcta", false):
@@ -215,6 +213,7 @@ func ejecutar_disparo() -> void:
 		return
 	
 	bloqueado = true
+	intentos_totales += 1
 	
 	var idx_slot: int = 1
 	var nombre_lente = String(lente_actual.name)
@@ -272,6 +271,8 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 	hoja.texture = TEX_QUEMADA
 	hoja.modulate = Color(1.3, 0.6, 0.2, 1.0)
 	
+	var txt_opcion = str(hoja.get_meta("texto_opcion")) if hoja.has_meta("texto_opcion") else "Opción"
+	
 	var sprite_hijo = hoja.get_node_or_null("TextoInciso")
 	if sprite_hijo:
 		var tween_texto = create_tween()
@@ -281,10 +282,21 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 	tween_color.tween_property(hoja, "modulate", Color(1, 1, 1, 1), 0.4)
 	
 	if es_correcta:
+		aciertos_logrados.append(txt_opcion)
 		GestorEstadoNivelBryan.laser_resuelto = true
 		GestorEstadoNivelBryan.laser_lente_ganador = String(lente_actual.name) if lente_actual != null else ""
 		GestorEstadoNivelBryan.laser_posiciones_hojas = [hoja1.global_position, hoja2.global_position, hoja3.global_position]
 		GestorEstadoNivelBryan.laser_texturas_hojas = [hoja1.texture, hoja2.texture, hoja3.texture]
+		
+		# PASO 3: Reporte de victoria al panel del profesor
+		if get_tree().root.has_node("GestorTelemetria"):
+			GestorTelemetria.enviar_reporte_final(
+				"jugador_bryan",
+				"victoria",
+				intentos_totales,
+				aciertos_logrados,
+				errores_cometidos
+			)
 		
 		var timer_exito = get_tree().create_timer(1.2)
 		timer_exito.timeout.connect(func():
@@ -293,6 +305,7 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 			get_tree().change_scene_to_file("res://Nivel_Bryan/sala_3.tscn")
 		)
 	else:
+		errores_cometidos.append(txt_opcion)
 		var timer_fallo = get_tree().create_timer(0.6)
 		timer_fallo.timeout.connect(func():
 			_apagar_lasers()

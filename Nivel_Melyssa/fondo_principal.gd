@@ -32,6 +32,15 @@ func reproducir_acierto() -> void:
 			video.finished.connect(_on_video_puerta_terminado)
 
 func _on_video_puerta_terminado():
+	# Reiniciar el estado global para futuras partidas
+	GlobalEsferas.pregunta_vista = false
+	GlobalEsferas.esferas_vistas = [false, false, false, false]
+	GlobalEsferas.intentos_restantes = 3
+	GlobalEsferas.opciones_cargadas.clear()
+	GlobalEsferas.historial_aciertos.clear()
+	GlobalEsferas.historial_errores.clear()
+	GlobalEsferas.total_disparos = 0
+	
 	# Le pedimos al nuevo cerebro (GestorRutaJuego) a dónde ir
 	var siguiente_nivel = GestorRutaJuego.obtener_siguiente_sala("res://Nivel_Melyssa/intro_esferas.tscn")
 	if siguiente_nivel != "":

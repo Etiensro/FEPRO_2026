@@ -12,10 +12,8 @@ func _process(delta: float) -> void:
 	
 	if GlobalEsferas.esferas_vistas.has(false):
 		return
-		
-	if GlobalEsferas.intentos_restantes <= 0:
-		return
 
+	# Movimiento horizontal con teclado
 	var direccion = 0.0
 	if Input.is_action_pressed("ui_right"):
 		direccion += 1.0
@@ -28,7 +26,8 @@ func _process(delta: float) -> void:
 	var ancho_pantalla = get_viewport_rect().size.x
 	position.x = clamp(position.x, margen, ancho_pantalla - margen)
 	
-	if Input.is_action_just_pressed("ui_accept"):
+	# Disparo con espacio
+	if Input.is_action_just_pressed("ui_accept") and GlobalEsferas.intentos_restantes > 0:
 		disparar()
 
 func _draw() -> void:

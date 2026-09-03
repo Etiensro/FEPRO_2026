@@ -9,6 +9,44 @@ func _ready():
 	add_child(http_request)
 	http_request.request_completed.connect(_on_request_completed)
 
+# ==========================================
+# OBRA MAESTRA: CONEXIÓN DE DESCARGA GLOBAL
+# ==========================================
+signal preguntas_listas(preguntas_array)
+
+func descargar_preguntas(etiqueta_nivel: String):
+	print("Descargando preguntas globales para: ", etiqueta_nivel)
+	var http_descarga = HTTPRequest.new()
+	add_child(http_descarga)
+	
+	# Usamos una función anónima (Lambda) para procesar el resultado de forma independiente
+	http_descarga.request_completed.connect(func(_res, code, _headers, body):
+		if code == 200:
+			var json = JSON.parse_string(body.get_string_from_utf8())
+			var array_final = []
+			
+			if json.has("documents"):
+				for doc in json["documents"]:
+					var fields = doc["fields"]
+					var nivel_datos = {}
+					for k in fields.keys():
+						nivel_datos[k] = unwrap_firestore(fields[k])
+					
+					if nivel_datos.has(etiqueta_nivel):
+						array_final = nivel_datos[etiqueta_nivel]
+						break
+			
+			preguntas_listas.emit(array_final)
+		else:
+			print("Error al descargar preguntas: ", code)
+			preguntas_listas.emit([]) # Enviar array vacío si hay error
+			
+		http_descarga.queue_free() # Borrar el nodo temporal
+	)
+	
+	var url = "https://firestore.googleapis.com/v1/projects/" + project_id + "/databases/(default)/documents/salas_activas"
+	http_descarga.request(url)
+
 # Función para enviar los resultados pedagógicos a Firebase
 func enviar_reporte_final(alumno: String, estado: String, disparos: int, aciertos: Array, errores: Array):
 	var url = "https://firestore.googleapis.com/v1/projects/" + project_id + "/databases/(default)/documents/telemetria_resultados"

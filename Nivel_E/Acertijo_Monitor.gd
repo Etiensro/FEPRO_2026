@@ -11,7 +11,6 @@ var aciertos_jugador: Array = []
 var lista_preguntas: Array = []
 var fallos_consecutivos: int = 0
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$Interfaz/ScrollContainer/TextoPantalla.text = "SISTEMA INICIADO...\nDescargando datos del servidor central..."
 	$Interfaz/BarraCarga.value = 0
@@ -19,20 +18,25 @@ func _ready() -> void:
 	$Interfaz/CapturaTeclado.hide()
 	$Interfaz/BotonConfirmar.hide()
 	
-	# Conectarnos a la señal maestra
 	GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
-	GestorTelemetria.descargar_preguntas("escena_computadora")
+	# 1. Apuntamos al bloque maestro de tu nivel
+	GestorTelemetria.descargar_preguntas("nivel_1")
 
 func _on_preguntas_listas(datos: Array) -> void:
 	if datos.size() > 0:
-		lista_preguntas = datos
-		cargar_nueva_pregunta()
+		var datos_nivel = datos[0]
+		# 2. Desempaquetamos tu escena
+		if datos_nivel.has("escena_computadora"):
+			lista_preguntas = datos_nivel["escena_computadora"]
+			cargar_nueva_pregunta()
+		else:
+			pregunta_prueba = "Error: No se encontró la escena_computadora."
+			respuesta_prueba = "error"
 	else:
-		pregunta_prueba = "Error: No se encontró la escena_computadora en la base de datos."
+		pregunta_prueba = "Error: Base de datos vacía."
 		respuesta_prueba = "error"
 		
 	var tween = create_tween()
-	# 2. Barra de carga
 	tween.tween_property($Interfaz/BarraCarga, "value", 100, 2.5)
 	tween.tween_callback(mostrar_pregunta)
 
@@ -99,7 +103,8 @@ func _on_boton_confirmar_pressed():
 	
 	if texto_jugador == respuesta_limpia:
 		aciertos_jugador.append(texto_jugador)
-		GestorTelemetria.enviar_reporte_final("jugador_etienne", "victoria", intentos_teclado, aciertos_jugador, errores_jugador)
+		# 3. Enviamos los 3 parámetros unificados
+		GestorTelemetria.enviar_reporte_final(intentos_teclado, aciertos_jugador, errores_jugador)
 		
 		GestorEstadoNivelE.computadora_resuelta = true
 		await get_tree().create_timer(1.0).timeout

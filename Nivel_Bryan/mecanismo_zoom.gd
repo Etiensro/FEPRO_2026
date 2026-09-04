@@ -59,7 +59,8 @@ func _ready() -> void:
 			GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
 			var clave_elegida = "tema_1" if randf() > 0.5 else "tema_2"
 			GestorEstadoNivelBryan.cilindros_id_actual = clave_elegida
-			GestorTelemetria.descargar_preguntas(clave_elegida)
+			# 1. Apuntar al Nivel 3
+			GestorTelemetria.descargar_preguntas("nivel_3")
 		else:
 			_fallback_local()
 
@@ -145,22 +146,23 @@ func _input(event: InputEvent) -> void:
 					get_viewport().set_input_as_handled()
 
 func _on_preguntas_listas(datos_recibidos) -> void:
-	var info_acertijo: Dictionary = {}
-	
-	if datos_recibidos is Dictionary and not datos_recibidos.is_empty():
-		info_acertijo = datos_recibidos
-	elif datos_recibidos is Array and datos_recibidos.size() > 0:
-		info_acertijo = datos_recibidos[0]
+	if datos_recibidos is Array and datos_recibidos.size() > 0:
+		var datos_nivel = datos_recibidos[0]
+		var clave_actual = GestorEstadoNivelBryan.cilindros_id_actual
 		
-	if not info_acertijo.is_empty() and info_acertijo.has("objetivo"):
-		GestorEstadoNivelBryan.cilindros_pregunta_guardada = str(info_acertijo.get("pregunta", ""))
-		GestorEstadoNivelBryan.cilindros_tipo_guardado = str(info_acertijo.get("tipo", "numeros"))
-		
-		if label_pregunta:
-			label_pregunta.text = GestorEstadoNivelBryan.cilindros_pregunta_guardada
-		
-		var objetivo = str(info_acertijo.get("objetivo", "")).to_upper().strip_edges()
-		generar_cilindros_multiples(objetivo, GestorEstadoNivelBryan.cilindros_tipo_guardado)
+		# 2. Extraer el tema 1 o tema 2 dinámicamente
+		if datos_nivel.has(clave_actual):
+			var info_acertijo = datos_nivel[clave_actual]
+			GestorEstadoNivelBryan.cilindros_pregunta_guardada = str(info_acertijo.get("pregunta", ""))
+			GestorEstadoNivelBryan.cilindros_tipo_guardado = str(info_acertijo.get("tipo", "numeros"))
+			
+			if label_pregunta:
+				label_pregunta.text = GestorEstadoNivelBryan.cilindros_pregunta_guardada
+			
+			var objetivo = str(info_acertijo.get("objetivo", "")).to_upper().strip_edges()
+			generar_cilindros_multiples(objetivo, GestorEstadoNivelBryan.cilindros_tipo_guardado)
+		else:
+			_fallback_local()
 	else:
 		_fallback_local()
 
@@ -365,22 +367,8 @@ func _efecto_acierto() -> void:
 		"Acertó con: '%s' (Pregunta: %s)" % [clave_correcta, pregunta]
 	]
 	
-	var hora_actual = Time.get_time_string_from_system().replace(":", "-")
-	var nombre_doc = "Juego_Cilindros_" + hora_actual
-	
-	var id_estudiante = "jugador_bryan"
-	if get_tree().root.has_node("GestorTelemetria"):
-		if "alumno_id" in GestorTelemetria and GestorTelemetria.alumno_id != "":
-			id_estudiante = GestorTelemetria.alumno_id
-	
-	_enviar_a_firestore_con_nombre(
-		nombre_doc,
-		id_estudiante,
-		"victoria",
-		intentos_cilindros,
-		detalle_acierto,
-		errores_cilindros
-	)
+	# 3. Enviar métricas con el gestor unificado
+	GestorTelemetria.enviar_reporte_final(intentos_cilindros, detalle_acierto, errores_cilindros)
 	
 	var tween = create_tween()
 	tween.tween_interval(1.5)

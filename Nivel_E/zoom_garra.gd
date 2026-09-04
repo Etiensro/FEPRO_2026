@@ -10,18 +10,19 @@ var tamano_y_original_cadena = 0
 var intentos_garra: int = 0
 var errores_jugador: Array = []
 var aciertos_jugador: Array = []
+var lista_preguntas: Array = []
+var fallos_consecutivos_garra: int = 0
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	
 	posicion_y_original_garra = $GarraMecanica.position.y
 	tamano_y_original_cadena = $CadenaInfinita.size.y
 	
-	# --- VERIFICACIÓN DE ESTADO ---
 	if GestorEstadoNivelE.computadora_resuelta:
 		$PlacaPregunta.text = "DESCARGANDO SISTEMA HIDRÁULICO DESDE LA NUBE..."
 		$GarraMecanica.show()
 		$CadenaInfinita.show()
-		$FiltroOscuridad.hide() # Apagamos la oscuridad para que el nivel se vea normal
+		$FiltroOscuridad.hide()
 		
 		var ancho_pantalla = get_viewport_rect().size.x
 		var alto_pantalla = get_viewport_rect().size.y
@@ -30,9 +31,9 @@ func _ready() -> void:
 		
 		bloqueado = false
 		
-		# Conectarnos a la señal maestra
 		GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
-		GestorTelemetria.descargar_preguntas("escena_garra")
+		# 1. Apuntamos al bloque maestro
+		GestorTelemetria.descargar_preguntas("nivel_1")
 	else:
 		# La computadora NO está resuelta: Modo inactivo, oscuro y texto negro
 		$PlacaPregunta.text = "SISTEMA HIDRÁULICO APAGADO.\nREQUIERE ENERGÍA."
@@ -44,16 +45,23 @@ func _ready() -> void:
 		$FiltroOscuridad.show()
 		$CapaUI/FiltroBotonSalir.show()
 
-var lista_preguntas: Array = []
-var fallos_consecutivos_garra: int = 0
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
 
 func _on_preguntas_listas(datos: Array) -> void:
 	if datos.size() > 0:
-		lista_preguntas = datos
-		cargar_nueva_pregunta_garra()
+		var datos_nivel = datos[0]
+		# 2. Extraemos la garra
+		if datos_nivel.has("escena_garra"):
+			lista_preguntas = datos_nivel["escena_garra"]
+			cargar_nueva_pregunta_garra()
+		else:
+			$PlacaPregunta.text = "ERROR: FORMATO INCORRECTO"
+			bloqueado = true
 	else:
 		$PlacaPregunta.text = "ERROR AL DESCARGAR DATOS"
-		bloqueado = true # Evita interacciones con las esferas
+		bloqueado = true
 
 func cargar_nueva_pregunta_garra():
 	if lista_preguntas.size() > 0:
@@ -76,11 +84,6 @@ func cargar_nueva_pregunta_garra():
 		$RepisaOpciones/EsferaD/Label.text = opciones[3]
 		
 		$PlacaPregunta.text = pregunta_actual
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
 
 func _on_esfera_a_pressed() -> void:
 	evaluar_esfera($RepisaOpciones/EsferaA)
@@ -134,7 +137,8 @@ func agarrar_y_evaluar(nodo_esfera: TextureButton):
 	
 	if texto_seleccionado == respuesta_correcta:
 		aciertos_jugador.append(texto_seleccionado)
-		GestorTelemetria.enviar_reporte_final("jugador_etienne", "victoria_garra", intentos_garra, aciertos_jugador, errores_jugador)
+		# 3. Enviamos los 3 parámetros unificados
+		GestorTelemetria.enviar_reporte_final(intentos_garra, aciertos_jugador, errores_jugador)
 		
 		$PlacaPregunta.text = "RESPUESTA CORRECTA. EXTRACCIÓN INICIADA..."
 		secuencia_victoria(nodo_esfera)

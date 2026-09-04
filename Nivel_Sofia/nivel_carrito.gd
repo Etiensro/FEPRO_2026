@@ -40,17 +40,21 @@ func iniciar_nivel_carrito():
 
 func cargar_json_carrito():
 	if pantalla_acertijo: pantalla_acertijo.text = "Cargando desde la base de datos..."
-	# Conectarnos a la señal maestra
 	GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
-	# Pedir la etiqueta del carrito
-	GestorTelemetria.descargar_preguntas("carrito_fase")
+	# 1. Pedir el bloque maestro del Nivel 2
+	GestorTelemetria.descargar_preguntas("nivel_2")
 
-func _on_preguntas_listas(array_preguntas: Array) -> void:
-	if array_preguntas.size() > 0:
-		lista_preguntas = array_preguntas
-		lista_preguntas.shuffle() 
-		pregunta_actual = lista_preguntas[0]
-		mostrar_pregunta()
+func _on_preguntas_listas(array_nivel: Array) -> void:
+	if array_nivel.size() > 0:
+		var datos_nivel = array_nivel[0]
+		# 2. Desempaquetar la fase del carrito
+		if datos_nivel.has("carrito_fase"):
+			lista_preguntas = datos_nivel["carrito_fase"]
+			lista_preguntas.shuffle() 
+			pregunta_actual = lista_preguntas[0]
+			mostrar_pregunta()
+		else:
+			if pantalla_acertijo: pantalla_acertijo.text = "Error: Formato incorrecto."
 	else:
 		if pantalla_acertijo: pantalla_acertijo.text = "Error al descargar preguntas"
 
@@ -61,27 +65,25 @@ func mostrar_pregunta():
 func evaluar_respuesta(opcion_usuario: bool):
 	var respuesta_correcta = pregunta_actual["respuesta"]
 	var fue_acierto = (opcion_usuario == respuesta_correcta)
-	var texto_opcion = "Verdadero" if opcion_usuario else "Falso"
+	
+	# 3. Extraer los primeros 20 caracteres de la pregunta para la estadística V/F
+	var concepto_vf = "V/F: " + str(pregunta_actual["texto"]).left(20) + "..."
 	
 	if fue_acierto:
 		print("Resultado: ¡CORRECTO!")
 		if sprite_carrito: sprite_carrito.texture = textura_encendido
-		
-		# Se transfiere el acierto a la memoria global permanente
 		Global.suma_niveles += 1 
-		GestorTelemetria.enviar_reporte_final("jugador_sofia_carrito", "victoria", 1, [texto_opcion], [])
+		# 4. Enviar 3 parámetros
+		GestorTelemetria.enviar_reporte_final(1, [concepto_vf], [])
 	else:
 		print("Resultado: ¡INCORRECTO!")
-		GestorTelemetria.enviar_reporte_final("jugador_sofia_carrito", "derrota", 1, [], [texto_opcion])
-		
-		# Opcional: Si manejan intentos globales, se restaría aquí
-		# Global.intentos_restantes -= 1
+		GestorTelemetria.enviar_reporte_final(1, [], [concepto_vf])
 		
 	if boton_verdadero: boton_verdadero.disabled = true
 	if boton_falso: boton_falso.disabled = true
 	
 	await get_tree().create_timer(1.0).timeout
-	reproducir_video_transicion() 
+	reproducir_video_transicion()
 
 func reproducir_video_transicion():
 	if pantalla_acertijo: pantalla_acertijo.visible = false

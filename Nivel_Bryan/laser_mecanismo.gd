@@ -71,7 +71,8 @@ func _ready() -> void:
 		if GestorEstadoNivelBryan.laser_datos_activos.is_empty():
 			if get_tree().root.has_node("GestorTelemetria"):
 				GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
-				GestorTelemetria.descargar_preguntas("laser_puzzles")
+				# 1. Apuntar al bloque maestro
+				GestorTelemetria.descargar_preguntas("nivel_3")
 			else:
 				_fallback_local_laser()
 		else:
@@ -114,12 +115,13 @@ func _reproducir_video_transicion() -> void:
 
 func _on_preguntas_listas(datos_recibidos) -> void:
 	if datos_recibidos is Array and datos_recibidos.size() > 0:
-		lista_puzzles_disponibles = datos_recibidos.duplicate()
-		_seleccionar_nueva_pregunta()
-	elif datos_recibidos is Dictionary and not datos_recibidos.is_empty():
-		lista_puzzles_disponibles = [datos_recibidos]
-		GestorEstadoNivelBryan.laser_datos_activos = datos_recibidos
-		_aplicar_datos_trivia(datos_recibidos, true)
+		var datos_nivel = datos_recibidos[0]
+		# 2. Extraer los puzzles del láser
+		if datos_nivel.has("laser_puzzles"):
+			lista_puzzles_disponibles = datos_nivel["laser_puzzles"].duplicate()
+			_seleccionar_nueva_pregunta()
+		else:
+			_fallback_local_laser()
 	else:
 		_fallback_local_laser()
 
@@ -366,17 +368,7 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 		GestorEstadoNivelBryan.laser_posiciones_hojas = [hoja1.global_position, hoja2.global_position, hoja3.global_position]
 		GestorEstadoNivelBryan.laser_texturas_hojas = [hoja1.texture, hoja2.texture, hoja3.texture]
 		
-		var hora_actual = Time.get_time_string_from_system().replace(":", "-")
-		var nombre_doc = "Juego_Laser_" + hora_actual
-		
-		_enviar_a_firestore_con_nombre(
-			nombre_doc,
-			"jugador_bryan",
-			"victoria",
-			intentos_totales,
-			aciertos_logrados,
-			errores_cometidos
-		)
+		GestorTelemetria.enviar_reporte_final(intentos_totales, aciertos_logrados, errores_cometidos)
 		
 		var timer_exito = get_tree().create_timer(1.5)
 		timer_exito.timeout.connect(func():

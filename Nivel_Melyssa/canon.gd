@@ -88,15 +88,8 @@ func disparar() -> void:
 			if fondo_reinicio and fondo_reinicio.has_method("mostrar_mensaje_reinicio"):
 				fondo_reinicio.mostrar_mensaje_reinicio()
 				
-			# Obtener nombre real del menú (si Etienne ya lo configuró en el global)
-			var nombre_jugador = "jugador_melyssa"
-			if "alumno_id" in GestorTelemetria:
-				if typeof(GestorTelemetria.get("alumno_id")) == TYPE_STRING and not GestorTelemetria.get("alumno_id").is_empty():
-					nombre_jugador = GestorTelemetria.get("alumno_id")
-					
+			# Nueva llamada corregida: solo requiere 3 argumentos
 			GestorTelemetria.enviar_reporte_final(
-				nombre_jugador, 
-				"derrota",
 				GlobalEsferas.total_disparos, 
 				GlobalEsferas.historial_aciertos, 
 				GlobalEsferas.historial_errores

@@ -50,16 +50,14 @@ func _on_area_entered(area: Area2D) -> void:
 				GlobalEsferas.historial_aciertos.append(texto_opcion)
 				print("Registrando acierto en Dashboard: ", texto_opcion)
 				
-				# Obtener nombre real del menú
-				var nombre_jugador = "jugador_melyssa"
-				if "alumno_id" in GestorTelemetria:
-					if typeof(GestorTelemetria.get("alumno_id")) == TYPE_STRING and not GestorTelemetria.get("alumno_id").is_empty():
-						nombre_jugador = GestorTelemetria.get("alumno_id")
+				# Guardar estadística de acierto pedagógico
+			if GlobalEsferas.opciones_cargadas.size() > id_golpeado:
+				var texto_opcion = GlobalEsferas.opciones_cargadas[id_golpeado]
+				GlobalEsferas.historial_aciertos.append(texto_opcion)
+				print("Registrando acierto en Dashboard: ", texto_opcion)
 						
-				# ¡VICTORIA! Enviamos el reporte
+				# ¡VICTORIA! Enviamos el reporte unificado con los 3 parámetros
 				GestorTelemetria.enviar_reporte_final(
-					nombre_jugador, 
-					"victoria", 
 					GlobalEsferas.total_disparos, 
 					GlobalEsferas.historial_aciertos, 
 					GlobalEsferas.historial_errores

@@ -28,24 +28,28 @@ func _ready():
 
 func cargar_json_tuneles():
 	if pantalla_acertijo: pantalla_acertijo.text = "Cargando datos desde la nube..."
-	# Conectarnos a la señal maestra
 	GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
-	# Pedir la etiqueta de Sofia
-	GestorTelemetria.descargar_preguntas("tuneles_fase")
+	# 1. Pedir el bloque maestro del Nivel 2
+	GestorTelemetria.descargar_preguntas("nivel_2")
 
-func _on_preguntas_listas(array_preguntas: Array) -> void:
-	if array_preguntas.size() > 0:
-		# Elegir pregunta aleatoria
-		array_preguntas.shuffle()
-		var puzzle_actual = array_preguntas[0]
-		
-		respuesta_correcta = puzzle_actual["correcta"]
-		if pantalla_acertijo: pantalla_acertijo.text = puzzle_actual["pregunta"]
-		if letrero_izq: letrero_izq.text = puzzle_actual["opciones"]["izquierda"]
-		if letrero_frente: letrero_frente.text = puzzle_actual["opciones"]["frente"]
-		if letrero_der: letrero_der.text = puzzle_actual["opciones"]["derecha"]
+func _on_preguntas_listas(array_nivel: Array) -> void:
+	if array_nivel.size() > 0:
+		var datos_nivel = array_nivel[0]
+		# 2. Desempaquetar la fase de los túneles
+		if datos_nivel.has("tuneles_fase"):
+			var array_preguntas = datos_nivel["tuneles_fase"]
+			array_preguntas.shuffle()
+			var puzzle_actual = array_preguntas[0]
+			
+			respuesta_correcta = puzzle_actual["correcta"]
+			if pantalla_acertijo: pantalla_acertijo.text = puzzle_actual["pregunta"]
+			if letrero_izq: letrero_izq.text = puzzle_actual["opciones"]["izquierda"]
+			if letrero_frente: letrero_frente.text = puzzle_actual["opciones"]["frente"]
+			if letrero_der: letrero_der.text = puzzle_actual["opciones"]["derecha"]
+		else:
+			if pantalla_acertijo: pantalla_acertijo.text = "Error: Formato incorrecto."
 	else:
-		if pantalla_acertijo: pantalla_acertijo.text = "Error al descargar preguntas de internet"
+		if pantalla_acertijo: pantalla_acertijo.text = "Error al descargar preguntas"
 
 func configurar_estilo_textos():
 	if letrero_izq:
@@ -96,14 +100,15 @@ func procesar_eleccion(eleccion):
 	elif eleccion == "frente" and letrero_frente: texto_elegido = letrero_frente.text
 	elif eleccion == "derecha" and letrero_der: texto_elegido = letrero_der.text
 	
+	# 3. Enviar solo 3 parámetros numéricos y arreglos
 	if eleccion == respuesta_correcta:
 		print("Resultado: ¡CORRECTO!")
 		Global.suma_niveles += 1
-		GestorTelemetria.enviar_reporte_final("jugador_sofia_tuneles", "victoria", 1, [texto_elegido], [])
+		GestorTelemetria.enviar_reporte_final(1, [texto_elegido], [])
 	else:
 		print("Resultado: ¡INCORRECTO!")
 		Global.intentos_restantes -= 1
-		GestorTelemetria.enviar_reporte_final("jugador_sofia_tuneles", "derrota", 1, [], [texto_elegido])
+		GestorTelemetria.enviar_reporte_final(1, [], [texto_elegido])
 
 func _on_video_terminado():
 	print("El video del túnel ha finalizado. Saltando a la siguiente sala...")

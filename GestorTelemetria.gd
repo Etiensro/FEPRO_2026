@@ -3,6 +3,11 @@ extends Node
 var http_request: HTTPRequest
 var project_id = "lore-fepro"
 
+# --- DATOS DE SESIÓN DEL MENÚ PRINCIPAL ---
+var alumno_id: String = ""
+var codigo_sala: String = ""
+var datos_sala_actual: Dictionary = {}
+
 func _ready():
 	# Creamos el nodo que hace las peticiones a internet
 	http_request = HTTPRequest.new()

@@ -3,12 +3,102 @@ extends Node2D
 func _ready() -> void:
 	var contenedor_vidas = get_node_or_null("ContenedorVidas")
 	if contenedor_vidas:
+		# Agregar un texto al lado de las lanzas para que sepan qué son. Usamos CanvasLayer para asegurar que se vea.
+		var canvas_vidas = CanvasLayer.new()
+		var texto_vidas = Label.new()
+		texto_vidas.text = "Intentos:"
+		texto_vidas.add_theme_font_size_override("font_size", 30)
+		texto_vidas.add_theme_color_override("font_color", Color.WHITE)
+		texto_vidas.add_theme_color_override("font_shadow_color", Color.BLACK)
+		texto_vidas.position = Vector2(40, 30) # Coordenadas fijas arriba a la izquierda
+		canvas_vidas.add_child(texto_vidas)
+		add_child(canvas_vidas)
+		
 		# Mostrar solo las vidas restantes
 		for i in range(contenedor_vidas.get_child_count()):
 			if i < GlobalEsferas.intentos_restantes:
 				contenedor_vidas.get_child(i).show()
 			else:
 				contenedor_vidas.get_child(i).hide()
+				
+	# Mostrar pista inicial si aún no ven la pregunta (usando un label local para no afectar globales)
+	if not GlobalEsferas.pregunta_vista:
+		var canvas = CanvasLayer.new()
+		
+		# 1. Un contenedor de márgenes para separar el subtítulo del borde superior de la pantalla
+		var margin = MarginContainer.new()
+		margin.set_anchors_preset(Control.PRESET_TOP_WIDE)
+		margin.add_theme_constant_override("margin_top", 80)
+		
+		# 2. Un PanelContainer para ponerle el recuadro oscuro transparente "discreto"
+		var panel = PanelContainer.new()
+		panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		var estilo_panel = StyleBoxFlat.new()
+		estilo_panel.bg_color = Color(0, 0, 0, 0.6)
+		estilo_panel.corner_radius_top_left = 8
+		estilo_panel.corner_radius_top_right = 8
+		estilo_panel.corner_radius_bottom_left = 8
+		estilo_panel.corner_radius_bottom_right = 8
+		estilo_panel.content_margin_left = 20
+		estilo_panel.content_margin_right = 20
+		estilo_panel.content_margin_top = 10
+		estilo_panel.content_margin_bottom = 10
+		panel.add_theme_stylebox_override("panel", estilo_panel)
+		
+		# 3. Nuestro Label
+		var pista = Label.new()
+		pista.text = "¿Qué pasará si presiono esa palanca?"
+		pista.add_theme_font_size_override("font_size", 24)
+		pista.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		pista.add_theme_color_override("font_shadow_color", Color.BLACK)
+		pista.add_theme_constant_override("shadow_offset_x", 2)
+		pista.add_theme_constant_override("shadow_offset_y", 2)
+		
+		panel.add_child(pista)
+		margin.add_child(panel)
+		canvas.add_child(margin)
+		add_child(canvas)
+		
+		var t = get_tree().create_timer(4.0)
+		t.timeout.connect(canvas.queue_free)
+		
+	# Mostrar segunda pista si ya vieron la pregunta pero aún no revisan las esferas
+	elif GlobalEsferas.pregunta_vista and GlobalEsferas.esferas_vistas.has(false):
+		var canvas = CanvasLayer.new()
+		
+		var margin = MarginContainer.new()
+		margin.set_anchors_preset(Control.PRESET_TOP_WIDE)
+		margin.add_theme_constant_override("margin_top", 80)
+		
+		var panel = PanelContainer.new()
+		panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		var estilo_panel = StyleBoxFlat.new()
+		estilo_panel.bg_color = Color(0, 0, 0, 0.6)
+		estilo_panel.corner_radius_top_left = 8
+		estilo_panel.corner_radius_top_right = 8
+		estilo_panel.corner_radius_bottom_left = 8
+		estilo_panel.corner_radius_bottom_right = 8
+		estilo_panel.content_margin_left = 20
+		estilo_panel.content_margin_right = 20
+		estilo_panel.content_margin_top = 10
+		estilo_panel.content_margin_bottom = 10
+		panel.add_theme_stylebox_override("panel", estilo_panel)
+		
+		var pista = Label.new()
+		pista.text = "Tal vez si revisas todas las esferas podrías desbloquear el cañón..."
+		pista.add_theme_font_size_override("font_size", 24)
+		pista.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		pista.add_theme_color_override("font_shadow_color", Color.BLACK)
+		pista.add_theme_constant_override("shadow_offset_x", 2)
+		pista.add_theme_constant_override("shadow_offset_y", 2)
+		
+		panel.add_child(pista)
+		margin.add_child(panel)
+		canvas.add_child(margin)
+		add_child(canvas)
+		
+		var t = get_tree().create_timer(5.0)
+		t.timeout.connect(canvas.queue_free)
 
 func reproducir_acierto() -> void:
 	# Buscamos el nodo de sonido (puede estar como hijo de FondoPrincipal o del Node2D raíz)
@@ -163,3 +253,40 @@ func _on_boton_cerrar_zoom_3_pressed() -> void:
 
 func _on_boton_cerrar_zoom_4_pressed() -> void:
 	%ZoomEsfera4.hide()
+
+func mostrar_subtitulo_superior(texto: String, duracion: float) -> void:
+	var canvas = CanvasLayer.new()
+	
+	var margin = MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	margin.add_theme_constant_override("margin_top", 80)
+	
+	var panel = PanelContainer.new()
+	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var estilo_panel = StyleBoxFlat.new()
+	estilo_panel.bg_color = Color(0, 0, 0, 0.6)
+	estilo_panel.corner_radius_top_left = 8
+	estilo_panel.corner_radius_top_right = 8
+	estilo_panel.corner_radius_bottom_left = 8
+	estilo_panel.corner_radius_bottom_right = 8
+	estilo_panel.content_margin_left = 20
+	estilo_panel.content_margin_right = 20
+	estilo_panel.content_margin_top = 10
+	estilo_panel.content_margin_bottom = 10
+	panel.add_theme_stylebox_override("panel", estilo_panel)
+	
+	var pista = Label.new()
+	pista.text = texto
+	pista.add_theme_font_size_override("font_size", 24)
+	pista.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pista.add_theme_color_override("font_shadow_color", Color.BLACK)
+	pista.add_theme_constant_override("shadow_offset_x", 2)
+	pista.add_theme_constant_override("shadow_offset_y", 2)
+	
+	panel.add_child(pista)
+	margin.add_child(panel)
+	canvas.add_child(margin)
+	add_child(canvas)
+	
+	var t = get_tree().create_timer(duracion)
+	t.timeout.connect(canvas.queue_free)

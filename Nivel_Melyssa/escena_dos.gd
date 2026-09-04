@@ -11,6 +11,16 @@ func _ready():
 	else:
 		# Siempre mostramos la pregunta que está guardada en el Autoload
 		$Instrucciones/ScrollTexto1/Label.text = GlobalEsferas.pregunta_actual
+		
+	# Mostrar pista en la pantalla de pregunta después de 7 segundos para no abrumar al jugador
+	var timer_pista = Timer.new()
+	timer_pista.wait_time = 7.0
+	timer_pista.one_shot = true
+	timer_pista.autostart = true
+	timer_pista.timeout.connect(func():
+		TransicionGlobal.mostrar_subtitulo("Usa el instructivo con sabiduría...", 4.0)
+	)
+	add_child(timer_pista)
 
 func _on_preguntas_listas(array_preguntas: Array) -> void:
 	if array_preguntas.size() > 0:

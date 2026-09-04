@@ -61,16 +61,42 @@ func disparar() -> void:
 		var contenedor_vidas = get_tree().current_scene.get_node_or_null("ContenedorVidas")
 		if contenedor_vidas and GlobalEsferas.intentos_restantes >= 0 and GlobalEsferas.intentos_restantes < contenedor_vidas.get_child_count():
 			contenedor_vidas.get_child(GlobalEsferas.intentos_restantes).hide()
+			
+		# Mostrar subtítulos dinámicos de los intentos restantes en la parte superior
+		var fondo_subtitulo = get_tree().current_scene.get_node_or_null("FondoPrincipal")
+		if not fondo_subtitulo: fondo_subtitulo = get_tree().current_scene # Si el script está en la raíz
+		
+		if fondo_subtitulo and fondo_subtitulo.has_method("mostrar_subtitulo_superior"):
+			if GlobalEsferas.intentos_restantes == 2:
+				fondo_subtitulo.mostrar_subtitulo_superior("Te quedan 2 intentos", 3.0)
+			elif GlobalEsferas.intentos_restantes == 1:
+				fondo_subtitulo.mostrar_subtitulo_superior("¡Último intento! Piensa bien tu respuesta...", 3.0)
+			elif GlobalEsferas.intentos_restantes == 0:
+				fondo_subtitulo.mostrar_subtitulo_superior("Se acabaron los intentos. Jala la palanca para recargar.", 5.0)
+		else:
+			# Respaldo si algo falla
+			if GlobalEsferas.intentos_restantes == 2:
+				TransicionGlobal.mostrar_subtitulo("Te quedan 2 intentos", 3.0)
+			elif GlobalEsferas.intentos_restantes == 1:
+				TransicionGlobal.mostrar_subtitulo("¡Último intento! Piensa bien tu respuesta...", 3.0)
+			elif GlobalEsferas.intentos_restantes == 0:
+				TransicionGlobal.mostrar_subtitulo("Se acabaron los intentos. Jala la palanca para recargar.", 5.0)
 		
 		if GlobalEsferas.intentos_restantes <= 0:
 			print("¡SE ACABARON LOS INTENTOS! Ve a la palanca.")
-			var fondo = get_tree().current_scene.get_node_or_null("FondoPrincipal")
-			if fondo and fondo.has_method("mostrar_mensaje_reinicio"):
-				fondo.mostrar_mensaje_reinicio()
+			var fondo_reinicio = get_tree().current_scene.get_node_or_null("FondoPrincipal")
+			if fondo_reinicio and fondo_reinicio.has_method("mostrar_mensaje_reinicio"):
+				fondo_reinicio.mostrar_mensaje_reinicio()
 				
+			# Obtener nombre real del menú (si Etienne ya lo configuró en el global)
+			var nombre_jugador = "jugador_melyssa"
+			if "alumno_id" in GestorTelemetria:
+				if typeof(GestorTelemetria.get("alumno_id")) == TYPE_STRING and not GestorTelemetria.get("alumno_id").is_empty():
+					nombre_jugador = GestorTelemetria.get("alumno_id")
+					
 			GestorTelemetria.enviar_reporte_final(
-				"jugador_melyssa", 
-				"derrota", 
+				nombre_jugador, 
+				"derrota",
 				GlobalEsferas.total_disparos, 
 				GlobalEsferas.historial_aciertos, 
 				GlobalEsferas.historial_errores

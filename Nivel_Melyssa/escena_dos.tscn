@@ -32,10 +32,10 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="BotonRegresar" type="TextureButton" parent="Instrucciones" unique_id=1972063941]
-offset_left = -121.135376
-offset_top = 216.15027
-offset_right = 255.974
-offset_bottom = 482.88196
+offset_left = 888.8744
+offset_top = -625.6809
+offset_right = 1265.9839
+offset_bottom = -358.94922
 texture_normal = ExtResource("4_axk7y")
 ignore_texture_size = true
 stretch_mode = 5

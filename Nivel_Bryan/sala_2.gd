@@ -4,6 +4,10 @@ extends Node2D
 @onready var area_laser: Area2D = $AreaLaser
 
 func _ready() -> void:
+	# Muestra el mensaje al cargar la sala
+	if TransicionGlobal.has_method("mostrar_subtitulo"):
+		TransicionGlobal.mostrar_subtitulo("Wow el cuadro de la pared se ha abierto", 4.0)
+
 	# Configurar colisión de los rodillos (vuelve al mecanismo bloqueado/resuelto)
 	if area_rodillos:
 		area_rodillos.input_event.connect(_on_area_rodillos_input_event)
@@ -18,11 +22,15 @@ func _ready() -> void:
 
 func _on_area_rodillos_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if TransicionGlobal.has_method("ocultar_subtitulo"):
+			TransicionGlobal.ocultar_subtitulo()
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		get_tree().change_scene_to_file("res://Nivel_Bryan/MecanismoZoom.tscn")
 
 func _on_area_laser_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if TransicionGlobal.has_method("ocultar_subtitulo"):
+			TransicionGlobal.ocultar_subtitulo()
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		# Redirige a la escena del láser dentro de Nivel_Bryan
 		get_tree().change_scene_to_file("res://Nivel_Bryan/laser_mecanismo.tscn")

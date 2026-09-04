@@ -1,5 +1,9 @@
 extends Node2D
 
+# --- FONDOS Y VIDEO DE ENTRADA ---
+const VIDEO_TRANSICION = preload("res://Nivel_Bryan/Assets/Zoom_Cil.ogv")
+const FONDO_SALA_1 = preload("res://Nivel_Bryan/Imagenes_Back/Sala_1.jpg")
+
 const ESCENA_RODILLO = preload("res://Nivel_Bryan/Cilindro.tscn")
 
 # --- TEXTURAS BOTÓN COMPROBAR ---
@@ -25,6 +29,7 @@ var lista_rodillos: Array = []
 var clave_correcta: String = ""
 var datos_acertijos: Dictionary = {}
 var bloqueado: bool = false
+var indice_escritura: int = 0
 
 # Telemetría pedagógica
 var intentos_cilindros: int = 0
@@ -48,6 +53,8 @@ func _ready() -> void:
 	if GestorEstadoNivelBryan.cilindros_resuelto:
 		_restaurar_estado_resuelto()
 	else:
+		_reproducir_video_transicion()
+			
 		if get_tree().root.has_node("GestorTelemetria"):
 			GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
 			var clave_elegida = "tema_1" if randf() > 0.5 else "tema_2"
@@ -55,6 +62,87 @@ func _ready() -> void:
 			GestorTelemetria.descargar_preguntas(clave_elegida)
 		else:
 			_fallback_local()
+
+func _reproducir_video_transicion() -> void:
+	bloqueado = true
+	
+	var capa_video = CanvasLayer.new()
+	capa_video.layer = 100
+	add_child(capa_video)
+	
+	# 1. Fondo de respaldo precargado para evitar el corte negro abrupto
+	var fondo_respaldo = TextureRect.new()
+	fondo_respaldo.texture = FONDO_SALA_1
+	fondo_respaldo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	fondo_respaldo.set_anchors_preset(Control.PRESET_FULL_RECT)
+	capa_video.add_child(fondo_respaldo)
+	
+	# 2. Reproductor de video
+	var player = VideoStreamPlayer.new()
+	player.stream = VIDEO_TRANSICION
+	player.expand = true
+	player.set_anchors_preset(Control.PRESET_FULL_RECT)
+	capa_video.add_child(player)
+	
+	var finalizar_video = func():
+		if is_instance_valid(capa_video):
+			capa_video.queue_free()
+		bloqueado = false
+		if TransicionGlobal.has_method("mostrar_subtitulo"):
+			TransicionGlobal.mostrar_subtitulo("Quizá si encuentro la combinación...", 4.0)
+
+	player.finished.connect(finalizar_video)
+	player.play()
+
+func _input(event: InputEvent) -> void:
+	if bloqueado or GestorEstadoNivelBryan.cilindros_resuelto or lista_rodillos.is_empty():
+		return
+
+	if event is InputEventKey and event.pressed and not event.echo:
+		# 1. Comprobar y animar el botón físico con tecla Enter / Intro
+		if event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER:
+			get_viewport().set_input_as_handled()
+			
+			if btn_comprobar and not btn_comprobar.disabled:
+				btn_comprobar.texture_normal = TEX_BTN_DOWN
+				var t = create_tween()
+				t.tween_interval(0.12)
+				t.chain().tween_callback(func():
+					if not bloqueado:
+						btn_comprobar.texture_normal = TEX_BTN_NORMAL
+					_on_btn_comprobar_pressed()
+				)
+			else:
+				_on_btn_comprobar_pressed()
+			return
+
+		var total_rodillos = lista_rodillos.size()
+
+		# 2. Borrado hacia atrás (Backspace / Delete) de derecha a izquierda
+		if event.keycode == KEY_BACKSPACE or event.keycode == KEY_DELETE:
+			indice_escritura = (indice_escritura - 1 + total_rodillos) % total_rodillos
+			var rodillo_borrar = lista_rodillos[indice_escritura]
+			if is_instance_valid(rodillo_borrar) and rodillo_borrar.has_method("asignar_valor"):
+				var simbolo_vacio = rodillo_borrar.opciones[0] if not rodillo_borrar.opciones.is_empty() else "0"
+				rodillo_borrar.asignar_valor(simbolo_vacio)
+			get_viewport().set_input_as_handled()
+			return
+
+		# 3. Detectar carácter pulsado
+		var char_pulsado = ""
+		if event.unicode > 0:
+			char_pulsado = char(event.unicode).to_upper()
+		elif event.keycode != KEY_NONE:
+			char_pulsado = OS.get_keycode_string(event.keycode).to_upper()
+
+		# 4. Escritura en bucle circular (sobrescribe y salta al inicio al llenarse)
+		if char_pulsado.length() == 1:
+			var rodillo_actual = lista_rodillos[indice_escritura]
+			if is_instance_valid(rodillo_actual) and rodillo_actual.has_method("asignar_valor"):
+				var exito = rodillo_actual.asignar_valor(char_pulsado)
+				if exito:
+					indice_escritura = (indice_escritura + 1) % total_rodillos
+					get_viewport().set_input_as_handled()
 
 func _on_preguntas_listas(datos_recibidos) -> void:
 	var info_acertijo: Dictionary = {}
@@ -125,6 +213,7 @@ func cargar_acertijo_desde_json(id_acertijo: String) -> void:
 
 func generar_cilindros_multiples(objetivo: String, tipo: String) -> void:
 	clave_correcta = objetivo
+	indice_escritura = 0
 
 	for hijo in contenedor.get_children():
 		hijo.free()
@@ -166,6 +255,9 @@ func generar_cilindros_multiples(objetivo: String, tipo: String) -> void:
 
 func _restaurar_estado_resuelto() -> void:
 	bloqueado = true
+	
+	if TransicionGlobal.has_method("ocultar_subtitulo"):
+		TransicionGlobal.ocultar_subtitulo()
 	
 	if btn_comprobar:
 		btn_comprobar.texture_normal = TEX_BTN_EXITO
@@ -249,6 +341,10 @@ func _on_btn_comprobar_pressed() -> void:
 
 func _efecto_acierto() -> void:
 	bloqueado = true
+	
+	if TransicionGlobal.has_method("ocultar_subtitulo"):
+		TransicionGlobal.ocultar_subtitulo()
+		
 	GestorEstadoNivelBryan.cilindros_resuelto = true
 	GestorEstadoNivelBryan.cilindros_valores_guardados = []
 	for r in lista_rodillos:
@@ -269,7 +365,6 @@ func _efecto_acierto() -> void:
 		"Acertó con: '%s' (Pregunta: %s)" % [clave_correcta, pregunta]
 	]
 	
-	# Genera el ID legible con la hora exacta
 	var hora_actual = Time.get_time_string_from_system().replace(":", "-")
 	var nombre_doc = "Juego_Cilindros_" + hora_actual
 	
@@ -333,6 +428,9 @@ func _enviar_a_firestore_con_nombre(id_documento: String, alumno: String, estado
 func _efecto_error() -> void:
 	bloqueado = true
 
+	if TransicionGlobal.has_method("ocultar_subtitulo"):
+		TransicionGlobal.ocultar_subtitulo()
+
 	if not btn_comprobar:
 		bloqueado = false
 		return
@@ -354,10 +452,13 @@ func _efecto_error() -> void:
 		btn_comprobar.texture_hover = TEX_BTN_NORMAL
 		btn_comprobar.texture_pressed = TEX_BTN_DOWN
 		bloqueado = false
+		indice_escritura = 0
 	)
 
 func _on_flecha_volver(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if TransicionGlobal.has_method("ocultar_subtitulo"):
+			TransicionGlobal.ocultar_subtitulo()
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		_redirigir_sala()
 

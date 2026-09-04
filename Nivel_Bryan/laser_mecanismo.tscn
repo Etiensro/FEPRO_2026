@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dum5fdpxtrpt1" path="res://Nivel_Bryan/laser_mecanismo.gd" id="1_octvo"]
 [ext_resource type="Texture2D" uid="uid://coeikxd4he1id" path="res://Nivel_Bryan/Imagenes_Back/Lacer_stage.jpg" id="1_op5bh"]
+[ext_resource type="Texture2D" uid="uid://bljvews5q647y" path="res://Nivel_Bryan/Assets/Lighting.png" id="3_pn37e"]
 [ext_resource type="Texture2D" uid="uid://dnhoc0go62f1q" path="res://Nivel_Bryan/Assets/Flecha.png" id="3_wur17"]
 [ext_resource type="Texture2D" uid="uid://kde7nde6jjih" path="res://Nivel_Bryan/Assets/LenteDir_1.png" id="4_jmoiq"]
 [ext_resource type="Script" uid="uid://k3qo1pvtk4ia" path="res://Nivel_Bryan/pieza_lente.gd" id="4_whbgb"]
@@ -10,7 +11,9 @@
 [ext_resource type="Texture2D" uid="uid://bnoqsmnr8rxvo" path="res://Nivel_Bryan/Assets/PedestalHoja.png" id="8_5m7jw"]
 [ext_resource type="Texture2D" uid="uid://bnyuxtlu3okhx" path="res://Nivel_Bryan/Assets/Inciso_A.png" id="9_1133u"]
 [ext_resource type="FontFile" uid="uid://r0bngy3y4k6i" path="res://Nivel_Bryan/Assets/Comico-Regular.otf" id="9_p06mw"]
+[ext_resource type="Texture2D" uid="uid://dgfl0w7w57dsu" path="res://Nivel_Bryan/Assets/Spark.png" id="9_wl8m4"]
 [ext_resource type="Texture2D" uid="uid://b0v4ruhheegbt" path="res://Nivel_Bryan/Assets/Inciso_B.png" id="10_5bolv"]
+[ext_resource type="Texture2D" uid="uid://ce18a1bgy5h8s" path="res://Nivel_Bryan/Assets/FlameGreen.png" id="10_wl8m4"]
 [ext_resource type="Texture2D" uid="uid://bcqupby060oa" path="res://Nivel_Bryan/Assets/Inciso_C.png" id="11_sfst6"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jedrl"]
@@ -63,17 +66,17 @@ shape = SubResource("CircleShape2D_jedrl")
 [node name="ParticulasSlot" type="CPUParticles2D" parent="." unique_id=1926439455]
 position = Vector2(1127, 440)
 scale = Vector2(1, 1.0000001)
-amount = 10
+texture = ExtResource("3_pn37e")
 emission_shape = 1
 emission_sphere_radius = 87.81
 gravity = Vector2(0, -1)
-scale_amount_min = 2.5
-scale_amount_max = 3.0
-color = Color(0.77303344, 0.7689313, 1.1551381e-06, 1)
+scale_amount_min = 0.01
+scale_amount_max = 0.03
+color = Color(0.54901963, 0.7607843, 0.9490196, 0.67058825)
 
 [node name="Flecha" type="Sprite2D" parent="." unique_id=1865489194]
-position = Vector2(969, 51.999817)
-scale = Vector2(0.34539542, 0.2923861)
+position = Vector2(997.98926, 78)
+scale = Vector2(0.63970286, 0.5423729)
 texture = SubResource("AtlasTexture_5bolv")
 
 [node name="Area2D" type="Area2D" parent="Flecha" unique_id=1342113727]
@@ -123,13 +126,14 @@ disabled = true
 [node name="ParticulasCont" type="CPUParticles2D" parent="Contenedor_piezas" unique_id=2067780854]
 position = Vector2(1148, 868)
 scale = Vector2(1, 1.0000001)
-amount = 15
+amount = 20
+texture = ExtResource("9_wl8m4")
 emission_shape = 3
 emission_rect_extents = Vector2(300, 130)
 gravity = Vector2(0, -1)
-scale_amount_min = 2.5
-scale_amount_max = 3.0
-color = Color(0.77303344, 0.7689313, 1.1551381e-06, 1)
+scale_amount_min = 0.02
+scale_amount_max = 0.05
+color = Color(0.77254903, 0.76862746, 0, 0.4627451)
 
 [node name="LaserInt" type="Line2D" parent="." unique_id=119041228]
 z_index = 5
@@ -154,12 +158,14 @@ shape = SubResource("CircleShape2D_s3pbl")
 [node name="ParticulasBoton" type="CPUParticles2D" parent="BotonDisparar" unique_id=569388728]
 position = Vector2(1651, 613)
 scale = Vector2(1, 1.0000001)
+amount = 15
+texture = ExtResource("10_wl8m4")
 emission_shape = 1
 emission_sphere_radius = 35.45
 gravity = Vector2(0, -1)
-scale_amount_min = 2.5
-scale_amount_max = 3.0
-color = Color(0.101960786, 0.67058825, 0.30980393, 1)
+scale_amount_min = 0.02
+scale_amount_max = 0.03
+color = Color(0.101960786, 0.67058825, 0.30980393, 0.5254902)
 
 [node name="PuntoLasers" type="Node2D" parent="." unique_id=2126795887]
 
@@ -218,7 +224,7 @@ theme_override_colors/font_shadow_color = Color(0.20392157, 0.20392157, 0.203921
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("9_p06mw")
 theme_override_font_sizes/font_size = 15
-text = "PRUEBA"
+text = "............."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -231,6 +237,6 @@ offset_bottom = 561.0
 theme_override_colors/font_color = Color(0.0035191667, 0.0035191681, 0.0035191672, 1)
 theme_override_fonts/font = ExtResource("9_p06mw")
 theme_override_font_sizes/font_size = 15
-text = "Boton verde + Lente direccional = Fuego!!!!"
+text = "Presiona el boton verde tras poner un lente y dispara"
 autowrap_mode = 2
 metadata/_edit_use_anchors_ = true

@@ -141,3 +141,74 @@ func _girar_cilindro(direccion: int) -> void:
 
 func obtener_valor() -> String:
 	return str(opciones[indice_actual]) if not opciones.is_empty() else ""
+
+func asignar_valor(caracter: String) -> bool:
+	var char_busqueda = caracter.to_upper()
+	if char_busqueda in opciones:
+		var nuevo_indice = opciones.find(char_busqueda)
+		if nuevo_indice == indice_actual:
+			return true # Ya tiene ese carácter puesto
+			
+		# Determina la dirección del giro (1 hacia abajo, -1 hacia arriba)
+		var pasos = nuevo_indice - indice_actual
+		var direccion = 1 if pasos > 0 else -1
+		
+		# Si la distancia es muy grande, gira en la dirección más corta
+		if abs(pasos) > opciones.size() / 2:
+			direccion = -direccion
+			
+		# Si ya se estaba animando, corta la animación previa
+		animando = false
+		_animar_hacia_indice(nuevo_indice, direccion)
+		return true
+	return false
+
+func _animar_hacia_indice(indice_destino: int, direccion: int) -> void:
+	_asegurar_labels()
+	if label_valor == null:
+		indice_actual = indice_destino
+		return
+
+	animando = true
+	
+	if label_auxiliar != null:
+		label_auxiliar.text = str(opciones[indice_destino])
+		label_auxiliar.visible = true
+		label_auxiliar.modulate.a = 1.0
+		
+		var alto_desplazamiento: float = size.y * 0.45
+		var inicio_y_aux: float = alto_desplazamiento if direccion == -1 else -alto_desplazamiento
+		var fin_y_actual: float = -alto_desplazamiento if direccion == -1 else alto_desplazamiento
+		
+		label_auxiliar.position = Vector2(0, inicio_y_aux)
+		label_valor.position = Vector2.ZERO
+		label_valor.modulate.a = 1.0
+		
+		var tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		
+		tween.tween_property(label_valor, "position:y", fin_y_actual, 0.06)
+		tween.tween_property(label_valor, "modulate:a", 0.0, 0.06)
+		
+		tween.tween_property(label_auxiliar, "position:y", 0.0, 0.06)
+		tween.tween_property(label_auxiliar, "modulate:a", 1.0, 0.06)
+		
+		# Micro-efecto de compresión idéntico al scroll
+		tween.tween_property(self, "scale", Vector2(1.04, 0.96), 0.03)
+		tween.chain().tween_property(self, "scale", Vector2(1.0, 1.0), 0.03)
+		
+		tween.chain().tween_callback(func():
+			indice_actual = indice_destino
+			label_valor.text = str(opciones[indice_actual])
+			label_valor.position = Vector2.ZERO
+			label_valor.modulate.a = 1.0
+			
+			label_auxiliar.text = ""
+			label_auxiliar.visible = false
+			label_auxiliar.modulate.a = 0.0
+			
+			animando = false
+		)
+	else:
+		indice_actual = indice_destino
+		label_valor.text = str(opciones[indice_actual])
+		animando = false

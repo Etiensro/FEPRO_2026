@@ -1,5 +1,8 @@
 extends Node2D
 
+# --- VIDEO DE TRANSICIÓN ---
+const VIDEO_TRANSICION = preload("res://Nivel_Bryan/Assets/Zoom_Lacer.ogv")
+
 # --- TEXTURAS PEDESTAL ---
 const TEX_CON_HOJA = preload("res://Nivel_Bryan/Assets/PedestalHoja.png")
 const TEX_QUEMADA  = preload("res://Nivel_Bryan/Assets/PedestalIncendiada.png")
@@ -62,6 +65,9 @@ func _ready() -> void:
 	if GestorEstadoNivelBryan.laser_resuelto:
 		_restaurar_estado_resuelto()
 	else:
+		# Reproduce la animación de entrada antes de mostrar el puzzle
+		_reproducir_video_transicion()
+			
 		if GestorEstadoNivelBryan.laser_datos_activos.is_empty():
 			if get_tree().root.has_node("GestorTelemetria"):
 				GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
@@ -80,6 +86,31 @@ func _ready() -> void:
 		area_flecha.input_event.connect(_on_flecha_input)
 		area_flecha.mouse_entered.connect(func(): Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND))
 		area_flecha.mouse_exited.connect(func(): Input.set_default_cursor_shape(Input.CURSOR_ARROW))
+
+func _reproducir_video_transicion() -> void:
+	bloqueado = true
+	
+	# Capa por encima de toda la escena para tapar el minijuego
+	var capa_video = CanvasLayer.new()
+	capa_video.layer = 100
+	add_child(capa_video)
+	
+	var player = VideoStreamPlayer.new()
+	player.stream = VIDEO_TRANSICION
+	player.expand = true
+	player.set_anchors_preset(Control.PRESET_FULL_RECT)
+	capa_video.add_child(player)
+	
+	var finalizar_video = func():
+		if is_instance_valid(capa_video):
+			capa_video.queue_free()
+		bloqueado = false
+		# Lanza la pista una vez que el video termina
+		if TransicionGlobal.has_method("mostrar_subtitulo"):
+			TransicionGlobal.mostrar_subtitulo("Hmmm quizas si pongo una de esas lentes que brilla sobre al soporte que saca chispas", 4.5)
+
+	player.finished.connect(finalizar_video)
+	player.play()
 
 func _on_preguntas_listas(datos_recibidos) -> void:
 	if datos_recibidos is Array and datos_recibidos.size() > 0:
@@ -141,6 +172,9 @@ func _seleccionar_nueva_pregunta() -> void:
 func _restaurar_estado_resuelto() -> void:
 	bloqueado = true
 	boton_disparar.input_pickable = false
+	
+	if TransicionGlobal.has_method("ocultar_subtitulo"):
+		TransicionGlobal.ocultar_subtitulo()
 	
 	for lente in $Contenedor_piezas.get_children():
 		if lente.has_node("CollisionShape2D"):
@@ -214,6 +248,9 @@ func intentar_encajar_lente(pieza: Node, _dir_num: int) -> bool:
 	
 	var dist = pieza.global_position.distance_to(slot_central.global_position)
 	if dist < 160.0:
+		if TransicionGlobal.has_method("ocultar_subtitulo"):
+			TransicionGlobal.ocultar_subtitulo()
+			
 		if lente_actual != null and lente_actual != pieza:
 			lente_actual.resetear_posicion()
 		
@@ -238,6 +275,9 @@ func _on_boton_disparar_input(_viewport: Node, event: InputEvent, _shape_idx: in
 func ejecutar_disparo() -> void:
 	if bloqueado or GestorEstadoNivelBryan.laser_resuelto or lente_actual == null:
 		return
+	
+	if TransicionGlobal.has_method("ocultar_subtitulo"):
+		TransicionGlobal.ocultar_subtitulo()
 	
 	bloqueado = true
 	intentos_totales += 1
@@ -443,6 +483,8 @@ func _apagar_lasers() -> void:
 
 func _on_flecha_input(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if TransicionGlobal.has_method("ocultar_subtitulo"):
+			TransicionGlobal.ocultar_subtitulo()
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		if GestorEstadoNivelBryan.laser_resuelto:
 			get_tree().change_scene_to_file("res://Nivel_Bryan/sala_3.tscn")

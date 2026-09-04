@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bb7uhp46hmsjg" path="res://Nivel_Bryan/Imagenes_Back/Sala_1.jpg" id="1_bjdmb"]
 [ext_resource type="Script" uid="uid://dyeddqaib2p8b" path="res://Nivel_Bryan/sala_1.gd" id="1_pikch"]
+[ext_resource type="Texture2D" uid="uid://dgfl0w7w57dsu" path="res://Nivel_Bryan/Assets/Spark.png" id="3_f07j3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l8awi"]
 size = Vector2(540, 275)
@@ -21,10 +22,11 @@ position = Vector2(628, 586.5)
 shape = SubResource("RectangleShape2D_l8awi")
 
 [node name="RodParticulas" type="CPUParticles2D" parent="AreaRodillos/CollisionShape2D" unique_id=1691261661]
-amount = 20
+amount = 23
+texture = ExtResource("3_f07j3")
 emission_shape = 3
 emission_rect_extents = Vector2(260, 130)
 gravity = Vector2(0, -25)
-scale_amount_min = 2.5
-scale_amount_max = 4.5
+scale_amount_min = 0.02
+scale_amount_max = 0.03
 color = Color(1, 0.9529412, 0.5019608, 0.48235294)

@@ -1,10 +1,15 @@
 [gd_scene format=3 uid="uid://i2bttm8ojsq8"]
 
-[ext_resource type="Script" uid="uid://5mhc5skq3y40" path="res://sala_2.gd" id="1_jin2n"]
-[ext_resource type="Texture2D" uid="uid://bkmaxoyxw3rue" path="res://Imagenes_Back/Sala_2.jpg" id="1_mykcf"]
+[ext_resource type="Script" uid="uid://5mhc5skq3y40" path="res://Nivel_Bryan/sala_2.gd" id="1_jin2n"]
+[ext_resource type="Texture2D" uid="uid://bkmaxoyxw3rue" path="res://Nivel_Bryan/Imagenes_Back/Sala_2.jpg" id="1_mykcf"]
+[ext_resource type="Texture2D" uid="uid://dgfl0w7w57dsu" path="res://Nivel_Bryan/Assets/Spark.png" id="3_gm1qo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l8awi"]
 size = Vector2(377.7779, 537.245)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sy41n"]
+atlas = ExtResource("3_gm1qo")
+region = Rect2(22.654724, 26.638649, 545.6408, 554.4986)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mykcf"]
 size = Vector2(519.125, 251)
@@ -29,13 +34,14 @@ shape = SubResource("RectangleShape2D_l8awi")
 [node name="ParticulasLazerComp" type="CPUParticles2D" parent="AreaLaser" unique_id=894928041]
 position = Vector2(1324.8889, 332.52386)
 scale = Vector2(1, 1.0000001)
-amount = 20
+amount = 23
+texture = SubResource("AtlasTexture_sy41n")
 emission_shape = 3
 emission_rect_extents = Vector2(180, 300)
-gravity = Vector2(0, -1)
-scale_amount_min = 2.5
-scale_amount_max = 3.0
-color = Color(0.77303344, 0.7689313, 1.1551381e-06, 1)
+gravity = Vector2(0, -25)
+scale_amount_min = 0.02
+scale_amount_max = 0.03
+color = Color(0.77254903, 0.76862746, 0, 0.5921569)
 
 [node name="AreaRodillos" type="Area2D" parent="." unique_id=1191205727]
 

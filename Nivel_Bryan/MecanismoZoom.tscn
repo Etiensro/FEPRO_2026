@@ -34,9 +34,9 @@ centered = false
 metadata/_edit_group_ = true
 
 [node name="Flecha" type="Sprite2D" parent="." unique_id=864135688]
-position = Vector2(1031.0001, 995)
+position = Vector2(1043.8932, 971.8712)
 rotation = -3.1415925
-scale = Vector2(0.34539542, 0.2923861)
+scale = Vector2(0.61489356, 0.52590054)
 texture = SubResource("AtlasTexture_pikch")
 
 [node name="Area2D" type="Area2D" parent="Flecha" unique_id=2140824017]
@@ -65,7 +65,7 @@ theme_override_colors/font_shadow_color = Color(0.39215687, 0.22352941, 0.090196
 theme_override_colors/font_outline_color = Color(0.26263314, 0.1860097, 0.0654337, 1)
 theme_override_fonts/font = ExtResource("4_rbrts")
 theme_override_font_sizes/font_size = 39
-text = "Prueba"
+text = ".........."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -77,8 +77,8 @@ amount = 20
 emission_shape = 3
 emission_rect_extents = Vector2(200, 110)
 gravity = Vector2(0, -1)
-scale_amount_min = 2.5
-scale_amount_max = 3.0
+scale_amount_min = 5.0
+scale_amount_max = 5.0
 color = Color(0.77303344, 0.7689313, 1.1551381e-06, 1)
 
 [node name="BtnComprobador" type="TextureButton" parent="." unique_id=1773414690]
@@ -99,6 +99,6 @@ amount = 20
 emission_shape = 1
 emission_sphere_radius = 87.81
 gravity = Vector2(0, -1)
-scale_amount_min = 2.5
-scale_amount_max = 3.0
+scale_amount_min = 4.0
+scale_amount_max = 4.0
 color = Color(0.77303344, 0.7689313, 1.1551381e-06, 1)

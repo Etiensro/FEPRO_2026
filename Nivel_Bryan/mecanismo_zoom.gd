@@ -30,8 +30,17 @@ var clave_correcta: String = ""
 var datos_acertijos: Dictionary = {}
 var bloqueado: bool = false
 var indice_escritura: int = 0
+var fallos_consecutivos: int = 0
 
 func _ready() -> void:
+	var vidas_inicio = 3
+	if get_tree().root.has_node("GestorVidas"):
+		vidas_inicio = get_tree().root.get_node("GestorVidas").vidas
+	print("\n========================================")
+	print(" [MECANISMO CILINDROS INICIADO]")
+	print(" Vidas disponibles del jugador: %d / 3" % vidas_inicio)
+	print("========================================\n")
+
 	if has_node("Flecha/Area2D"):
 		$Flecha/Area2D.input_event.connect(_on_flecha_volver)
 		$Flecha/Area2D.mouse_entered.connect(func(): Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND))
@@ -323,13 +332,28 @@ func _on_btn_comprobar_pressed() -> void:
 	if respuesta_jugador == clave_correcta:
 		_efecto_acierto()
 	else:
-		# REGISTRO GLOBAL: Guarda solo el valor literal ingresado por el jugador (ej: "000")
+		fallos_consecutivos += 1
+		
+		# REGISTRO GLOBAL TELEMETRÍA
 		if get_tree().root.has_node("GestorTelemetria"):
 			GestorTelemetria.registrar_respuesta("Nivel_Bryan", false, respuesta_jugador)
-		_efecto_error()
+		
+		var vidas_restantes = 0
+		if get_tree().root.has_node("GestorVidas"):
+			var gestor = get_tree().root.get_node("GestorVidas")
+			gestor.restar_vida()
+			vidas_restantes = gestor.vidas
+		
+		print("--------------------------------------------------")
+		print(" [FALLO CILINDROS] Ingresó: '%s' | Esperada: '%s'" % [respuesta_jugador, clave_correcta])
+		print(" Vidas restantes: %d / 3 | Errores seguidos: %d" % [vidas_restantes, fallos_consecutivos])
+		print("--------------------------------------------------")
+			
+		_efecto_error(vidas_restantes)
 
 func _efecto_acierto() -> void:
 	bloqueado = true
+	fallos_consecutivos = 0
 	
 	if TransicionGlobal.has_method("ocultar_subtitulo"):
 		TransicionGlobal.ocultar_subtitulo()
@@ -349,9 +373,12 @@ func _efecto_acierto() -> void:
 	if label_pregunta:
 		label_pregunta.text = "¡CORRECTO! MECANISMO DESBLOQUEADO"
 	
-	# REGISTRO GLOBAL: Guarda solo el valor literal de la clave correcta (ej: "100")
 	if get_tree().root.has_node("GestorTelemetria"):
 		GestorTelemetria.registrar_respuesta("Nivel_Bryan", true, clave_correcta)
+	
+	if get_tree().root.has_node("GestorVidas"):
+		get_tree().root.get_node("GestorVidas").restablecer_a_tres()
+		print("\n[¡ÉXITO CILINDROS!] Clave resuelta. Vidas restauradas a 3.\n")
 	
 	var tween = create_tween()
 	tween.tween_interval(1.5)
@@ -360,14 +387,15 @@ func _efecto_acierto() -> void:
 		_redirigir_sala()
 	)
 
-func _efecto_error() -> void:
+func _efecto_error(vidas_restantes: int) -> void:
 	bloqueado = true
 
 	if TransicionGlobal.has_method("ocultar_subtitulo"):
 		TransicionGlobal.ocultar_subtitulo()
 
 	if not btn_comprobar:
-		bloqueado = false
+		if vidas_restantes > 0:
+			bloqueado = false
 		return
 		
 	btn_comprobar.texture_normal = TEX_BTN_ERROR
@@ -386,6 +414,16 @@ func _efecto_error() -> void:
 		btn_comprobar.texture_normal = TEX_BTN_NORMAL
 		btn_comprobar.texture_hover = TEX_BTN_NORMAL
 		btn_comprobar.texture_pressed = TEX_BTN_DOWN
+		
+		# Si se quedó sin vidas, permanece bloqueado esperando la redirección al menú
+		if vidas_restantes <= 0:
+			return
+			
+		# Si tuvo 2 fallos consecutivos y le queda 1 vida, rota la pregunta
+		if fallos_consecutivos >= 2:
+			fallos_consecutivos = 0
+			cargar_acertijo_aleatorio()
+			
 		bloqueado = false
 		indice_escritura = 0
 	)

@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://chu64mc1l5d3i"]
+
+[ext_resource type="VideoStream" uid="uid://cvoyjc1q5aipf" path="res://Menu_lvl/Assets/gamewinvideo.ogv" id="1_1f66h"]
+[ext_resource type="Script" uid="uid://dg435xia0hrb3" path="res://game_win.gd" id="1_fctd2"]
+
+[node name="game_win" type="Control" unique_id=1572398491]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fctd2")
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=1010963982]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stream = ExtResource("1_1f66h")
+autoplay = true
+expand = true

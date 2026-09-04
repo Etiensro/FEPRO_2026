@@ -17,6 +17,15 @@ func _ready() -> void:
 	posicion_y_original_garra = $GarraMecanica.position.y
 	tamano_y_original_cadena = $CadenaInfinita.size.y
 	
+	# Monitoreo de vidas al entrar a la sala
+	var vidas_inicio = 3
+	if get_tree().root.has_node("GestorVidas"):
+		vidas_inicio = get_tree().root.get_node("GestorVidas").vidas
+	print("\n========================================")
+	print(" [MECANISMO GARRA MECÁNICA INICIADO]")
+	print(" Vidas disponibles del jugador: %d / 3" % vidas_inicio)
+	print("========================================\n")
+	
 	if GestorEstadoNivelE.computadora_resuelta:
 		$PlacaPregunta.text = "DESCARGANDO SISTEMA HIDRÁULICO DESDE LA NUBE..."
 		$GarraMecanica.show()
@@ -32,7 +41,6 @@ func _ready() -> void:
 		
 		if get_tree().root.has_node("GestorTelemetria"):
 			GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
-			# 1. Apuntamos al bloque maestro
 			GestorTelemetria.descargar_preguntas("nivel_1")
 		else:
 			_on_preguntas_listas([])
@@ -64,8 +72,20 @@ func _on_preguntas_listas(datos: Array) -> void:
 
 func cargar_nueva_pregunta_garra():
 	if lista_preguntas.size() > 0:
-		lista_preguntas.shuffle()
-		var puzzle_actual = lista_preguntas[0]
+		# Filtra para evitar repetir la pregunta activa
+		var candidatas = []
+		for p in lista_preguntas:
+			if p.get("pregunta_texto", "") != pregunta_actual:
+				candidatas.append(p)
+				
+		var puzzle_actual = {}
+		if candidatas.size() > 0:
+			candidatas.shuffle()
+			puzzle_actual = candidatas[0]
+		else:
+			lista_preguntas.shuffle()
+			puzzle_actual = lista_preguntas[0]
+			
 		pregunta_actual = puzzle_actual["pregunta_texto"]
 		respuesta_correcta = puzzle_actual["respuesta_correcta"]
 		
@@ -96,7 +116,8 @@ func _on_esfera_d_pressed() -> void:
 	evaluar_esfera($RepisaOpciones/EsferaD)
 
 func evaluar_esfera(nodo_esfera: TextureButton):
-	if bloqueado: return
+	if bloqueado: 
+		return
 	bloqueado = true
 	
 	var tween = create_tween()
@@ -131,11 +152,17 @@ func agarrar_y_evaluar(nodo_esfera: TextureButton):
 	intentos_garra += 1
 	
 	if texto_seleccionado == respuesta_correcta:
+		fallos_consecutivos_garra = 0
 		aciertos_jugador.append(texto_seleccionado)
 		
-		# REGISTRO GLOBAL: Guarda únicamente el texto literal de la respuesta correcta
+		# REGISTRO GLOBAL DE TELEMETRÍA
 		if get_tree().root.has_node("GestorTelemetria"):
 			GestorTelemetria.registrar_respuesta("Nivel_E", true, respuesta_correcta)
+		
+		# GESTIÓN DE VIDAS: Restablece vidas a 3 al acertar
+		if get_tree().root.has_node("GestorVidas"):
+			get_tree().root.get_node("GestorVidas").restablecer_a_tres()
+			print("\n[¡ÉXITO GARRA!] Esfera correcta extraída. Vidas restauradas a 3.\n")
 		
 		$PlacaPregunta.text = "RESPUESTA CORRECTA. EXTRACCIÓN INICIADA..."
 		secuencia_victoria(nodo_esfera)
@@ -143,20 +170,40 @@ func agarrar_y_evaluar(nodo_esfera: TextureButton):
 		errores_jugador.append(texto_seleccionado)
 		fallos_consecutivos_garra += 1
 		
-		# REGISTRO GLOBAL: Guarda únicamente el texto literal que seleccionó erróneamente
+		# REGISTRO GLOBAL DE TELEMETRÍA
 		if get_tree().root.has_node("GestorTelemetria"):
 			GestorTelemetria.registrar_respuesta("Nivel_E", false, texto_seleccionado)
+		
+		# GESTIÓN DE VIDAS: Resta una vida y activa banner superior
+		var vidas_restantes = 0
+		if get_tree().root.has_node("GestorVidas"):
+			var gestor = get_tree().root.get_node("GestorVidas")
+			gestor.restar_vida()
+			vidas_restantes = gestor.vidas
+		
+		print("--------------------------------------------------")
+		print(" [FALLO GARRA] Seleccionó: '%s' | Esperado: '%s'" % [texto_seleccionado, respuesta_correcta])
+		print(" Vidas restantes: %d / 3 | Errores en esta pregunta: %d" % [vidas_restantes, fallos_consecutivos_garra])
+		print("--------------------------------------------------")
 		
 		$PlacaPregunta.text = "SISTEMA HIDRÁULICO INESTABLE. REINTENTE."
 		nodo_esfera.disabled = true
 		animar_temblor_y_romper(nodo_esfera)
 		
+		# CASO 1: Derrota total (0 vidas restantes)
+		if vidas_restantes <= 0:
+			for esfera in $RepisaOpciones.get_children():
+				esfera.disabled = true
+			soltar_y_regresar(false)
+			return
+			
+		# CASO 2: Rota pregunta al acumular 2 fallos consecutivos
 		if fallos_consecutivos_garra >= 2:
 			fallos_consecutivos_garra = 0
 			await get_tree().create_timer(1.5).timeout
 			cargar_nueva_pregunta_garra()
 			
-		soltar_y_regresar()
+		soltar_y_regresar(true)
 
 func animar_temblor_y_romper(nodo_esfera: TextureButton):
 	var tween_shake = create_tween()
@@ -204,7 +251,7 @@ func secuencia_victoria(nodo_esfera: TextureButton):
 		TransicionGlobal.cambiar_escena("res://Nivel_E/Hub_Principal.tscn")
 	)
 
-func soltar_y_regresar():
+func soltar_y_regresar(permitir_desbloqueo: bool = true):
 	await get_tree().create_timer(1.5).timeout
 	
 	$GarraMecanica.texture = preload("res://Nivel_E/Assets/Garra Abierta.png")
@@ -213,7 +260,13 @@ func soltar_y_regresar():
 	var tween = create_tween().set_parallel(true)
 	tween.tween_property($GarraMecanica, "position:y", posicion_y_original_garra, 0.8)
 	tween.tween_property($CadenaInfinita, "size:y", tamano_y_original_cadena, 0.8)
-	tween.chain().tween_callback(func(): bloqueado = false)
+	
+	if permitir_desbloqueo:
+		tween.chain().tween_callback(func(): bloqueado = false)
+	else:
+		# Si se agotaron las vidas, permanece bloqueado en espera de la transición
+		tween.chain().tween_callback(func(): bloqueado = true)
 
 func _on_boton_salir_pressed() -> void:
-	TransicionGlobal.cambiar_escena("res://Nivel_E/Hub_Principal.tscn")
+	if not bloqueado:
+		TransicionGlobal.cambiar_escena("res://Nivel_E/Hub_Principal.tscn")

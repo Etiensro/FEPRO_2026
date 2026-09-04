@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://by7vr2pmsxbab"]
+
+[ext_resource type="VideoStream" uid="uid://b000uvywnmjx8" path="res://Menu_lvl/Assets/gameovervideo.ogv" id="1_y26ei"]
+[ext_resource type="Script" uid="uid://1gsrqw5g05so" path="res://game_over.gd" id="1_yxx3c"]
+
+[node name="game_over" type="Control" unique_id=1903585263]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_yxx3c")
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=1038521178]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stream = ExtResource("1_y26ei")
+autoplay = true
+expand = true

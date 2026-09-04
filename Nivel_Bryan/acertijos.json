@@ -9,6 +9,24 @@
 		{ "texto": "FILTRO POLARIZADO", "correcta": false }
 	  ]
 	},
+	{
+	  "materia": "MATEMÁTICAS",
+	  "pregunta": "¿CUÁL ES LA DERIVADA RESPECTO A X DE LA FUNCIÓN f(x) = e^(2x)?",
+	  "opciones": [
+		{ "texto": "2e^(2x)", "correcta": true },
+		{ "texto": "e^(2x)", "correcta": false },
+		{ "texto": "(1/2)e^(2x)", "correcta": false }
+	  ]
+	},
+	{
+	  "materia": "ELECTRÓNICA",
+	  "pregunta": "¿QUÉ COMPONENTE SEMICONDUCTOR PERMITE EL FLUJO DE CORRIENTE EN UN SOLO SENTIDO?",
+	  "opciones": [
+		{ "texto": "DIODO", "correcta": true },
+		{ "texto": "RESISTOR", "correcta": false },
+		{ "texto": "CAPACITOR", "correcta": false }
+	  ]
+	}
   ],
 
   "historia_1": {
@@ -17,4 +35,18 @@
 	"tipo": "numeros",
 	"objetivo": "1521"
   },
+
+  "historia_2": {
+	"materia": "HISTORIA",
+	"pregunta": "¿EN QUÉ AÑO INICIÓ LA INDEPENDENCIA DE MÉXICO?",
+	"tipo": "numeros",
+	"objetivo": "1810"
+  },
+
+  "ciencias_1": {
+	"materia": "QUÍMICA",
+	"pregunta": "¿CUÁL ES EL SÍMBOLO QUÍMICO DEL ORO?",
+	"tipo": "letras",
+	"objetivo": "AU"
+  }
 }

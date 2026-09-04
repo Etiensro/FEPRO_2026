@@ -1,6 +1,31 @@
 extends Node2D
 
 func _ready() -> void:
+	# Monitoreo y sincronización inicial de vidas
+	var vidas_inicio = 3
+	if get_tree().root.has_node("GestorVidas"):
+		var gestor = get_tree().root.get_node("GestorVidas")
+		vidas_inicio = gestor.vidas
+		# Escuchar cambios globales de vidas para actualizar los iconos locales
+		if not gestor.vidas_cambiadas.is_connected(_actualizar_iconos_vidas):
+			gestor.vidas_cambiadas.connect(_actualizar_iconos_vidas)
+			
+	print("\n========================================")
+	print(" [SALA ESFERAS (MELYSSA) INICIADA]")
+	print(" Vidas disponibles del jugador: %d / 3" % vidas_inicio)
+	print("========================================\n")
+
+	_configurar_contenedor_vidas(vidas_inicio)
+				
+	# Mostrar pista inicial si aún no ven la pregunta
+	if not GlobalEsferas.pregunta_vista:
+		mostrar_subtitulo_superior("¿Qué pasará si presiono esa palanca?", 4.0)
+		
+	# Mostrar segunda pista si ya vieron la pregunta pero aún no revisan las esferas
+	elif GlobalEsferas.pregunta_vista and GlobalEsferas.esferas_vistas.has(false):
+		mostrar_subtitulo_superior("Tal vez si revisas todas las esferas podrías desbloquear el cañón...", 5.0)
+
+func _configurar_contenedor_vidas(vidas_actuales: int) -> void:
 	var contenedor_vidas = get_node_or_null("ContenedorVidas")
 	if contenedor_vidas:
 		var canvas_vidas = CanvasLayer.new()
@@ -13,87 +38,16 @@ func _ready() -> void:
 		canvas_vidas.add_child(texto_vidas)
 		add_child(canvas_vidas)
 		
+		_actualizar_iconos_vidas(vidas_actuales)
+
+func _actualizar_iconos_vidas(vidas_actuales: int) -> void:
+	var contenedor_vidas = get_node_or_null("ContenedorVidas")
+	if contenedor_vidas:
 		for i in range(contenedor_vidas.get_child_count()):
-			if i < GlobalEsferas.intentos_restantes:
+			if i < vidas_actuales:
 				contenedor_vidas.get_child(i).show()
 			else:
 				contenedor_vidas.get_child(i).hide()
-				
-	# Mostrar pista inicial si aún no ven la pregunta
-	if not GlobalEsferas.pregunta_vista:
-		var canvas = CanvasLayer.new()
-		
-		var margin = MarginContainer.new()
-		margin.set_anchors_preset(Control.PRESET_TOP_WIDE)
-		margin.add_theme_constant_override("margin_top", 80)
-		
-		var panel = PanelContainer.new()
-		panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		var estilo_panel = StyleBoxFlat.new()
-		estilo_panel.bg_color = Color(0, 0, 0, 0.6)
-		estilo_panel.corner_radius_top_left = 8
-		estilo_panel.corner_radius_top_right = 8
-		estilo_panel.corner_radius_bottom_left = 8
-		estilo_panel.corner_radius_bottom_right = 8
-		estilo_panel.content_margin_left = 20
-		estilo_panel.content_margin_right = 20
-		estilo_panel.content_margin_top = 10
-		estilo_panel.content_margin_bottom = 10
-		panel.add_theme_stylebox_override("panel", estilo_panel)
-		
-		var pista = Label.new()
-		pista.text = "¿Qué pasará si presiono esa palanca?"
-		pista.add_theme_font_size_override("font_size", 24)
-		pista.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		pista.add_theme_color_override("font_shadow_color", Color.BLACK)
-		pista.add_theme_constant_override("shadow_offset_x", 2)
-		pista.add_theme_constant_override("shadow_offset_y", 2)
-		
-		panel.add_child(pista)
-		margin.add_child(panel)
-		canvas.add_child(margin)
-		add_child(canvas)
-		
-		var t = get_tree().create_timer(4.0)
-		t.timeout.connect(canvas.queue_free)
-		
-	# Mostrar segunda pista si ya vieron la pregunta pero aún no revisan las esferas
-	elif GlobalEsferas.pregunta_vista and GlobalEsferas.esferas_vistas.has(false):
-		var canvas = CanvasLayer.new()
-		
-		var margin = MarginContainer.new()
-		margin.set_anchors_preset(Control.PRESET_TOP_WIDE)
-		margin.add_theme_constant_override("margin_top", 80)
-		
-		var panel = PanelContainer.new()
-		panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		var estilo_panel = StyleBoxFlat.new()
-		estilo_panel.bg_color = Color(0, 0, 0, 0.6)
-		estilo_panel.corner_radius_top_left = 8
-		estilo_panel.corner_radius_top_right = 8
-		estilo_panel.corner_radius_bottom_left = 8
-		estilo_panel.corner_radius_bottom_right = 8
-		estilo_panel.content_margin_left = 20
-		estilo_panel.content_margin_right = 20
-		estilo_panel.content_margin_top = 10
-		estilo_panel.content_margin_bottom = 10
-		panel.add_theme_stylebox_override("panel", estilo_panel)
-		
-		var pista = Label.new()
-		pista.text = "Tal vez si revisas todas las esferas podrías desbloquear el cañón..."
-		pista.add_theme_font_size_override("font_size", 24)
-		pista.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		pista.add_theme_color_override("font_shadow_color", Color.BLACK)
-		pista.add_theme_constant_override("shadow_offset_x", 2)
-		pista.add_theme_constant_override("shadow_offset_y", 2)
-		
-		panel.add_child(pista)
-		margin.add_child(panel)
-		canvas.add_child(margin)
-		add_child(canvas)
-		
-		var t = get_tree().create_timer(5.0)
-		t.timeout.connect(canvas.queue_free)
 
 func reproducir_acierto() -> void:
 	var sonido = get_node_or_null("SonidoAcierto")
@@ -113,10 +67,14 @@ func reproducir_acierto() -> void:
 		if not video.finished.is_connected(_on_video_puerta_terminado):
 			video.finished.connect(_on_video_puerta_terminado)
 	else:
-		# Fallback por si la escena no tiene el nodo de video
 		_on_video_puerta_terminado()
 
 func _on_video_puerta_terminado() -> void:
+	# GESTIÓN GLOBAL DE VIDAS: Restaurar vidas a 3 al superar la sala completa
+	if get_tree().root.has_node("GestorVidas"):
+		get_tree().root.get_node("GestorVidas").restablecer_a_tres()
+		print("\n[¡SALA COMPLETADA!] Vidas restauradas a 3 para el siguiente reto.\n")
+
 	# Reiniciar el estado local del nivel de Melyssa
 	GlobalEsferas.pregunta_vista = false
 	GlobalEsferas.esferas_vistas = [false, false, false, false]
@@ -126,14 +84,13 @@ func _on_video_puerta_terminado() -> void:
 	GlobalEsferas.historial_errores.clear()
 	GlobalEsferas.total_disparos = 0
 	
-	# Pedimos la siguiente sala eliminando la intro de Melyssa de pendientes
+	# Siguiente nivel en la rotación
 	var siguiente_nivel = GestorRutaJuego.obtener_siguiente_sala("res://Nivel_Melyssa/intro_esferas.tscn")
 	
 	if siguiente_nivel != "":
 		get_tree().change_scene_to_file(siguiente_nivel)
 	else:
 		print("¡Todas las salas concluidas! Subiendo telemetría final completa a Firestore...")
-		# SUBIDA ÚNICA A FIRESTORE
 		if get_tree().root.has_node("GestorTelemetria"):
 			GestorTelemetria.enviar_reporte_acumulado("victoria")
 			
@@ -146,6 +103,10 @@ func reproducir_error() -> void:
 	if sonido:
 		sonido.play()
 	print("Fallaste esta esfera.")
+	
+	# GESTIÓN GLOBAL DE VIDAS: Restar vida y desplegar banner de corazones
+	if get_tree().root.has_node("GestorVidas"):
+		get_tree().root.get_node("GestorVidas").restar_vida()
 
 func mostrar_mensaje_reinicio() -> void:
 	var placa = get_tree().current_scene.get_node_or_null("PlacaMensaje")

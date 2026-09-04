@@ -10,9 +10,22 @@ extends Node2D
 @onready var video_der = $VideoDerecha
 
 var respuesta_correcta: String = ""
+var pregunta_texto_actual: String = ""
+var lista_preguntas_tuneles: Array = []
+var fallos_consecutivos: int = 0
+var ultimo_intento_correcto: bool = false
+var bloqueado: bool = false
 
 func _ready() -> void:
 	configurar_estilo_textos()
+	
+	var vidas_inicio = 3
+	if get_tree().root.has_node("GestorVidas"):
+		vidas_inicio = get_tree().root.get_node("GestorVidas").vidas
+	print("\n========================================")
+	print(" [NIVEL SOFÍA: TÚNELES INICIADO]")
+	print(" Vidas disponibles del jugador: %d / 3" % vidas_inicio)
+	print("========================================\n")
 	
 	if video_izq: video_izq.visible = false
 	if video_frente: video_frente.visible = false
@@ -32,7 +45,6 @@ func cargar_json_tuneles() -> void:
 	
 	if get_tree().root.has_node("GestorTelemetria"):
 		GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
-		# 1. Pedir el bloque maestro del Nivel 2
 		GestorTelemetria.descargar_preguntas("nivel_2")
 	else:
 		_cargar_respaldo_tuneles()
@@ -40,19 +52,9 @@ func cargar_json_tuneles() -> void:
 func _on_preguntas_listas(array_nivel: Array) -> void:
 	if array_nivel.size() > 0:
 		var datos_nivel = array_nivel[0]
-		# 2. Desempaquetar la fase de los túneles
 		if datos_nivel.has("tuneles_fase"):
-			var array_preguntas = datos_nivel["tuneles_fase"]
-			array_preguntas.shuffle()
-			var puzzle_actual = array_preguntas[0]
-			
-			respuesta_correcta = puzzle_actual.get("correcta", "frente")
-			if pantalla_acertijo: pantalla_acertijo.text = puzzle_actual.get("pregunta", "")
-			
-			var opciones = puzzle_actual.get("opciones", {})
-			if letrero_izq: letrero_izq.text = opciones.get("izquierda", "Túnel A")
-			if letrero_frente: letrero_frente.text = opciones.get("frente", "Túnel B")
-			if letrero_der: letrero_der.text = opciones.get("derecha", "Túnel C")
+			lista_preguntas_tuneles = datos_nivel["tuneles_fase"]
+			_seleccionar_nueva_pregunta_tuneles()
 			return
 		else:
 			print("Aviso: Formato desconocido en tuneles_fase. Usando respaldo...")
@@ -61,9 +63,36 @@ func _on_preguntas_listas(array_nivel: Array) -> void:
 		
 	_cargar_respaldo_tuneles()
 
+func _seleccionar_nueva_pregunta_tuneles() -> void:
+	if lista_preguntas_tuneles.size() > 0:
+		var candidatas = []
+		for p in lista_preguntas_tuneles:
+			if p.get("pregunta", "") != pregunta_texto_actual:
+				candidatas.append(p)
+				
+		var puzzle_actual = {}
+		if candidatas.size() > 0:
+			candidatas.shuffle()
+			puzzle_actual = candidatas[0]
+		else:
+			lista_preguntas_tuneles.shuffle()
+			puzzle_actual = lista_preguntas_tuneles[0]
+			
+		pregunta_texto_actual = puzzle_actual.get("pregunta", "")
+		respuesta_correcta = puzzle_actual.get("correcta", "frente")
+		if pantalla_acertijo: pantalla_acertijo.text = pregunta_texto_actual
+		
+		var opciones = puzzle_actual.get("opciones", {})
+		if letrero_izq: letrero_izq.text = opciones.get("izquierda", "Túnel A")
+		if letrero_frente: letrero_frente.text = opciones.get("frente", "Túnel B")
+		if letrero_der: letrero_der.text = opciones.get("derecha", "Túnel C")
+	else:
+		_cargar_respaldo_tuneles()
+
 func _cargar_respaldo_tuneles() -> void:
+	pregunta_texto_actual = "¿Qué compuerta lógica produce un 1 lógico únicamente cuando todas sus entradas son 1?"
 	respuesta_correcta = "frente"
-	if pantalla_acertijo: pantalla_acertijo.text = "¿Qué compuerta lógica produce un 1 lógico únicamente cuando todas sus entradas son 1?"
+	if pantalla_acertijo: pantalla_acertijo.text = pregunta_texto_actual
 	if letrero_izq: letrero_izq.text = "OR"
 	if letrero_frente: letrero_frente.text = "AND"
 	if letrero_der: letrero_der.text = "XOR"
@@ -91,12 +120,41 @@ func _on_boton_derecha_pressed() -> void:
 	procesar_eleccion("derecha")
 
 func procesar_eleccion(eleccion: String) -> void:
+	if bloqueado:
+		return
+	bloqueado = true
+	
 	print("El jugador eligió: ", eleccion)
 	
 	if has_node("Escenario/BotonIzquierda"): $Escenario/BotonIzquierda.disabled = true
 	if has_node("Escenario/BotonFrente"): $Escenario/BotonFrente.disabled = true
 	if has_node("Escenario/BotonDerecha"): $Escenario/BotonDerecha.disabled = true
 	
+	var texto_elegido = eleccion
+	if eleccion == "izquierda" and letrero_izq: texto_elegido = letrero_izq.text
+	elif eleccion == "frente" and letrero_frente: texto_elegido = letrero_frente.text
+	elif eleccion == "derecha" and letrero_der: texto_elegido = letrero_der.text
+	
+	ultimo_intento_correcto = (eleccion == respuesta_correcta)
+	
+	# REGISTRO GLOBAL TELEMETRÍA
+	if get_tree().root.has_node("GestorTelemetria"):
+		GestorTelemetria.registrar_respuesta("Nivel_Sofia", ultimo_intento_correcto, texto_elegido)
+	
+	if ultimo_intento_correcto:
+		fallos_consecutivos = 0
+		print("Resultado: ¡CORRECTO!")
+		if typeof(Global) != TYPE_NIL and "suma_niveles" in Global:
+			Global.suma_niveles += 1
+	else:
+		fallos_consecutivos += 1
+		print("Resultado: ¡INCORRECTO! Túnel erróneo.")
+		
+		# GESTIÓN GLOBAL DE VIDAS
+		if get_tree().root.has_node("GestorVidas"):
+			get_tree().root.get_node("GestorVidas").restar_vida()
+	
+	# Reproducción del video correspondiente
 	var video_reproducido: VideoStreamPlayer = null
 	if eleccion == "izquierda" and video_izq:
 		video_reproducido = video_izq
@@ -111,40 +169,47 @@ func procesar_eleccion(eleccion: String) -> void:
 		video_reproducido.play()
 	else:
 		_on_video_terminado()
-		
-	var texto_elegido = eleccion
-	if eleccion == "izquierda" and letrero_izq: texto_elegido = letrero_izq.text
-	elif eleccion == "frente" and letrero_frente: texto_elegido = letrero_frente.text
-	elif eleccion == "derecha" and letrero_der: texto_elegido = letrero_der.text
-	
-	var fue_acierto = (eleccion == respuesta_correcta)
-	
-	# REGISTRO GLOBAL: Guarda solo el valor literal del letrero elegido
-	if get_tree().root.has_node("GestorTelemetria"):
-		GestorTelemetria.registrar_respuesta("Nivel_Sofia", fue_acierto, texto_elegido)
-	
-	if fue_acierto:
-		print("Resultado: ¡CORRECTO!")
-		if typeof(Global) != TYPE_NIL and "suma_niveles" in Global:
-			Global.suma_niveles += 1
-	else:
-		print("Resultado: ¡INCORRECTO!")
-		if typeof(Global) != TYPE_NIL and "intentos_restantes" in Global:
-			Global.intentos_restantes -= 1
 
 func _on_video_terminado() -> void:
-	print("El video del túnel ha finalizado. Evaluando siguiente sala...")
+	# Ocultar todos los videos de túnel
+	if video_izq: video_izq.visible = false
+	if video_frente: video_frente.visible = false
+	if video_der: video_der.visible = false
+
+	# SI FUE ACIERTO: Se restauran vidas a 3 y se avanza a la siguiente sala
+	if ultimo_intento_correcto:
+		if get_tree().root.has_node("GestorVidas"):
+			get_tree().root.get_node("GestorVidas").restablecer_a_tres()
+			print("\n[¡ÉXITO TÚNELES!] Camino superado. Vidas restauradas a 3.\n")
+		
+		var siguiente_destino = GestorRutaJuego.obtener_siguiente_sala("res://Nivel_Sofia/nivel_carrito.tscn")
+		print("Siguiente destino en la ruleta: ", siguiente_destino)
+		
+		if siguiente_destino != "":
+			get_tree().change_scene_to_file(siguiente_destino)
+		else:
+			print("¡Todas las salas concluidas! Subiendo telemetría final a Firestore...")
+			if get_tree().root.has_node("GestorTelemetria"):
+				GestorTelemetria.enviar_reporte_acumulado("victoria")
+			get_tree().change_scene_to_file("res://Menu_lvl/Menu.tscn")
+		return
+
+	# SI FUE ERROR: Comprobar vidas restantes
+	var vidas_actuales = 0
+	if get_tree().root.has_node("GestorVidas"):
+		vidas_actuales = get_tree().root.get_node("GestorVidas").vidas
 	
-	# Descontar la entrada de Nivel_Sofia de la lista de pendientes
-	var siguiente_destino = GestorRutaJuego.obtener_siguiente_sala("res://Nivel_Sofia/nivel_carrito.tscn")
-	print("Siguiente destino en la ruleta: ", siguiente_destino)
-	
-	if siguiente_destino != "":
-		get_tree().change_scene_to_file(siguiente_destino)
-	else:
-		print("¡Todas las salas concluidas! Subiendo telemetría final completa a Firestore...")
-		# SUBIDA CONSOLIDADA A FIRESTORE
-		if get_tree().root.has_node("GestorTelemetria"):
-			GestorTelemetria.enviar_reporte_acumulado("victoria")
-			
-		get_tree().change_scene_to_file("res://Menu_lvl/Menu.tscn")
+	# Derrota total: permanece bloqueado; GestorVidas redirigirá a Menu.tscn
+	if vidas_actuales <= 0:
+		return
+		
+	# Si van 2 fallos consecutivos: rota pregunta preservando la última vida
+	if fallos_consecutivos >= 2:
+		fallos_consecutivos = 0
+		_seleccionar_nueva_pregunta_tuneles()
+		
+	# Reactivar botones para reintentar el túnel
+	if has_node("Escenario/BotonIzquierda"): $Escenario/BotonIzquierda.disabled = false
+	if has_node("Escenario/BotonFrente"): $Escenario/BotonFrente.disabled = false
+	if has_node("Escenario/BotonDerecha"): $Escenario/BotonDerecha.disabled = false
+	bloqueado = false

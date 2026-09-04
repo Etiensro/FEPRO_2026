@@ -55,6 +55,15 @@ func _ready() -> void:
 	
 	slots_fijos = [hoja1.global_position, hoja2.global_position, hoja3.global_position]
 	
+	# Monitoreo de vidas al entrar a la sala
+	var vidas_inicio = 3
+	if get_tree().root.has_node("GestorVidas"):
+		vidas_inicio = get_tree().root.get_node("GestorVidas").vidas
+	print("\n========================================")
+	print(" [MECANISMO LÁSER INICIADO]")
+	print(" Vidas disponibles del jugador: %d / 3" % vidas_inicio)
+	print("========================================\n")
+	
 	if GestorEstadoNivelBryan.laser_resuelto:
 		_restaurar_estado_resuelto()
 	else:
@@ -93,12 +102,21 @@ func _reproducir_video_transicion() -> void:
 	player.set_anchors_preset(Control.PRESET_FULL_RECT)
 	capa_video.add_child(player)
 	
-	var terminado: bool = false
+	var estado_video = [false]
+	
 	var finalizar_video = func():
-		if terminado: return
-		terminado = true
+		if estado_video[0]: 
+			return
+		estado_video[0] = true
+		
+		if is_instance_valid(player):
+			var tween_fade = create_tween()
+			tween_fade.tween_property(player, "modulate:a", 0.0, 0.25)
+			await tween_fade.finished
+		
 		if is_instance_valid(capa_video):
 			capa_video.queue_free()
+			
 		bloqueado = false
 		if TransicionGlobal.has_method("mostrar_subtitulo"):
 			TransicionGlobal.mostrar_subtitulo("Coloca una de las lentes sobre el soporte...", 4.5)
@@ -106,9 +124,11 @@ func _reproducir_video_transicion() -> void:
 	player.finished.connect(finalizar_video)
 	player.play()
 	
-	# Temporizador de respaldo: si el video falla o no emite finished, desbloquea tras 4 segundos
-	get_tree().create_timer(4.0).timeout.connect(func():
-		if not terminado:
+	var duracion_real = player.get_stream_length()
+	var tiempo_espera = (duracion_real + 1.5) if duracion_real > 0.0 else 10.0
+	
+	get_tree().create_timer(tiempo_espera).timeout.connect(func():
+		if not estado_video[0]:
 			finalizar_video.call()
 	)
 
@@ -133,7 +153,6 @@ func _fallback_local_laser() -> void:
 				_seleccionar_nueva_pregunta()
 				return
 				
-	# Respaldo de emergencia directo si la BD o el archivo fallan
 	var fallback_data = {
 		"pregunta": "¿QUÉ ECUACIÓN DIFERENCIAL CUMPLE LA CONDICIÓN DE EXACTITUD?",
 		"opciones": [
@@ -169,6 +188,7 @@ func _seleccionar_nueva_pregunta() -> void:
 		
 	GestorEstadoNivelBryan.laser_datos_activos = elegida
 	_aplicar_datos_trivia(elegida, true)
+	bloqueado = false
 
 func _restaurar_estado_resuelto() -> void:
 	bloqueado = true
@@ -223,6 +243,7 @@ func _aplicar_datos_trivia(data: Dictionary, mezclar: bool = true) -> void:
 	for i in range(pedestales.size()):
 		pedestales[i].texture = TEX_CON_HOJA
 		pedestales[i].modulate = Color(1, 1, 1, 1)
+		pedestales[i].global_position = slots_fijos[i]
 		
 		if i < opciones.size():
 			var letra = LETRAS[i]
@@ -357,9 +378,14 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 		GestorEstadoNivelBryan.laser_posiciones_hojas = [hoja1.global_position, hoja2.global_position, hoja3.global_position]
 		GestorEstadoNivelBryan.laser_texturas_hojas = [hoja1.texture, hoja2.texture, hoja3.texture]
 		
-		# REGISTRO GLOBAL: Guarda únicamente el texto puntual de la respuesta
+		# REGISTRO TELEMETRÍA
 		if get_tree().root.has_node("GestorTelemetria"):
 			GestorTelemetria.registrar_respuesta("Nivel_Bryan", true, txt_opcion)
+		
+		# GESTIÓN DE VIDAS: Restablece a 3 vidas tras resolver el reto
+		if get_tree().root.has_node("GestorVidas"):
+			get_tree().root.get_node("GestorVidas").restablecer_a_tres()
+			print("\n[¡ÉXITO LÁSER!] Pregunta acertada. Vidas restauradas a 3 para la próxima sala.\n")
 		
 		var timer_exito = get_tree().create_timer(1.5)
 		timer_exito.timeout.connect(func():
@@ -370,18 +396,38 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 	else:
 		respuestas_erroneas_pregunta_actual.append(txt_opcion)
 		
-		# REGISTRO GLOBAL: Guarda únicamente el texto puntual del error
+		# REGISTRO TELEMETRÍA
 		if get_tree().root.has_node("GestorTelemetria"):
 			GestorTelemetria.registrar_respuesta("Nivel_Bryan", false, txt_opcion)
 		
-		if respuestas_erroneas_pregunta_actual.size() >= 2:
+		# GESTIÓN DE VIDAS: Resta una vida y dispara banner superior
+		var vidas_restantes = 0
+		if get_tree().root.has_node("GestorVidas"):
+			var gestor = get_tree().root.get_node("GestorVidas")
+			gestor.restar_vida()
+			vidas_restantes = gestor.vidas
+		
+		print("--------------------------------------------------")
+		print(" [FALLO LÁSER] Opción: '%s' | Vidas restantes: %d / 3" % [txt_opcion, vidas_restantes])
+		print("--------------------------------------------------")
+		
+		# CASO 1: DERROTA TOTAL (0 vidas)
+		if vidas_restantes <= 0:
+			var timer_muerte = get_tree().create_timer(0.5)
+			timer_muerte.timeout.connect(func():
+				_apagar_lasers()
+				_expulsar_lente_actual()
+				# GestorVidas se encarga de mostrar la derrota y cambiar de escena a res://Menu_lvl/Menu.tscn
+			)
+		# CASO 2: ROTACIÓN DE PREGUNTA (2 errores en este reto, preservando la última vida)
+		elif respuestas_erroneas_pregunta_actual.size() >= 2:
 			var timer_refresh = get_tree().create_timer(0.8)
 			timer_refresh.timeout.connect(func():
 				_apagar_lasers()
 				_expulsar_lente_actual()
 				_seleccionar_nueva_pregunta()
-				bloqueado = false
 			)
+		# CASO 3: PRIMER FALLO (quema hoja y revuelve posiciones)
 		else:
 			var timer_fallo = get_tree().create_timer(0.6)
 			timer_fallo.timeout.connect(func():

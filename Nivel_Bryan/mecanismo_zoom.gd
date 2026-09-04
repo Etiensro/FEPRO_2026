@@ -335,8 +335,7 @@ func _on_btn_comprobar_pressed() -> void:
 		_efecto_acierto()
 	else:
 		var pregunta = GestorEstadoNivelBryan.cilindros_pregunta_guardada
-		var detalle_error = "Falló con: '%s' (Pregunta: %s)" % [respuesta_jugador, pregunta]
-		errores_cilindros.append(str(detalle_error))
+		errores_cilindros.append(respuesta_jugador)
 		_efecto_error()
 
 func _efecto_acierto() -> void:
@@ -361,18 +360,17 @@ func _efecto_acierto() -> void:
 		label_pregunta.text = "¡CORRECTO! MECANISMO DESBLOQUEADO"
 	
 	var pregunta = GestorEstadoNivelBryan.cilindros_pregunta_guardada
-	var detalle_acierto: Array = [
-		"Acertó con: '%s' (Pregunta: %s)" % [clave_correcta, pregunta]
-	]
+	var detalle_acierto: Array = [clave_correcta]
 	
 	var hora_actual = Time.get_time_string_from_system().replace(":", "-")
 	var nombre_doc = "Juego_Cilindros_" + hora_actual
 	
 	var id_estudiante = "jugador_bryan"
 	if get_tree().root.has_node("GestorTelemetria"):
-		if "alumno_id" in GestorTelemetria and GestorTelemetria.alumno_id != "":
-			id_estudiante = GestorTelemetria.alumno_id
-	
+		var gestor = get_tree().root.get_node("GestorTelemetria")
+		if "alumno_id" in gestor and typeof(gestor.get("alumno_id")) == TYPE_STRING and not gestor.get("alumno_id").is_empty():
+			id_estudiante = gestor.get("alumno_id")
+			
 	_enviar_a_firestore_con_nombre(
 		nombre_doc,
 		id_estudiante,

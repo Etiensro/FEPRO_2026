@@ -356,9 +356,9 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 			var palabra_vez = "vez" if num_fallos == 1 else "veces"
 			var lista_errs_txt = ", ".join(respuestas_erroneas_pregunta_actual)
 			var reg_err = "Falló %d %s con: [%s] (Pregunta: %s)" % [num_fallos, palabra_vez, lista_errs_txt, texto_pregunta]
-			errores_cometidos.append(str(reg_err))
+			# errores_cometidos.append(str(reg_err)) # Ya lo agregamos como palabra suelta arriba
 
-		var registro_acierto = "Acertó al intento %d con: '%s' (Pregunta: %s)" % [intentos_pregunta_actual, txt_opcion, texto_pregunta]
+		var registro_acierto = txt_opcion
 		aciertos_logrados.append(str(registro_acierto))
 		
 		GestorEstadoNivelBryan.laser_resuelto = true
@@ -369,9 +369,15 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 		var hora_actual = Time.get_time_string_from_system().replace(":", "-")
 		var nombre_doc = "Juego_Laser_" + hora_actual
 		
+		# Obtener nombre real del menú
+		var nombre_jugador = "jugador_bryan"
+		if "alumno_id" in GestorTelemetria:
+			if typeof(GestorTelemetria.get("alumno_id")) == TYPE_STRING and not GestorTelemetria.get("alumno_id").is_empty():
+				nombre_jugador = GestorTelemetria.get("alumno_id")
+		
 		_enviar_a_firestore_con_nombre(
 			nombre_doc,
-			"jugador_bryan",
+			nombre_jugador,
 			"victoria",
 			intentos_totales,
 			aciertos_logrados,
@@ -386,6 +392,7 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 		)
 	else:
 		respuestas_erroneas_pregunta_actual.append(txt_opcion)
+		errores_cometidos.append(txt_opcion)
 		
 		if respuestas_erroneas_pregunta_actual.size() >= 2:
 			var lista_errs_txt = ", ".join(respuestas_erroneas_pregunta_actual)

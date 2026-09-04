@@ -1,13 +1,15 @@
 extends VideoStreamPlayer
 
-# Called when the node enters the scene tree for the first time.
+var ya_avanzo: bool = false
+
 func _ready() -> void:
 	set_process_input(true)
-	# Asegurarnos de que el video reproduzca al entrar
+	# Conectamos la señal finished por código para asegurar que responda
+	if not finished.is_connected(_on_finished):
+		finished.connect(_on_finished)
 	play()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
 
 func _on_finished() -> void:
@@ -20,22 +22,30 @@ func _input(event: InputEvent) -> void:
 		_avanzar_siguiente_nivel()
 
 func _avanzar_siguiente_nivel() -> void:
-	# 1. Excluir tu propia intro de las pendientes del tour (si aplica)
-	GestorRutaJuego.salas_pendientes.erase("res://Nivel_E/Hub_Principal.tscn")
+	if ya_avanzo:
+		return
+	ya_avanzo = true
+	set_process_input(false)
 	
-	# 2. Pedir al gestor global la siguiente sala única al azar
-	var siguiente_destino = GestorRutaJuego.obtener_siguiente_sala()
+	# Solicita la siguiente sala excluyendo la entrada de Etienne
+	var siguiente_destino = GestorRutaJuego.obtener_siguiente_sala("res://Nivel_E/Hub_Principal.tscn")
 	
 	print("--- TOUR DE NIVELES ---")
 	print("Salas pendientes restantes: ", GestorRutaJuego.salas_pendientes)
 	print("Cambiando a la sala: ", siguiente_destino)
 	
-	# 3. Realizar la transición usando tu sistema global actual
 	if siguiente_destino != "":
-		if Engine.has_singleton("TransicionGlobal"):
+		if get_tree().root.has_node("TransicionGlobal"):
 			TransicionGlobal.cambiar_escena(siguiente_destino)
 		else:
 			get_tree().change_scene_to_file(siguiente_destino)
 	else:
-		print("¡Juego terminado! Regresando al menú...")
-		get_tree().change_scene_to_file("res://Menu_lvl/Menu.tscn")
+		print("¡Todas las salas concluidas! Subiendo telemetría final completa a Firestore...")
+		# SUBIDA ÚNICA A FIRESTORE
+		if get_tree().root.has_node("GestorTelemetria"):
+			GestorTelemetria.enviar_reporte_acumulado("victoria")
+			
+		if get_tree().root.has_node("TransicionGlobal"):
+			TransicionGlobal.cambiar_escena("res://Menu_lvl/Menu.tscn")
+		else:
+			get_tree().change_scene_to_file("res://Menu_lvl/Menu.tscn")

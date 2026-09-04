@@ -6,7 +6,7 @@ var bloqueado = false
 var posicion_y_original_garra = 0
 var tamano_y_original_cadena = 0
 
-# --- VARIABLES DE TELEMETRÍA ---
+# --- VARIABLES DE CONTROL LOCAL ---
 var intentos_garra: int = 0
 var errores_jugador: Array = []
 var aciertos_jugador: Array = []
@@ -14,7 +14,6 @@ var lista_preguntas: Array = []
 var fallos_consecutivos_garra: int = 0
 
 func _ready() -> void:
-	
 	posicion_y_original_garra = $GarraMecanica.position.y
 	tamano_y_original_cadena = $CadenaInfinita.size.y
 	
@@ -31,28 +30,28 @@ func _ready() -> void:
 		
 		bloqueado = false
 		
-		GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
-		# 1. Apuntamos al bloque maestro
-		GestorTelemetria.descargar_preguntas("nivel_1")
+		if get_tree().root.has_node("GestorTelemetria"):
+			GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
+			# 1. Apuntamos al bloque maestro
+			GestorTelemetria.descargar_preguntas("nivel_1")
+		else:
+			_on_preguntas_listas([])
 	else:
-		# La computadora NO está resuelta: Modo inactivo, oscuro y texto negro
 		$PlacaPregunta.text = "SISTEMA HIDRÁULICO APAGADO.\nREQUIERE ENERGÍA."
 		for esfera in $RepisaOpciones.get_children():
 			esfera.get_node("Label").hide()
 			
-		$GarraMecanica.hide() 
+		$GarraMecanica.hide()
 		$CadenaInfinita.hide()
 		$FiltroOscuridad.show()
 		$CapaUI/FiltroBotonSalir.show()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
 
 func _on_preguntas_listas(datos: Array) -> void:
 	if datos.size() > 0:
 		var datos_nivel = datos[0]
-		# 2. Extraemos la garra
 		if datos_nivel.has("escena_garra"):
 			lista_preguntas = datos_nivel["escena_garra"]
 			cargar_nueva_pregunta_garra()
@@ -66,14 +65,13 @@ func _on_preguntas_listas(datos: Array) -> void:
 func cargar_nueva_pregunta_garra():
 	if lista_preguntas.size() > 0:
 		lista_preguntas.shuffle()
-		var puzzle_actual = lista_preguntas[0] 
+		var puzzle_actual = lista_preguntas[0]
 		pregunta_actual = puzzle_actual["pregunta_texto"]
 		respuesta_correcta = puzzle_actual["respuesta_correcta"]
 		
 		var opciones = puzzle_actual["opciones"].duplicate()
 		opciones.shuffle()
 		
-		# Reactivar todas las esferas y restaurar textura
 		for esfera in $RepisaOpciones.get_children():
 			esfera.disabled = false
 			esfera.texture_normal = preload("res://Nivel_E/Assets/Esfera.png")
@@ -103,24 +101,21 @@ func evaluar_esfera(nodo_esfera: TextureButton):
 	
 	var tween = create_tween()
 	
-	# Compensación para el centro exacto de la esfera
 	var centro_x_esfera = nodo_esfera.global_position.x + (nodo_esfera.size.x / 2.0)
 	var centro_y_esfera = nodo_esfera.global_position.y + (nodo_esfera.size.y / 2.0)
 	
-	# FASE 1: Movimiento Horizontal (Líder)
-	# La primera instrucción marca el ritmo, las siguientes con .parallel() se acoplan a ella
+	# FASE 1: Movimiento Horizontal
 	tween.tween_property($GarraMecanica, "global_position:x", centro_x_esfera, 1.2)
 	
 	var compensacion_cadena = $CadenaInfinita.size.x / 2.0
 	tween.parallel().tween_property($CadenaInfinita, "global_position:x", centro_x_esfera - compensacion_cadena, 1.2)
 	
 	var distancia_x = centro_x_esfera - $GarraMecanica.global_position.x
-	var angulo_balanceo = -distancia_x * 0.05 
+	var angulo_balanceo = -distancia_x * 0.05
 	tween.parallel().tween_property($GarraMecanica, "rotation_degrees", angulo_balanceo, 0.3)
 	tween.parallel().tween_property($GarraMecanica, "rotation_degrees", 0.0, 0.3).set_delay(0.3)
 	
-	# FASE 2: Movimiento Vertical (Bloqueado)
-	# .chain() crea un muro de tiempo. Nada de lo que sigue iniciará hasta que la Fase 1 termine.
+	# FASE 2: Movimiento Vertical
 	tween.chain().tween_property($GarraMecanica, "global_position:y", centro_y_esfera - 300, 1.2)
 	
 	var distancia_y = (centro_y_esfera - 300) - posicion_y_original_garra
@@ -137,8 +132,10 @@ func agarrar_y_evaluar(nodo_esfera: TextureButton):
 	
 	if texto_seleccionado == respuesta_correcta:
 		aciertos_jugador.append(texto_seleccionado)
-		# 3. Enviamos los 3 parámetros unificados
-		GestorTelemetria.enviar_reporte_final(intentos_garra, aciertos_jugador, errores_jugador)
+		
+		# REGISTRO GLOBAL: Guarda únicamente el texto literal de la respuesta correcta
+		if get_tree().root.has_node("GestorTelemetria"):
+			GestorTelemetria.registrar_respuesta("Nivel_E", true, respuesta_correcta)
 		
 		$PlacaPregunta.text = "RESPUESTA CORRECTA. EXTRACCIÓN INICIADA..."
 		secuencia_victoria(nodo_esfera)
@@ -146,13 +143,17 @@ func agarrar_y_evaluar(nodo_esfera: TextureButton):
 		errores_jugador.append(texto_seleccionado)
 		fallos_consecutivos_garra += 1
 		
+		# REGISTRO GLOBAL: Guarda únicamente el texto literal que seleccionó erróneamente
+		if get_tree().root.has_node("GestorTelemetria"):
+			GestorTelemetria.registrar_respuesta("Nivel_E", false, texto_seleccionado)
+		
 		$PlacaPregunta.text = "SISTEMA HIDRÁULICO INESTABLE. REINTENTE."
 		nodo_esfera.disabled = true
 		animar_temblor_y_romper(nodo_esfera)
 		
 		if fallos_consecutivos_garra >= 2:
 			fallos_consecutivos_garra = 0
-			await get_tree().create_timer(1.5).timeout 
+			await get_tree().create_timer(1.5).timeout
 			cargar_nueva_pregunta_garra()
 			
 		soltar_y_regresar()
@@ -161,22 +162,18 @@ func animar_temblor_y_romper(nodo_esfera: TextureButton):
 	var tween_shake = create_tween()
 	var pos_original = nodo_esfera.position
 	
-	# Hacemos que vibre de izquierda a derecha rápidamente
 	for i in range(4):
 		tween_shake.tween_property(nodo_esfera, "position:x", pos_original.x + 6, 0.05)
 		tween_shake.tween_property(nodo_esfera, "position:x", pos_original.x - 6, 0.05)
 		
 	tween_shake.tween_property(nodo_esfera, "position:x", pos_original.x, 0.05)
 	
-	# Al terminar de temblar, asignamos la imagen de la piedra rota
-	# Pon el nombre exacto de tu asset de esfera rota aquí:
-	tween_shake.tween_callback(func(): 
+	tween_shake.tween_callback(func():
 		nodo_esfera.texture_disabled = preload("res://Nivel_E/Assets/Esfera rota.png")
 	)
 
 func secuencia_victoria(nodo_esfera: TextureButton):
-	# 1. "Arrancamos" la esfera de la repisa para poder moverla libremente
-	nodo_esfera.reparent(self) 
+	nodo_esfera.reparent(self)
 	move_child(nodo_esfera, $GarraMecanica.get_index())
 	
 	var tween = create_tween()
@@ -189,20 +186,18 @@ func secuencia_victoria(nodo_esfera: TextureButton):
 	var compensacion_cadena = $CadenaInfinita.size.x / 2.0
 	tween.tween_property($CadenaInfinita, "global_position:x", centro_pantalla_x - compensacion_cadena, 1.0)
 	
-	# La esfera sigue a la garra
 	var compensacion_esfera = nodo_esfera.size.x / 2.0
 	tween.tween_property(nodo_esfera, "global_position:x", centro_pantalla_x - compensacion_esfera, 1.0)
 	
 	# FASE 2: Subir y desaparecer por el techo
 	tween.chain().set_parallel(true)
-	var altura_fuera_pantalla = -300 # Sube hasta salirse de la pantalla
+	var altura_fuera_pantalla = -300
 	
 	tween.chain().tween_property($GarraMecanica, "global_position:y", altura_fuera_pantalla, 1.5)
-	# Compensamos para que la esfera siga justo en la pinza (ajusta el 150 a la medida de tu garra)
-	tween.tween_property(nodo_esfera, "global_position:y", altura_fuera_pantalla + 193, 1.5) 
+	tween.tween_property(nodo_esfera, "global_position:y", altura_fuera_pantalla + 193, 1.5)
 	tween.tween_property($CadenaInfinita, "size:y", 0, 1.5)
 	
-	# FASE 3: Viaje a la siguiente sala
+	# FASE 3: Viaje al Hub
 	tween.chain().tween_callback(func():
 		print("Viaje al Hub completado")
 		GestorEstadoNivelE.foso_resuelto = true
@@ -210,18 +205,15 @@ func secuencia_victoria(nodo_esfera: TextureButton):
 	)
 
 func soltar_y_regresar():
-	# Aumentamos el tiempo a 1.5s para que el jugador alcance a leer el error
-	await get_tree().create_timer(1.5).timeout 
+	await get_tree().create_timer(1.5).timeout
 	
 	$GarraMecanica.texture = preload("res://Nivel_E/Assets/Garra Abierta.png")
-	$PlacaPregunta.text = pregunta_actual # Restauramos la pregunta original
+	$PlacaPregunta.text = pregunta_actual
 	
 	var tween = create_tween().set_parallel(true)
 	tween.tween_property($GarraMecanica, "position:y", posicion_y_original_garra, 0.8)
 	tween.tween_property($CadenaInfinita, "size:y", tamano_y_original_cadena, 0.8)
 	tween.chain().tween_callback(func(): bloqueado = false)
-	
-
 
 func _on_boton_salir_pressed() -> void:
 	TransicionGlobal.cambiar_escena("res://Nivel_E/Hub_Principal.tscn")

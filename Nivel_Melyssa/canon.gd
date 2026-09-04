@@ -36,7 +36,6 @@ func _draw() -> void:
 		
 	if punto_disparo:
 		var direccion = Vector2.UP.rotated(punto_disparo.rotation)
-		# Multiplicador aumentado a 10000 para dar efecto de láser infinito
 		draw_line(punto_disparo.position, punto_disparo.position + direccion * 10000, Color(1.0, 0.0, 0.0, 0.5), 4.0)
 	else:
 		draw_line(Vector2.ZERO, Vector2(0, -10000), Color(1.0, 0.0, 0.0, 0.5), 4.0)
@@ -62,9 +61,10 @@ func disparar() -> void:
 		if contenedor_vidas and GlobalEsferas.intentos_restantes >= 0 and GlobalEsferas.intentos_restantes < contenedor_vidas.get_child_count():
 			contenedor_vidas.get_child(GlobalEsferas.intentos_restantes).hide()
 			
-		# Mostrar subtítulos dinámicos de los intentos restantes en la parte superior
+		# Mostrar subtítulos dinámicos de los intentos restantes
 		var fondo_subtitulo = get_tree().current_scene.get_node_or_null("FondoPrincipal")
-		if not fondo_subtitulo: fondo_subtitulo = get_tree().current_scene # Si el script está en la raíz
+		if not fondo_subtitulo: 
+			fondo_subtitulo = get_tree().current_scene
 		
 		if fondo_subtitulo and fondo_subtitulo.has_method("mostrar_subtitulo_superior"):
 			if GlobalEsferas.intentos_restantes == 2:
@@ -74,25 +74,21 @@ func disparar() -> void:
 			elif GlobalEsferas.intentos_restantes == 0:
 				fondo_subtitulo.mostrar_subtitulo_superior("Se acabaron los intentos. Jala la palanca para recargar.", 5.0)
 		else:
-			# Respaldo si algo falla
-			if GlobalEsferas.intentos_restantes == 2:
-				TransicionGlobal.mostrar_subtitulo("Te quedan 2 intentos", 3.0)
-			elif GlobalEsferas.intentos_restantes == 1:
-				TransicionGlobal.mostrar_subtitulo("¡Último intento! Piensa bien tu respuesta...", 3.0)
-			elif GlobalEsferas.intentos_restantes == 0:
-				TransicionGlobal.mostrar_subtitulo("Se acabaron los intentos. Jala la palanca para recargar.", 5.0)
+			if get_tree().root.has_node("TransicionGlobal"):
+				if GlobalEsferas.intentos_restantes == 2:
+					TransicionGlobal.mostrar_subtitulo("Te quedan 2 intentos", 3.0)
+				elif GlobalEsferas.intentos_restantes == 1:
+					TransicionGlobal.mostrar_subtitulo("¡Último intento! Piensa bien tu respuesta...", 3.0)
+				elif GlobalEsferas.intentos_restantes == 0:
+					TransicionGlobal.mostrar_subtitulo("Se acabaron los intentos. Jala la palanca para recargar.", 5.0)
 		
 		if GlobalEsferas.intentos_restantes <= 0:
 			print("¡SE ACABARON LOS INTENTOS! Ve a la palanca.")
 			var fondo_reinicio = get_tree().current_scene.get_node_or_null("FondoPrincipal")
+			if not fondo_reinicio:
+				fondo_reinicio = get_tree().current_scene
 			if fondo_reinicio and fondo_reinicio.has_method("mostrar_mensaje_reinicio"):
 				fondo_reinicio.mostrar_mensaje_reinicio()
-				
-			# Nueva llamada corregida: solo requiere 3 argumentos
-			GestorTelemetria.enviar_reporte_final(
-				GlobalEsferas.total_disparos, 
-				GlobalEsferas.historial_aciertos, 
-				GlobalEsferas.historial_errores
-			)
+			# Se eliminó GestorTelemetria.enviar_reporte_final para no subir antes de tiempo
 	else:
 		print("Falta asignar la Escena Lanza en el Cañón")

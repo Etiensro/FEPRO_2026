@@ -31,10 +31,6 @@ var datos_acertijos: Dictionary = {}
 var bloqueado: bool = false
 var indice_escritura: int = 0
 
-# Telemetría pedagógica
-var intentos_cilindros: int = 0
-var errores_cilindros: Array = []
-
 func _ready() -> void:
 	if has_node("Flecha/Area2D"):
 		$Flecha/Area2D.input_event.connect(_on_flecha_volver)
@@ -59,7 +55,6 @@ func _ready() -> void:
 			GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
 			var clave_elegida = "tema_1" if randf() > 0.5 else "tema_2"
 			GestorEstadoNivelBryan.cilindros_id_actual = clave_elegida
-			# 1. Apuntar al Nivel 3
 			GestorTelemetria.descargar_preguntas("nivel_3")
 		else:
 			_fallback_local()
@@ -71,14 +66,12 @@ func _reproducir_video_transicion() -> void:
 	capa_video.layer = 100
 	add_child(capa_video)
 	
-	# 1. Fondo de respaldo precargado para evitar el corte negro abrupto
 	var fondo_respaldo = TextureRect.new()
 	fondo_respaldo.texture = FONDO_SALA_1
 	fondo_respaldo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	fondo_respaldo.set_anchors_preset(Control.PRESET_FULL_RECT)
 	capa_video.add_child(fondo_respaldo)
 	
-	# 2. Reproductor de video
 	var player = VideoStreamPlayer.new()
 	player.stream = VIDEO_TRANSICION
 	player.expand = true
@@ -100,7 +93,6 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventKey and event.pressed and not event.echo:
-		# 1. Comprobar y animar el botón físico con tecla Enter / Intro
 		if event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER:
 			get_viewport().set_input_as_handled()
 			
@@ -119,7 +111,6 @@ func _input(event: InputEvent) -> void:
 
 		var total_rodillos = lista_rodillos.size()
 
-		# 2. Borrado hacia atrás (Backspace / Delete) de derecha a izquierda
 		if event.keycode == KEY_BACKSPACE or event.keycode == KEY_DELETE:
 			indice_escritura = (indice_escritura - 1 + total_rodillos) % total_rodillos
 			var rodillo_borrar = lista_rodillos[indice_escritura]
@@ -129,14 +120,12 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-		# 3. Detectar carácter pulsado
 		var char_pulsado = ""
 		if event.unicode > 0:
 			char_pulsado = char(event.unicode).to_upper()
 		elif event.keycode != KEY_NONE:
 			char_pulsado = OS.get_keycode_string(event.keycode).to_upper()
 
-		# 4. Escritura en bucle circular (sobrescribe y salta al inicio al llenarse)
 		if char_pulsado.length() == 1:
 			var rodillo_actual = lista_rodillos[indice_escritura]
 			if is_instance_valid(rodillo_actual) and rodillo_actual.has_method("asignar_valor"):
@@ -150,7 +139,6 @@ func _on_preguntas_listas(datos_recibidos) -> void:
 		var datos_nivel = datos_recibidos[0]
 		var clave_actual = GestorEstadoNivelBryan.cilindros_id_actual
 		
-		# 2. Extraer el tema 1 o tema 2 dinámicamente
 		if datos_nivel.has(clave_actual):
 			var info_acertijo = datos_nivel[clave_actual]
 			GestorEstadoNivelBryan.cilindros_pregunta_guardada = str(info_acertijo.get("pregunta", ""))
@@ -327,7 +315,6 @@ func _on_btn_comprobar_pressed() -> void:
 	if bloqueado or GestorEstadoNivelBryan.cilindros_resuelto:
 		return
 	
-	intentos_cilindros += 1
 	var respuesta_jugador: String = ""
 	for rodillo in lista_rodillos:
 		if is_instance_valid(rodillo) and rodillo.has_method("obtener_valor"):
@@ -336,8 +323,9 @@ func _on_btn_comprobar_pressed() -> void:
 	if respuesta_jugador == clave_correcta:
 		_efecto_acierto()
 	else:
-		var pregunta = GestorEstadoNivelBryan.cilindros_pregunta_guardada
-		errores_cilindros.append(respuesta_jugador)
+		# REGISTRO GLOBAL: Guarda solo el valor literal ingresado por el jugador (ej: "000")
+		if get_tree().root.has_node("GestorTelemetria"):
+			GestorTelemetria.registrar_respuesta("Nivel_Bryan", false, respuesta_jugador)
 		_efecto_error()
 
 func _efecto_acierto() -> void:
@@ -361,11 +349,9 @@ func _efecto_acierto() -> void:
 	if label_pregunta:
 		label_pregunta.text = "¡CORRECTO! MECANISMO DESBLOQUEADO"
 	
-	var pregunta = GestorEstadoNivelBryan.cilindros_pregunta_guardada
-	var detalle_acierto: Array = [clave_correcta]
-	
-	# 3. Enviar métricas con el gestor unificado
-	GestorTelemetria.enviar_reporte_final(intentos_cilindros, detalle_acierto, errores_cilindros)
+	# REGISTRO GLOBAL: Guarda solo el valor literal de la clave correcta (ej: "100")
+	if get_tree().root.has_node("GestorTelemetria"):
+		GestorTelemetria.registrar_respuesta("Nivel_Bryan", true, clave_correcta)
 	
 	var tween = create_tween()
 	tween.tween_interval(1.5)
@@ -373,42 +359,6 @@ func _efecto_acierto() -> void:
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 		_redirigir_sala()
 	)
-
-func _enviar_a_firestore_con_nombre(id_documento: String, alumno: String, estado: String, disparos: int, aciertos: Array, errores: Array) -> void:
-	var http_custom = HTTPRequest.new()
-	add_child(http_custom)
-	
-	http_custom.request_completed.connect(func(_result, code, _headers, _body):
-		if code == 200:
-			print("¡Documento de Cilindros creado con éxito! ID: ", id_documento)
-		else:
-			print("Error al guardar reporte de Cilindros: ", code)
-		http_custom.queue_free()
-	)
-	
-	var project_id = "lore-fepro"
-	var url = "https://firestore.googleapis.com/v1/projects/" + project_id + "/databases/(default)/documents/telemetria_resultados/" + id_documento
-	var headers = ["Content-Type: application/json"]
-	
-	var array_errores = []
-	for e in errores:
-		array_errores.append({"stringValue": str(e)})
-		
-	var array_aciertos = []
-	for a in aciertos:
-		array_aciertos.append({"stringValue": str(a)})
-	
-	var cuerpo = {
-		"fields": {
-			"alumno_id": { "stringValue": str(alumno) },
-			"estado_final": { "stringValue": str(estado) },
-			"total_disparos": { "integerValue": str(disparos) },
-			"historial_aciertos": { "arrayValue": { "values": array_aciertos } },
-			"historial_errores": { "arrayValue": { "values": array_errores } }
-		}
-	}
-	
-	http_custom.request(url, headers, HTTPClient.METHOD_PATCH, JSON.stringify(cuerpo))
 
 func _efecto_error() -> void:
 	bloqueado = true

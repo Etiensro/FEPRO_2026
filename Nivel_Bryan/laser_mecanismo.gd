@@ -42,14 +42,7 @@ var bloqueado: bool = false
 var slots_fijos: Array[Vector2] = []
 var hoja_ganadora: Sprite2D = null
 
-# Banco de preguntas descargadas
 var lista_puzzles_disponibles: Array = []
-
-# Telemetría y control de intentos
-var intentos_totales: int = 0
-var errores_cometidos: Array = []
-var aciertos_logrados: Array = []
-
 var intentos_pregunta_actual: int = 0
 var respuestas_erroneas_pregunta_actual: Array = []
 
@@ -65,22 +58,21 @@ func _ready() -> void:
 	if GestorEstadoNivelBryan.laser_resuelto:
 		_restaurar_estado_resuelto()
 	else:
-		# Reproduce la animación de entrada antes de mostrar el puzzle
 		_reproducir_video_transicion()
 			
 		if GestorEstadoNivelBryan.laser_datos_activos.is_empty():
 			if get_tree().root.has_node("GestorTelemetria"):
 				GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
-				# 1. Apuntar al bloque maestro
 				GestorTelemetria.descargar_preguntas("nivel_3")
 			else:
 				_fallback_local_laser()
 		else:
 			_aplicar_datos_trivia(GestorEstadoNivelBryan.laser_datos_activos, false)
 			
-		boton_disparar.input_event.connect(_on_boton_disparar_input)
-		boton_disparar.mouse_entered.connect(func(): if not bloqueado: Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND))
-		boton_disparar.mouse_exited.connect(func(): Input.set_default_cursor_shape(Input.CURSOR_ARROW))
+		if boton_disparar:
+			boton_disparar.input_event.connect(_on_boton_disparar_input)
+			boton_disparar.mouse_entered.connect(func(): if not bloqueado: Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND))
+			boton_disparar.mouse_exited.connect(func(): Input.set_default_cursor_shape(Input.CURSOR_ARROW))
 	
 	if has_node("Flecha/Area2D"):
 		var area_flecha = $Flecha/Area2D
@@ -91,7 +83,6 @@ func _ready() -> void:
 func _reproducir_video_transicion() -> void:
 	bloqueado = true
 	
-	# Capa por encima de toda la escena para tapar el minijuego
 	var capa_video = CanvasLayer.new()
 	capa_video.layer = 100
 	add_child(capa_video)
@@ -102,28 +93,34 @@ func _reproducir_video_transicion() -> void:
 	player.set_anchors_preset(Control.PRESET_FULL_RECT)
 	capa_video.add_child(player)
 	
+	var terminado: bool = false
 	var finalizar_video = func():
+		if terminado: return
+		terminado = true
 		if is_instance_valid(capa_video):
 			capa_video.queue_free()
 		bloqueado = false
-		# Lanza la pista una vez que el video termina
 		if TransicionGlobal.has_method("mostrar_subtitulo"):
-			TransicionGlobal.mostrar_subtitulo("Hmmm quizas si pongo una de esas lentes que brilla sobre al soporte que saca chispas", 4.5)
+			TransicionGlobal.mostrar_subtitulo("Coloca una de las lentes sobre el soporte...", 4.5)
 
 	player.finished.connect(finalizar_video)
 	player.play()
+	
+	# Temporizador de respaldo: si el video falla o no emite finished, desbloquea tras 4 segundos
+	get_tree().create_timer(4.0).timeout.connect(func():
+		if not terminado:
+			finalizar_video.call()
+	)
 
 func _on_preguntas_listas(datos_recibidos) -> void:
 	if datos_recibidos is Array and datos_recibidos.size() > 0:
 		var datos_nivel = datos_recibidos[0]
-		# 2. Extraer los puzzles del láser
-		if datos_nivel.has("laser_puzzles"):
+		if datos_nivel is Dictionary and datos_nivel.has("laser_puzzles"):
 			lista_puzzles_disponibles = datos_nivel["laser_puzzles"].duplicate()
 			_seleccionar_nueva_pregunta()
-		else:
-			_fallback_local_laser()
-	else:
-		_fallback_local_laser()
+			return
+	
+	_fallback_local_laser()
 
 func _fallback_local_laser() -> void:
 	var path = "res://Nivel_Bryan/acertijos.json"
@@ -136,12 +133,13 @@ func _fallback_local_laser() -> void:
 				_seleccionar_nueva_pregunta()
 				return
 				
+	# Respaldo de emergencia directo si la BD o el archivo fallan
 	var fallback_data = {
-		"pregunta": "¿QUÉ COMPONENTE ÓPTICO SE UTILIZA PARA DESVIAR O REFRACTAR EL HAZ DE LUZ?",
+		"pregunta": "¿QUÉ ECUACIÓN DIFERENCIAL CUMPLE LA CONDICIÓN DE EXACTITUD?",
 		"opciones": [
-			{ "texto": "LENTE CONVERGENTE", "correcta": true },
-			{ "texto": "ESPEJO CÓNCAVO", "correcta": false },
-			{ "texto": "FILTRO POLARIZADO", "correcta": false }
+			{ "texto": "M_y = N_x", "correcta": true },
+			{ "texto": "M_x = N_y", "correcta": false },
+			{ "texto": "M + N = 0", "correcta": false }
 		]
 	}
 	lista_puzzles_disponibles = [fallback_data]
@@ -150,6 +148,7 @@ func _fallback_local_laser() -> void:
 
 func _seleccionar_nueva_pregunta() -> void:
 	if lista_puzzles_disponibles.is_empty():
+		_fallback_local_laser()
 		return
 		
 	intentos_pregunta_actual = 0
@@ -173,16 +172,18 @@ func _seleccionar_nueva_pregunta() -> void:
 
 func _restaurar_estado_resuelto() -> void:
 	bloqueado = true
-	boton_disparar.input_pickable = false
+	if boton_disparar:
+		boton_disparar.input_pickable = false
 	
 	if TransicionGlobal.has_method("ocultar_subtitulo"):
 		TransicionGlobal.ocultar_subtitulo()
 	
-	for lente in $Contenedor_piezas.get_children():
-		if lente.has_node("CollisionShape2D"):
-			lente.get_node("CollisionShape2D").disabled = true
+	if has_node("Contenedor_piezas"):
+		for lente in $Contenedor_piezas.get_children():
+			if lente.has_node("CollisionShape2D"):
+				lente.get_node("CollisionShape2D").disabled = true
 	
-	if GestorEstadoNivelBryan.laser_lente_ganador != "":
+	if GestorEstadoNivelBryan.laser_lente_ganador != "" and has_node("Contenedor_piezas"):
 		var lente_ganador = $Contenedor_piezas.get_node_or_null(GestorEstadoNivelBryan.laser_lente_ganador)
 		if lente_ganador:
 			lente_ganador.global_position = slot_central.global_position
@@ -206,7 +207,7 @@ func _restaurar_estado_resuelto() -> void:
 		label_pregunta.text = GestorEstadoNivelBryan.laser_pregunta_guardada
 
 func _aplicar_datos_trivia(data: Dictionary, mezclar: bool = true) -> void:
-	var pregunta: String = str(data.get("pregunta", "¿QUÉ COMPONENTE SE UTILIZA?"))
+	var pregunta: String = str(data.get("pregunta", "¿QUÉ ECUACIÓN ES EXACTA?"))
 	var opciones: Array = data.get("opciones", []).duplicate()
 	
 	if mezclar:
@@ -282,7 +283,6 @@ func ejecutar_disparo() -> void:
 		TransicionGlobal.ocultar_subtitulo()
 	
 	bloqueado = true
-	intentos_totales += 1
 	intentos_pregunta_actual += 1
 	
 	var idx_slot: int = 1
@@ -342,7 +342,6 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 	hoja.modulate = Color(1.3, 0.6, 0.2, 1.0)
 	
 	var txt_opcion = str(hoja.get_meta("texto_opcion")) if hoja.has_meta("texto_opcion") else "Opción"
-	var texto_pregunta = GestorEstadoNivelBryan.laser_datos_activos.get("pregunta", "Pregunta Láser")
 	
 	var sprite_hijo = hoja.get_node_or_null("TextoInciso")
 	if sprite_hijo:
@@ -353,22 +352,14 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 	tween_color.tween_property(hoja, "modulate", Color(1, 1, 1, 1), 0.4)
 	
 	if es_correcta:
-		if not respuestas_erroneas_pregunta_actual.is_empty():
-			var num_fallos = respuestas_erroneas_pregunta_actual.size()
-			var palabra_vez = "vez" if num_fallos == 1 else "veces"
-			var lista_errs_txt = ", ".join(respuestas_erroneas_pregunta_actual)
-			var reg_err = "Falló %d %s con: [%s] (Pregunta: %s)" % [num_fallos, palabra_vez, lista_errs_txt, texto_pregunta]
-			# errores_cometidos.append(str(reg_err)) # Ya lo agregamos como palabra suelta arriba
-
-		var registro_acierto = txt_opcion
-		aciertos_logrados.append(str(registro_acierto))
-		
 		GestorEstadoNivelBryan.laser_resuelto = true
 		GestorEstadoNivelBryan.laser_lente_ganador = String(lente_actual.name) if lente_actual != null else ""
 		GestorEstadoNivelBryan.laser_posiciones_hojas = [hoja1.global_position, hoja2.global_position, hoja3.global_position]
 		GestorEstadoNivelBryan.laser_texturas_hojas = [hoja1.texture, hoja2.texture, hoja3.texture]
 		
-		GestorTelemetria.enviar_reporte_final(intentos_totales, aciertos_logrados, errores_cometidos)
+		# REGISTRO GLOBAL: Guarda únicamente el texto puntual de la respuesta
+		if get_tree().root.has_node("GestorTelemetria"):
+			GestorTelemetria.registrar_respuesta("Nivel_Bryan", true, txt_opcion)
 		
 		var timer_exito = get_tree().create_timer(1.5)
 		timer_exito.timeout.connect(func():
@@ -378,13 +369,12 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 		)
 	else:
 		respuestas_erroneas_pregunta_actual.append(txt_opcion)
-		errores_cometidos.append(txt_opcion)
+		
+		# REGISTRO GLOBAL: Guarda únicamente el texto puntual del error
+		if get_tree().root.has_node("GestorTelemetria"):
+			GestorTelemetria.registrar_respuesta("Nivel_Bryan", false, txt_opcion)
 		
 		if respuestas_erroneas_pregunta_actual.size() >= 2:
-			var lista_errs_txt = ", ".join(respuestas_erroneas_pregunta_actual)
-			var registro_error = "Falló 2 veces con: [%s] (Pregunta: %s)" % [lista_errs_txt, texto_pregunta]
-			errores_cometidos.append(str(registro_error))
-			
 			var timer_refresh = get_tree().create_timer(0.8)
 			timer_refresh.timeout.connect(func():
 				_apagar_lasers()
@@ -400,42 +390,6 @@ func _procesar_impacto(hoja: Sprite2D, es_correcta: bool) -> void:
 				_expulsar_lente_actual()
 				_revolver_posiciones()
 			)
-
-func _enviar_a_firestore_con_nombre(id_documento: String, alumno: String, estado: String, disparos: int, aciertos: Array, errores: Array) -> void:
-	var http_custom = HTTPRequest.new()
-	add_child(http_custom)
-	
-	http_custom.request_completed.connect(func(_result, code, _headers, _body):
-		if code == 200:
-			print("¡Documento de Láser creado con éxito! ID: ", id_documento)
-		else:
-			print("Error al guardar reporte de Láser: ", code)
-		http_custom.queue_free()
-	)
-	
-	var project_id = "lore-fepro"
-	var url = "https://firestore.googleapis.com/v1/projects/" + project_id + "/databases/(default)/documents/telemetria_resultados/" + id_documento
-	var headers = ["Content-Type: application/json"]
-	
-	var array_errores = []
-	for e in errores:
-		array_errores.append({"stringValue": str(e)})
-		
-	var array_aciertos = []
-	for a in aciertos:
-		array_aciertos.append({"stringValue": str(a)})
-	
-	var cuerpo = {
-		"fields": {
-			"alumno_id": { "stringValue": str(alumno) },
-			"estado_final": { "stringValue": str(estado) },
-			"total_disparos": { "integerValue": str(disparos) },
-			"historial_aciertos": { "arrayValue": { "values": array_aciertos } },
-			"historial_errores": { "arrayValue": { "values": array_errores } }
-		}
-	}
-	
-	http_custom.request(url, headers, HTTPClient.METHOD_PATCH, JSON.stringify(cuerpo))
 
 func _revolver_posiciones() -> void:
 	var lista_hojas: Array[Sprite2D] = [hoja1, hoja2, hoja3]

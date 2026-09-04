@@ -40,9 +40,12 @@ func iniciar_nivel_carrito():
 
 func cargar_json_carrito():
 	if pantalla_acertijo: pantalla_acertijo.text = "Cargando desde la base de datos..."
-	GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
-	# 1. Pedir el bloque maestro del Nivel 2
-	GestorTelemetria.descargar_preguntas("nivel_2")
+	if get_tree().root.has_node("GestorTelemetria"):
+		GestorTelemetria.preguntas_listas.connect(_on_preguntas_listas, CONNECT_ONE_SHOT)
+		# 1. Pedir el bloque maestro del Nivel 2
+		GestorTelemetria.descargar_preguntas("nivel_2")
+	else:
+		_cargar_pregunta_respaldo()
 
 func _on_preguntas_listas(array_nivel: Array) -> void:
 	if array_nivel.size() > 0:
@@ -50,37 +53,47 @@ func _on_preguntas_listas(array_nivel: Array) -> void:
 		# 2. Desempaquetar la fase del carrito
 		if datos_nivel.has("carrito_fase"):
 			lista_preguntas = datos_nivel["carrito_fase"]
-			lista_preguntas.shuffle() 
+			lista_preguntas.shuffle()
 			pregunta_actual = lista_preguntas[0]
 			mostrar_pregunta()
+			return
 		else:
-			if pantalla_acertijo: pantalla_acertijo.text = "Error: Formato incorrecto."
+			print("Aviso: Formato desconocido en carrito_fase. Usando respaldo...")
 	else:
-		if pantalla_acertijo: pantalla_acertijo.text = "Error al descargar preguntas"
+		print("Aviso: No se recibieron preguntas para el carrito. Usando respaldo...")
+		
+	_cargar_pregunta_respaldo()
+
+func _cargar_pregunta_respaldo():
+	pregunta_actual = {
+		"texto": "Un circuito en serie comparte la misma corriente en todos sus componentes.",
+		"respuesta": true
+	}
+	mostrar_pregunta()
 
 func mostrar_pregunta():
 	if pantalla_acertijo and pregunta_actual.has("texto"):
 		pantalla_acertijo.text = pregunta_actual["texto"]
 
 func evaluar_respuesta(opcion_usuario: bool):
-	var respuesta_correcta = pregunta_actual["respuesta"]
+	if boton_verdadero: boton_verdadero.disabled = true
+	if boton_falso: boton_falso.disabled = true
+	
+	var respuesta_correcta = pregunta_actual.get("respuesta", true)
 	var fue_acierto = (opcion_usuario == respuesta_correcta)
 	
-	# 3. Extraer los primeros 20 caracteres de la pregunta para la estadística V/F
-	var concepto_vf = "V/F: " + str(pregunta_actual["texto"]).left(20) + "..."
+	# REGISTRO GLOBAL: Guarda solo el valor literal "Verdadero" o "Falso"
+	var respuesta_texto = "Verdadero" if opcion_usuario else "Falso"
+	if get_tree().root.has_node("GestorTelemetria"):
+		GestorTelemetria.registrar_respuesta("Nivel_Sofia", fue_acierto, respuesta_texto)
 	
 	if fue_acierto:
 		print("Resultado: ¡CORRECTO!")
 		if sprite_carrito: sprite_carrito.texture = textura_encendido
-		Global.suma_niveles += 1 
-		# 4. Enviar 3 parámetros
-		GestorTelemetria.enviar_reporte_final(1, [concepto_vf], [])
+		if typeof(Global) != TYPE_NIL and "suma_niveles" in Global:
+			Global.suma_niveles += 1
 	else:
 		print("Resultado: ¡INCORRECTO!")
-		GestorTelemetria.enviar_reporte_final(1, [], [concepto_vf])
-		
-	if boton_verdadero: boton_verdadero.disabled = true
-	if boton_falso: boton_falso.disabled = true
 	
 	await get_tree().create_timer(1.0).timeout
 	reproducir_video_transicion()

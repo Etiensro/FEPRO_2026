@@ -9,7 +9,6 @@ extends Control
 
 const PROJECT_ID: String = "lore-fepro"
 
-# Rutas de inicio de cada sala del equipo
 const SALA_BRYAN: String = "res://Nivel_Bryan/intro_video.tscn"
 const SALA_ETIENNE: String = "res://Nivel_E/Hub_Principal.tscn"
 const SALA_MELYSSA: String = "res://Nivel_Melyssa/intro_esferas.tscn"
@@ -44,7 +43,7 @@ func _on_btn_confirmar_pressed() -> void:
 	label_estado.modulate = Color(1.0, 1.0, 1.0)
 	label_estado.text = "Conectando con la sala..."
 	
-	var url = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID + "/databases/(default)/documents/salas_activas/" + sala
+	var url = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID + "/databases/(default)/documents/salas_activas/" + sala.to_upper()
 	var headers = ["Content-Type: application/json"]
 	
 	var err = peticion_http.request(url, headers, HTTPClient.METHOD_GET)
@@ -64,43 +63,34 @@ func _on_sala_verificada(_result: int, response_code: int, _headers: PackedStrin
 		var doc_data: Dictionary = json.data
 		var campos: Dictionary = doc_data.get("fields", {})
 		
-		print("--- DEBUG SALA ---")
-		print("Campos encontrados en Firestore: ", campos.keys())
-		
-		# Guardar sesión y datos en el gestor global
-		var cod_sala = input_sala.text.strip_edges()
+		var cod_sala = input_sala.text.strip_edges().to_upper()
 		var nom_usuario = input_usuario.text.strip_edges()
 		
+		# Inyectar datos en el Autoload GestorTelemetria
 		if get_tree().root.has_node("GestorTelemetria"):
-			if "codigo_sala" in GestorTelemetria:
-				GestorTelemetria.codigo_sala = cod_sala
-			if "alumno_id" in GestorTelemetria:
-				GestorTelemetria.alumno_id = nom_usuario
-			if "datos_sala_actual" in GestorTelemetria:
-				GestorTelemetria.datos_sala_actual = campos
+			GestorTelemetria.codigo_sala = cod_sala
+			GestorTelemetria.alumno_id = nom_usuario
+			GestorTelemetria.datos_sala_actual = campos
 		
-		# Reiniciar y barajar el tour de la ruleta al iniciar sesión
-		if Engine.has_singleton("GestorRutaJuego"):
+		# Reiniciar ruleta de salas
+		if get_tree().root.has_node("GestorRutaJuego"):
 			GestorRutaJuego.reiniciar_recorridos()
 		
-		# Detección precisa de qué sala corresponde según los campos de Firestore
-		var escena_destino: String = SALA_BRYAN
-		
+		# Asignar escena destino inicial
+		var escena_destino: String = ""
 		if campos.has("escena_computadora"):
 			escena_destino = SALA_ETIENNE
 		elif campos.has("carrito_fase") or campos.has("tuneles_fase"):
 			escena_destino = SALA_SOFIA
-		elif campos.has("preguntas") or campos.has("melyssa_puzzles"): # <--- Detecta correctamente las esferas de Melyssa
+		elif campos.has("preguntas") or campos.has("melyssa_puzzles"):
 			escena_destino = SALA_MELYSSA
 		else:
-			# Si usa la ruleta aleatoria general cuando no hay una fase forzada:
-			if Engine.has_singleton("GestorRutaJuego"):
+			if get_tree().root.has_node("GestorRutaJuego"):
 				escena_destino = GestorRutaJuego.obtener_siguiente_sala()
+			else:
+				escena_destino = SALA_BRYAN
 
-		print("Escena elegida según Firestore: ", escena_destino)
-		
 		if not ResourceLoader.exists(escena_destino):
-			print("ERROR: La ruta '", escena_destino, "' no existe. Usando respaldo.")
 			escena_destino = SALA_BRYAN
 			
 		label_estado.modulate = Color(0.4, 1.0, 0.4)
